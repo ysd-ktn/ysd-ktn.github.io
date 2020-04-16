@@ -1,3 +1,3 @@
 python freeze.py
-mv build/* .
+mv build/*.html .
 rm -rf build
