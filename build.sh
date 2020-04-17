@@ -1,3 +1,3 @@
 python freeze.py
-mv build/*.html .
+find ./build/* -not -name static -exec mv {} . \;
 rm -rf build
