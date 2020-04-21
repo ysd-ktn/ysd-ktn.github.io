@@ -1,10 +1,8 @@
-<html>
-    <head>
-        <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
-    </head>
-    <body>
-        Hello World
-        I'm Kotone
-        frozen success!
-    </body>
-</html>
+{% extends "base.html" %}
+{% block content %}
+
+Hello World
+I'm Kotone
+frozen success!
+
+{% endblock %}
