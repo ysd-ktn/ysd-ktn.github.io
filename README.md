@@ -18,8 +18,17 @@
 - run.py: flaskサーバーを立ち上げるためのファイル。手元で確認する際に使用するのみで、実際のホスティングには使用しない。
 
 ## フロー
-1. flaskのサーバーを立ち上げ、コーディング。
-2. ある程度できたら`sh build.sh`で静的サイト化。
-3. ステージングするなら、`git add <file name>`
-4. ログに書き込むなら、`git commit -m "<message>"`
-5. デプロイするなら、`git push`
+- 準備
+  - flaskのサーバーを立ち上げる。 `python run.py`
+  - ターミナルの別タブを開く. `command + t`
+  - SCSSファイルの監視。 `sass --watch static/scss/style.scss:static/css/style.css`
+- コーティング
+  - HTMLを編集するなら、`templates`の中のファイル。
+  - SCSSを編集するなら、`static`の中のファイル。
+  - (注意)トップにあるHTMLファイルは静的化されたものなので編集しない。
+- 静的化
+  - `sh build.sh`
+- git
+  - ステージングするなら、`git add <file name>`
+  - ログに書き込むなら、`git commit -m "<message>"`
+  - デプロイするなら、`git push`
