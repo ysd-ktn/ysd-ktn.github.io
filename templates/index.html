@@ -1,8 +1,21 @@
 {% extends "base.html" %}
 {% block content %}
 
-Hello World
-I'm Kotone
-frozen success!
+<div class="entry">
+    <h1>YOSHIDA KOTONE</h1>
+    <img src="{{ url_for('static', filename='images/icon.png') }}">
+    <div class="sns-icon">
+        <img src="{{ url_for('static', filename='images/twitter.png') }}">
+        <img src="{{ url_for('static', filename='images/instagram.png') }}">
+        <img src="{{ url_for('static', filename='images/github.png') }}">
+    </div>
+</div>
+<div class="about">
+    <h2>about</h2>
+    <p>Name:吉田 琴音(よしだ ことね)</p>
+    <p>Univ:京都市立芸術大学</p>
+    <br>
+    <p>座右の銘は「デザインは問題解決だ」です。</p> 
+</div>
 
 {% endblock %}
