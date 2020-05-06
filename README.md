@@ -27,7 +27,7 @@
   - SCSSを編集するなら、`static`の中のファイル。
   - (注意)トップにあるHTMLファイルは静的化されたものなので編集しない。
 - 静的化
-  - `sh build.sh`
+  - `sh script/build.sh`
 - git
   - ステージングするなら、`git add <file name>`
   - ログに書き込むなら、`git commit -m "<message>"`
