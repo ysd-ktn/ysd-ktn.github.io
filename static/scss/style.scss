@@ -139,38 +139,55 @@ $dividing-line: #C4C4C4;
 
 
 /* -------------------- navbar -------------------- */
+$navbar-height: 56px;
+$threshold-width: 560px;
 .navbar-wrapper{
     top: 0;
     position: fixed;
     width: 100%;
-    height: 56px;   
+    height: $navbar-height;   
     background-color: $main-color;
     opacity: 0.9;
     display: flex;
-    .navbar-logo{
-        font-size: 27px;
-        line-height: 56px;
-        color: $navbar-text; 
-        margin-left: 54px;
-        margin-right: 39px;
-        text-decoration: none;
-        font-weight: 900f;
-    }
-    ul{
-        display: flex;
-        list-style-type: none; 
-        font-size: 20px;
-        a{
-            line-height: 56px;
-            margin-right: 39px;
-            color: #CDCDCD;
-            text-decoration: none;
-            &:hover{
-                color: $navbar-text;
-            }
+    @media screen and (max-width: $threshold-width) {
+       .navbar-logo{
+           width: 100%;
+           font-size: 20px;
+           line-height: $navbar-height;
+           color: $navbar-text;
+           text-align: center;
+           text-decoration: none;
+        } 
+       ul{
+           display: none;
         }
     }
+    @media screen and (min-width: $threshold-width+1px) {
+        .navbar-logo{
+            font-size: 27px;
+            line-height: $navbar-height;
+            color: $navbar-text; 
+            margin-left: 54px;
+            margin-right: 39px;
+            text-decoration: none;
+            font-weight: 900;
+        }
+        ul{
+            display: flex;
+            list-style-type: none; 
+            font-size: 20px;
+            a{
+                line-height: $navbar-height;
+                margin-right: 39px;
+                color: #CDCDCD;
+                text-decoration: none;
+                &:hover{
+                    color: $navbar-text;
+                }
+            }
+        }
 
+    }
 }
 
 /* -------------------- dividing-line -------------------- */
@@ -184,8 +201,7 @@ hr{
 
 /* -------------------- entry -------------------- */
 .entry{
-    margin-top: -auto;
-    padding-top: 96px;
+    margin-top: $navbar-height;
     text-align: center;
     h1{
         margin-top: 75px;
