@@ -143,13 +143,13 @@ $dividing-line: #C4C4C4;
     top: 0;
     position: fixed;
     width: 100%;
-    height: 96px;   
+    height: 56px;   
     background-color: $main-color;
     opacity: 0.9;
     display: flex;
     .navbar-logo{
-        font-size: 36px;
-        line-height: 96px;
+        font-size: 27px;
+        line-height: 56px;
         color: $navbar-text; 
         margin-left: 54px;
         margin-right: 39px;
@@ -159,9 +159,9 @@ $dividing-line: #C4C4C4;
     ul{
         display: flex;
         list-style-type: none; 
-        font-size: 24px;
+        font-size: 20px;
         a{
-            line-height: 96px;
+            line-height: 56px;
             margin-right: 39px;
             color: #CDCDCD;
             text-decoration: none;
