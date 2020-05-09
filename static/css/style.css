@@ -187,12 +187,21 @@ hr {
           margin-bottom: 30px; } }
   .entry .sns-icon {
     margin-top: 30px;
-    margin-bottom: 85px; }
+    margin-bottom: 70px; }
     .entry .sns-icon img {
       width: 40px;
       height: 40px;
       margin-right: 30px;
       margin-left: 30px; }
+    @media screen and (max-width: 560px) {
+      .entry .sns-icon {
+        margin-top: 30px;
+        margin-bottom: 50px; }
+        .entry .sns-icon img {
+          width: 30px;
+          height: 30px;
+          margin-right: 10px;
+          margin-left: 10px; } }
 
 /* -------------------- about -------------------- */
 .about {
