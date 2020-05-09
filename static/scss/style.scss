@@ -20,10 +20,12 @@ $iphonex-height: 812px;
 html {
     font-size: 10px;
     font-family: sans-serif;
+    overflow: auto;
 }
 
 body {
     font-size: 1.8rem;
+    overflow: auto;
 }
 
 h1 {
@@ -258,7 +260,7 @@ hr{
 /* -------------------- footer -------------------- */
 .footer-wrapper{
     height: 90px;
-    hr{
+    hr {
         height: 2px;
         width: 90%;
         background-color: $dividing-line;
@@ -266,17 +268,30 @@ hr{
         margin: auto;
 
     }
-    a{
-        text-decoration: none;
-        line-height: 90px;
-        margin-left: 50px;
-        margin-right: 50px;
-        color: #909090;
-        &:hover{
-            color: $font-color;
+    .footer-left{
+        width: 50%;
+        .footer-logo{
+            text-decoration: none;
+            line-height: 90px;
+            padding-left: 50px;
+            color: #909090;
+            &:hover{
+                color: $font-color;
+            }
         }
     }
-    .contact{
+    .footer-right{
         float: right;
+        .contact{
+            a {
+                text-decoration: none;
+                line-height: 90px;
+                padding-right: 50px;
+                color: #909090;
+                &:hover{
+                    color: $font-color;
+                }
+            }
+        }
     }
 }

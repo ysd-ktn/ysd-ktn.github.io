@@ -9,10 +9,12 @@
 /* -------------------- Base -------------------- */
 html {
   font-size: 10px;
-  font-family: sans-serif; }
+  font-family: sans-serif;
+  overflow: auto; }
 
 body {
-  font-size: 1.8rem; }
+  font-size: 1.8rem;
+  overflow: auto; }
 
 @media screen and (min-width: 0px) and (max-width: 320px) {
   h1 {
@@ -213,15 +215,23 @@ hr {
     background-color: #C4C4C4;
     border: 0;
     margin: auto; }
-  .footer-wrapper a {
-    text-decoration: none;
-    line-height: 90px;
-    margin-left: 50px;
-    margin-right: 50px;
-    color: #909090; }
-    .footer-wrapper a:hover {
-      color: #2A3132; }
-  .footer-wrapper .contact {
+  .footer-wrapper .footer-left {
+    width: 50%; }
+    .footer-wrapper .footer-left .footer-logo {
+      text-decoration: none;
+      line-height: 90px;
+      padding-left: 50px;
+      color: #909090; }
+      .footer-wrapper .footer-left .footer-logo:hover {
+        color: #2A3132; }
+  .footer-wrapper .footer-right {
     float: right; }
+    .footer-wrapper .footer-right .contact a {
+      text-decoration: none;
+      line-height: 90px;
+      padding-right: 50px;
+      color: #909090; }
+      .footer-wrapper .footer-right .contact a:hover {
+        color: #2A3132; }
 
 /*# sourceMappingURL=style.css.map */
