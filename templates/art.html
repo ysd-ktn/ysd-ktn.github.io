@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+
+<br><br><br><br>
+<h2>
+    Sketch
+</h2>
+{% for article in articles_list['sketch'] %}
+    {{ article.name }}
+    <img src="{{ url_for('static', filename='images/articles/'+article.filename) }}">
+    <br>
+{% endfor %}
+
+<h2>
+    Illustration
+</h2>
+{% for article in articles_list['illustration'] %}
+    {{ article.name }}
+    <img src="{{ url_for('static', filename='images/articles/'+article.filename) }}">
+    <br>
+{% endfor %}
+
+{% endblock %}
