@@ -144,6 +144,7 @@ $dividing-line: #C4C4C4;
 $navbar-height: 56px;
 $threshold-width: 560px;
 .navbar-wrapper{
+    z-index: 30;
     top: 0;
     position: fixed;
     width: 100%;
@@ -329,10 +330,19 @@ hr{
 }
 
 /* -------------------- art -------------------- */
-.Sketch-img{
-    display: inline-block;
-}
 
-.Illustration-img{
-    display: inline-block;
+.article-layer {
+    width: 100%;
+    text-align: center;
+    .article-block {
+        display: inline-block;
+        max-width: 1060px;
+        text-align: center;
+        .article-table {
+            width: 100%;
+            img {
+                width: 30%;
+            }
+        }
+    }
 }

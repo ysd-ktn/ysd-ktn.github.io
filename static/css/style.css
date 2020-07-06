@@ -114,6 +114,7 @@ body {
 /* -------------------- Color-variables -------------------- */
 /* -------------------- navbar -------------------- */
 .navbar-wrapper {
+  z-index: 30;
   top: 0;
   position: fixed;
   width: 100%;
@@ -264,10 +265,16 @@ hr {
             color: #2A3132; } }
 
 /* -------------------- art -------------------- */
-.Sketch-img {
-  display: inline-block; }
-
-.Illustration-img {
-  display: inline-block; }
+.article-layer {
+  width: 100%;
+  text-align: center; }
+  .article-layer .article-block {
+    display: inline-block;
+    max-width: 1060px;
+    text-align: center; }
+    .article-layer .article-block .article-table {
+      width: 100%; }
+      .article-layer .article-block .article-table img {
+        width: 30%; }
 
 /*# sourceMappingURL=style.css.map */
