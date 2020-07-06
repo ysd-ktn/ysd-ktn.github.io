@@ -2,24 +2,30 @@
 {% block content %}
 
 <br><br><br><br>
-<h2>
-    Sketch
-</h2>
-<div class="Sketch-img">
-    {% for article in articles_list['sketch'] %}
-        {{ article.name }}
-        <img src="{{ url_for('static', filename='images/articles/'+article.filename) }}" width=100px>
-    {% endfor %}
+<div class="article-layer">
+    <div class="article-block">
+        <h2>
+            Illustration
+        </h2>
+        <div class="article-table">
+            {% for article in articles_list['illustration'] %}
+                {{ article.name }}
+                    <img src="{{ url_for('static', filename='images/articles/'+article.filename) }}">
+            {% endfor %}
+        </div>
+    </div>
 </div>
 
-<h2>
-    Illustration
-</h2>
-<div class="Illustration-img">
-    {% for article in articles_list['illustration'] %}
-        {{ article.name }}
-        <img src="{{ url_for('static', filename='images/articles/'+article.filename) }}" width=100px>
-    {% endfor %}
+<div class="sketch">
+    <h2>
+        Sketch
+    </h2>
+    <div class="container">
+            {% for article in articles_list['sketch'] %}
+                {{ article.name }}
+                    <img src="{{ url_for('static', filename='images/articles/'+article.filename) }}">
+            {% endfor %}
+    </div>
 </div>
 
 {% endblock %}
