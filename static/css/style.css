@@ -264,5 +264,10 @@ hr {
             color: #2A3132; } }
 
 /* -------------------- art -------------------- */
+.Sketch-img {
+  display: inline-block; }
+
+.Illustration-img {
+  display: inline-block; }
 
 /*# sourceMappingURL=style.css.map */
