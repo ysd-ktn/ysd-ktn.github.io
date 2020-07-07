@@ -271,10 +271,16 @@ hr {
   .article-layer .article-block {
     display: inline-block;
     max-width: 1060px;
-    text-align: center; }
+    text-align: center;
+    margin-bottom: 100px; }
+    .article-layer .article-block h2 {
+      margin-bottom: 20px; }
     .article-layer .article-block .article-table {
       width: 100%; }
       .article-layer .article-block .article-table img {
-        width: 30%; }
+        margin: 30px;
+        width: 244px;
+        height: 244px;
+        object-fit: cover; }
 
 /*# sourceMappingURL=style.css.map */

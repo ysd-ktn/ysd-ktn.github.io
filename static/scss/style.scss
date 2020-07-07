@@ -335,13 +335,22 @@ hr{
     width: 100%;
     text-align: center;
     .article-block {
+        h2 {
+            margin-bottom: 20px;
+        }
+
         display: inline-block;
         max-width: 1060px;
         text-align: center;
+        margin-bottom: 100px;
         .article-table {
             width: 100%;
+
             img {
-                width: 30%;
+                margin: 30px;
+                width: 244px;
+                height: 244px;
+                object-fit: cover;
             }
         }
     }
