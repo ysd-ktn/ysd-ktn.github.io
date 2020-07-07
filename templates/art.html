@@ -9,8 +9,7 @@
         </h2>
         <div class="article-table">
             {% for article in articles_list['illustration'] %}
-                {{ article.name }}
-                <a href="{{ url_for('static', filename='images/articles/'+article.filename) }}" data-lightbox="group"><img src="{{ url_for('static', filename='images/articles/'+article.filename) }}"></a>
+                <a href="{{ url_for('static', filename='images/articles/'+article.filename) }}" data-lightbox="illustration-group"><img src="{{ url_for('static', filename='images/articles/'+article.filename) }}"></a>
             {% endfor %}
         </div>
     </div>
@@ -23,8 +22,7 @@
         </h2>
         <div class="article-table">
             {% for article in articles_list['sketch'] %}
-                {{ article.name }}
-                    <img src="{{ url_for('static', filename='images/articles/'+article.filename) }}">
+                <a href="{{ url_for('static', filename='images/articles/'+article.filename) }}" data-lightbox="sketch-group"><img src="{{ url_for('static', filename='images/articles/'+article.filename) }}"></a>
             {% endfor %}
         </div>
     </div>
