@@ -346,13 +346,21 @@ hr{
         .article-table {
             width: 100%;
 
-            img {
+            a {
                 margin: 30px;
-                width: 244px;
-                height: 244px;
-                object-fit: cover;
+                display: inline-block;
 
-                
+                img {
+                    width: 244px;
+                    height: 244px;
+                    object-fit: cover;
+                    vertical-align: bottom;
+    
+                    &:hover {
+                        opacity: 0.6;
+                    }
+                }
+
             }
         }
     }

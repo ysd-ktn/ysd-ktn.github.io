@@ -277,10 +277,15 @@ hr {
       margin-bottom: 20px; }
     .article-layer .article-block .article-table {
       width: 100%; }
-      .article-layer .article-block .article-table img {
+      .article-layer .article-block .article-table a {
         margin: 30px;
-        width: 244px;
-        height: 244px;
-        object-fit: cover; }
+        display: inline-block; }
+        .article-layer .article-block .article-table a img {
+          width: 244px;
+          height: 244px;
+          object-fit: cover;
+          vertical-align: bottom; }
+          .article-layer .article-block .article-table a img:hover {
+            opacity: 0.6; }
 
 /*# sourceMappingURL=style.css.map */
