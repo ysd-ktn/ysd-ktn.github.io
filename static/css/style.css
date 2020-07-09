@@ -279,7 +279,8 @@ hr {
       width: 100%; }
       .article-layer .article-block .article-table a {
         margin: 30px;
-        display: inline-block; }
+        display: inline-block;
+        background-color: #000; }
         .article-layer .article-block .article-table a img {
           width: 244px;
           height: 244px;
