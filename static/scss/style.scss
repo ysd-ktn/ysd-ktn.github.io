@@ -345,6 +345,8 @@ hr{
         margin-bottom: 100px;
         .article-table {
             width: 100%;
+            position: relative;
+            overflow: hidden;
 
             a {
                 margin: 30px;
@@ -362,7 +364,7 @@ hr{
                     }
 
                 }
-
+                
             }
         }
     }

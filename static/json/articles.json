@@ -35,16 +35,16 @@
         {"name": "", "filename": "IMG_0270.jpg"}
     ],
     "illustration": [
-        {"name": "", "filename": "IMG_0136 2.JPG"},
-        {"name": "", "filename": "IMG_0142 2.JPG"},
-        {"name": "", "filename": "IMG_0146 2.JPG"},
-        {"name": "", "filename": "IMG_0159 2.JPG"},
-        {"name": "", "filename": "IMG_0220.JPG"},
-        {"name": "", "filename": "IMG_0690.PNG"},
-        {"name": "", "filename": "bosatsu.JPG"},
-        {"name": "", "filename": "gomibako.JPG"},
-        {"name": "", "filename": "kurage.JPG"},
-        {"name": "", "filename": "remon.JPG"}
+        {"name": "spacewalk", "filename": "IMG_0136 2.JPG"},
+        {"name": "moment is everything", "filename": "IMG_0142 2.JPG"},
+        {"name": "unconscious", "filename": "IMG_0146 2.JPG"},
+        {"name": "p-zombie", "filename": "IMG_0159 2.JPG"},
+        {"name": "self", "filename": "IMG_0220.JPG"},
+        {"name": "invincible", "filename": "kurage.JPG"},
+        {"name": "bodhisattva", "filename": "bosatsu.JPG"},
+        {"name": "stimulates the nose", "filename": "remon.JPG"},
+        {"name": "entrusted", "filename": "IMG_0690.PNG"},
+        {"name": "neighbor's trash can", "filename": "gomibako.JPG"}
     ]
 }
 

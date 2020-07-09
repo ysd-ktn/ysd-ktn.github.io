@@ -276,7 +276,9 @@ hr {
     .article-layer .article-block h2 {
       margin-bottom: 20px; }
     .article-layer .article-block .article-table {
-      width: 100%; }
+      width: 100%;
+      position: relative;
+      overflow: hidden; }
       .article-layer .article-block .article-table a {
         margin: 30px;
         display: inline-block;
