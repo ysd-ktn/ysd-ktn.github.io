@@ -277,9 +277,9 @@ hr {
       margin-bottom: 20px; }
     .article-layer .article-block .article-table {
       width: 100%;
-      position: relative;
       overflow: hidden; }
       .article-layer .article-block .article-table a {
+        position: relative;
         margin: 30px;
         display: inline-block;
         background-color: #000; }
@@ -290,5 +290,28 @@ hr {
           vertical-align: bottom; }
           .article-layer .article-block .article-table a img:hover {
             opacity: 0.6; }
+        .article-layer .article-block .article-table a .illustration-name {
+          background-color: black;
+          width: 244px;
+          height: 244px;
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          -webkit-transform: translate(-50%, -50%);
+          opacity: 0.0; }
+          .article-layer .article-block .article-table a .illustration-name p {
+            color: white;
+            width: 100px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            -webkit-transform: translate(-50%, -50%);
+            opacity: 0.0; }
+          .article-layer .article-block .article-table a .illustration-name:hover {
+            opacity: 0.6; }
+            .article-layer .article-block .article-table a .illustration-name:hover p {
+              opacity: 1.0; }
 
 /*# sourceMappingURL=style.css.map */

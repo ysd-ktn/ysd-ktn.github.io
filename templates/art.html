@@ -9,7 +9,12 @@
         </h2>
         <div class="article-table">
             {% for article in articles_list['illustration'] %}
-                <a href="{{ url_for('static', filename='images/articles/'+article.filename) }}" data-lightbox="illustration-group" data-title="{{ article.name }}"><img src="{{ url_for('static', filename='images/articles/'+article.filename) }}"></a>
+                <a href="{{ url_for('static', filename='images/articles/'+article.filename) }}" data-lightbox="illustration-group" data-title="{{ article.name }}">
+                    <img src="{{ url_for('static', filename='images/articles/'+article.filename) }}">
+                    <div class="illustration-name">
+                        <p>{{ article.name }}</p>
+                    </div>
+                </a>
             {% endfor %}
         </div>
     </div>
