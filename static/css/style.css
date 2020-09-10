@@ -123,6 +123,10 @@ body {
   opacity: 0.9;
   display: flex; }
   .navbar-wrapper .navbar-logo {
+    display: block;
+    margin-top: auto;
+    margin-bottom: auto;
+    margin-left: 100px;
     height: 39.92px; }
     .navbar-wrapper .navbar-logo img {
       width: 40px; }

@@ -153,6 +153,10 @@ $threshold-width: 560px;
     opacity: 0.9;
     display: flex;
     .navbar-logo{
+        display: block;
+        margin-top: auto;
+        margin-bottom: auto;
+        margin-left: 100px;
         height: 39.92px;
         img{
             width: 40px;
