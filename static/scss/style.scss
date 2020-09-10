@@ -271,11 +271,10 @@ hr{
 /* -------------------- footer -------------------- */
 
 .footer-border {
-    height: 2px;
-    width: 90%;
+    height: 3px;
+    width: 100%;
     background-color: $dividing-line;
     border: 0;
-    margin: auto;
 }
 
 .footer-wrapper {
@@ -284,34 +283,38 @@ hr{
     display: flex;
     .footer-left {
         width: 50%;
-        margin-top: 36px;
-        padding-left: 50px;
+        margin-left: 80px;
+        display: flex;
         @media screen and (max-width: $threshold-width) {
             width: 50%;
             margin-top: 30px;
             padding-left: 20px; 
         }
         .footer-logo{
-            text-decoration: none;
-            color: #909090;
-            &:hover{
-                color: $font-color;
+            height: 59.89px;
+            display: block;
+            margin-top: auto;
+            margin-bottom: auto;
+            img{
+                width: 60px;
             }
         }
         p{
-            margin-top: 5px;
-            font-size: 12px;
+            line-height: 100px;
+            margin-left: 40px;
+            font-size: 20px;
             color: #909090;
         }
     }
     .footer-right {
         width: 50%;
         text-align: right;
+        margin-right: 80px;
         .contact{
             a {
+                font-size: 40px;
                 text-decoration: none;
                 line-height: 100px;
-                padding-right: 50px;
                 color: #909090;
                 &:hover{
                     color: $font-color;
