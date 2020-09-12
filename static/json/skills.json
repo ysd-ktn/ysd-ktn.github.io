@@ -1,0 +1,12 @@
+{
+    "skills":[
+        {"name": "Adobe XD", "filename": "xd.png"},
+        {"name": "Figma", "filename": "figma.png"},
+        {"name": "Adobe Photoshop", "filename": "photoshop.png"},
+        {"name": "Adobe Illustrator", "filename": "illustrator.png"},
+        {"name": "HTML&CSS", "filename": "html&css.png"},
+        {"name": "Adobe Indesign", "filename": "indesign.png"},
+        {"name": "Adobe Premiere Pro", "filename": "premierero.png"},
+        {"name": "Adobe After Effects", "filename": "aftereffects.png"}
+    ]
+}

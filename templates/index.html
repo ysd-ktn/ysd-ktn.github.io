@@ -24,6 +24,14 @@
     </div>
     <div class="skills">
         <h2>SKILLS</h2>
+        <div class="skills-table">
+            {% for skills in skills_list['skills'] %}
+                <img src="{{ url_for('static', filename='images/skills/'+skills.filename) }}">
+                <div class="skills-name">
+                    <p>{{ skills.name }}</p>
+                </div>
+            {% endfor %}
+        </div>
     </div>
     <div class="works">
         <h2>WORKS</h2>

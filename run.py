@@ -8,7 +8,10 @@ app = Flask(__name__, static_url_path='/static')
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    skills_json_path = os.path.join(app.static_folder, 'json/skills.json')
+    with open(skills_json_path) as skills_json_file:
+        skills_list = json.load(skills_json_file)
+    return render_template('index.html', skills_list=skills_list)
 
 @app.route('/art.html')
 def art():
