@@ -142,7 +142,7 @@ $dividing-line: #C4C4C4;
 
 
 /* -------------------- navbar -------------------- */
-$navbar-height: 100px;
+$navbar-height: 60px;
 $threshold-width: 560px;
 .navbar-wrapper{
     z-index: 30;
@@ -158,9 +158,9 @@ $threshold-width: 560px;
         margin-top: auto;
         margin-bottom: auto;
         margin-left: 100px;
-        height: 39.92px;
+        height: 31.94px;
         img{
-            width: 40px;
+            width: 32px;
 
         }
     }
@@ -170,7 +170,7 @@ $threshold-width: 560px;
             margin-right: 140px;
         }
         ul{
-            font-size: 32px;
+            font-size: 24px;
         }
     }
     @media screen and (max-width: $threshold-width) {
@@ -274,9 +274,9 @@ hr{
 }
 
 /* -------------------- footer -------------------- */
-
+$footer-height: 60px;
 .footer-border {
-    height: 3px;
+    height: 2px;
     width: 100%;
     background-color: $dividing-line;
     border: 0;
@@ -284,7 +284,7 @@ hr{
 
 .footer-wrapper {
     width: 100%;
-    height: 100px;
+    height: $footer-height;
     display: flex;
     .footer-left {
         width: 50%;
@@ -296,16 +296,16 @@ hr{
             padding-left: 20px; 
         }
         .footer-logo{
-            height: 59.89px;
+            height: 39.92px;
             display: block;
             margin-top: auto;
             margin-bottom: auto;
             img{
-                width: 60px;
+                width: 40px;
             }
         }
         p{
-            line-height: 100px;
+            line-height: $footer-height;
             margin-left: 40px;
             font-size: 20px;
             color: #909090;
@@ -317,9 +317,9 @@ hr{
         margin-right: 80px;
         .contact{
             a {
-                font-size: 40px;
+                font-size: 24px;
                 text-decoration: none;
-                line-height: 100px;
+                line-height: $footer-height;
                 color: #909090;
                 &:hover{
                     color: $font-color;
