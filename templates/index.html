@@ -6,24 +6,26 @@
         <img src="{{ url_for('static', filename='images/HP_thumbnail_index.png') }}">
     </div>
     <div class="about">
-        <h2>ABOUT</h2>
-        <div class="profile-icon">
-            <img class="profile-img" src="{{ url_for('static', filename='images/icon.png') }}">
-        </div>
-        <div class="about-content">
-            <h3>YOSHIDA KOTONE</h3>
-            <p>2000.07.04</p>
-            <p>京都市立芸術大学美術学部総合芸術学科</p>
-            <p>座右の銘は「デザインは問題解決だ」です。</p>
-        </div>
-        <div class="sns-icon">
-            <a href="https://twitter.com/ysd_ktn"><img src="{{ url_for('static', filename='images/twitter.png') }}"></a>
-            <a href="https://www.instagram.com/ktn__kk/?hl=ja"><img src="{{ url_for('static', filename='images/instagram.png') }}"></a>
-            <a href="https://github.com/ysd-ktn"><img src="{{ url_for('static', filename='images/github.png') }}"></a>
+        <h1>ABOUT</h1>
+        <div class="about-contents">
+            <div class="profile-icon">
+                <img class="profile-img" src="{{ url_for('static', filename='images/icon.png') }}">
+            </div>
+            <div class="about-texts">
+                <h3>YOSHIDA KOTONE</h3>
+                <p>2000.07.04</p>
+                <p>京都市立芸術大学美術学部総合芸術学科</p>
+                <p>座右の銘は「デザインは問題解決だ」です。</p>
+                <div class="sns-icon">
+                   <a href="https://twitter.com/ysd_ktn"><img src="{{ url_for('static', filename='images/twitter.png') }}"></a>
+                    <a href="https://www.instagram.com/ktn__kk/?hl=ja"><img src="{{ url_for('static', filename='images/instagram.png') }}"></a>
+                    <a href="https://github.com/ysd-ktn"><img src="{{ url_for('static', filename='images/github.png') }}"></a>
+                </div>
+            </div>
         </div>
     </div>
     <div class="skills">
-        <h2>SKILLS</h2>
+        <h1>SKILLS</h1>
         <div class="skills-table">
             {% for skills in skills_list['skills'] %}
                 <img src="{{ url_for('static', filename='images/skills/'+skills.filename) }}">
@@ -34,7 +36,7 @@
         </div>
     </div>
     <div class="works">
-        <h2>WORKS</h2>
+        <h1>WORKS</h1>
     </div>
 </div>
 

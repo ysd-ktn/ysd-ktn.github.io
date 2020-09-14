@@ -212,64 +212,62 @@ hr{
             width: 100%;
         }
     }
-    h1{
-        margin-top: 75px;
-        margin-bottom: 16px;
-    }
-    .profile-icon{
-        max-width: 50%;
-        margin-left: auto;
-        margin-right: auto;
-        .profile-img{
-            width: 18vw;
-            border-radius: 100vw;
-            display: block;
-            margin-left: auto;
-            margin-right: auto;
-        
-            @media screen and (min-width: 0px) and(max-width: $iphone678p-width+1) {
-                width: 30vw;
-                border-radius: 100vw;
-                display: block;
-                margin-top: 30px;
-                margin-bottom: 30px;
-            }
-        }
-    }
-    .sns-icon{
-        margin-top: 30px;
-        margin-bottom: 70px;
-        img{
-            width: 40px;
-            height: 40px;
-            margin-right: 30px;
-            margin-left: 30px;
-        }
-        @media screen and (max-width: $threshold-width) {
-            margin-top: 30px;
-            margin-bottom: 50px;
-            img{
-                width: 30px;
-                height: 30px;
-                margin-right: 10px;
-                margin-left: 10px;
-            } 
-        }
-    }
 }
 
 /* -------------------- about -------------------- */
 .about{
-    text-align: center;
     margin-top: 70px;
     margin-bottom: 70px;
     display: block;
-    h2{
-        margin-bottom: 50px;
-    }
-    .about-content{
-        display: inline-block;
-        text-align: left;
+    .about-contents{
+        display: flex;
+        width: max-content;
+        margin-left: auto;
+        margin-right: auto;
+        padding: 40px;
+        border: solid 3px #bcbcbc;
+        border-radius: 10px;
+
+        .profile-icon{
+            max-width: 50%;
+            margin-right: 100px;
+            .profile-img{
+                width: 18vw;
+                border-radius: 100vw;
+                display: block;
+            
+                @media screen and (min-width: 0px) and(max-width: $iphone678p-width+1) {
+                    width: 30vw;
+                    border-radius: 100vw;
+                    display: block;
+                    margin-top: 30px;
+                    margin-bottom: 30px;
+                }
+            }
+        }
+
+        .about-texts{
+            height: max-content;
+            text-align: left;
+            .sns-icon{
+                img{
+                    width: 40px;
+                    height: 40px;
+                    margin-right: 30px;
+                    margin-left: 30px;
+                }
+                @media screen and (max-width: $threshold-width) {
+                    margin-top: 30px;
+                    margin-bottom: 50px;
+                    img{
+                        width: 30px;
+                        height: 30px;
+                        margin-right: 10px;
+                        margin-left: 10px;
+                    } 
+                }
+            }
+        }
     }
 }
 
