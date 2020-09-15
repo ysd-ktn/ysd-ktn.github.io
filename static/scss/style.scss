@@ -205,7 +205,6 @@ hr{
 
 /* -------------------- entry -------------------- */
 .entry{
-    margin-top: $navbar-height;
     text-align: center;
     .thumbnail_index{
         img{
@@ -343,9 +342,15 @@ $pc-article-img-height: 244px;
 .article-layer {
     width: 100%;
     text-align: center;
+    .thumbnail_art{
+        img{
+            width: 100%;
+        }
+    }
     .article-block {
+        margin-top: 180px;
         h2 {
-            margin-bottom: 20px;
+            margin-bottom: 60px;
         }
 
         display: inline-block;
@@ -355,6 +360,8 @@ $pc-article-img-height: 244px;
         .article-table {
             width: 100%;
             overflow: hidden;
+            border: solid 3px #bcbcbc;
+            border-radius: 10px;
 
             a {
                 position: relative;

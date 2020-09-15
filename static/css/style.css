@@ -159,7 +159,6 @@ hr {
 
 /* -------------------- entry -------------------- */
 .entry {
-  margin-top: 60px;
   text-align: center; }
   .entry .thumbnail_index img {
     width: 100%; }
@@ -264,16 +263,21 @@ hr {
 .article-layer {
   width: 100%;
   text-align: center; }
+  .article-layer .thumbnail_art img {
+    width: 100%; }
   .article-layer .article-block {
+    margin-top: 180px;
     display: inline-block;
     max-width: 1060px;
     text-align: center;
     margin-bottom: 100px; }
     .article-layer .article-block h2 {
-      margin-bottom: 20px; }
+      margin-bottom: 60px; }
     .article-layer .article-block .article-table {
       width: 100%;
-      overflow: hidden; }
+      overflow: hidden;
+      border: solid 3px #bcbcbc;
+      border-radius: 10px; }
       .article-layer .article-block .article-table a {
         position: relative;
         margin: 30px;
