@@ -347,7 +347,8 @@ hr {
 /* -------------------- art -------------------- */
 .article-layer {
   width: 100%;
-  text-align: center; }
+  text-align: center;
+  background-color: #efefef; }
   .article-layer .thumbnail_art img {
     width: 100%; }
   .article-layer .article-block {
