@@ -206,6 +206,7 @@ hr{
 /* -------------------- entry -------------------- */
 .entry{
     text-align: center;
+    background-color: #efefef;
     .thumbnail_index{
         img{
             width: 100%;
@@ -265,6 +266,33 @@ hr{
                     } 
                 }
             }
+        }
+    }
+}
+
+/* -------------------- skills -------------------- */
+$pc_skills_img_width_height: 60px;
+
+.skills{
+    .skills-table{
+        max-width: 1060px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        border: solid 3px #bcbcbc;
+        border-radius: 10px;
+        .skills-contents{
+            border: solid 3px #bcbcbc;
+            border-radius: 10px;
+            margin-right: 40px;
+            margin-bottom: 40px;
+            min-width: 200px;
+        }
+        img{
+            width: $pc_skills_img_width_height;
+            height: $pc_skills_img_width_height;
         }
     }
 }

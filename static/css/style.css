@@ -159,7 +159,8 @@ hr {
 
 /* -------------------- entry -------------------- */
 .entry {
-  text-align: center; }
+  text-align: center;
+  background-color: #efefef; }
   .entry .thumbnail_index img {
     width: 100%; }
 
@@ -206,6 +207,26 @@ hr {
             height: 30px;
             margin-right: 10px;
             margin-left: 10px; } }
+
+/* -------------------- skills -------------------- */
+.skills .skills-table {
+  max-width: 1060px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  border: solid 3px #bcbcbc;
+  border-radius: 10px; }
+  .skills .skills-table .skills-contents {
+    border: solid 3px #bcbcbc;
+    border-radius: 10px;
+    margin-right: 40px;
+    margin-bottom: 40px;
+    min-width: 200px; }
+  .skills .skills-table img {
+    width: 60px;
+    height: 60px; }
 
 /* -------------------- footer -------------------- */
 .footer-border {
