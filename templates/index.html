@@ -6,7 +6,7 @@
         <img src="{{ url_for('static', filename='images/HP_thumbnail_index.png') }}">
     </div>
     <div class="about">
-        <h1>ABOUT</h1>
+        <h2>ABOUT</h2>
         <div class="about-contents">
             <div class="profile-icon">
                 <img class="profile-img" src="{{ url_for('static', filename='images/icon.png') }}">
@@ -26,7 +26,7 @@
         </div>
     </div>
     <div class="skills">
-        <h1>SKILLS</h1>
+        <h2>SKILLS</h2>
         <div class="skills-table">
             {% for skills in skills_list['skills'] %}
                 <div class="skills-contents">
@@ -34,12 +34,18 @@
                     <div class="skills-name">
                         <p>{{ skills.name }}</p>
                     </div>
+                    <div class="star">
+                        <img src="{{ url_for('static', filename='images/skills/'+skills.star) }}">
+                    </div>
+                    <div class="skills-text">
+                        <p>{{ skills.text }}</p>
+                    </div>
                 </div>
             {% endfor %}
         </div>
     </div>
     <div class="works">
-        <h1>WORKS</h1>
+        <h2>WORKS</h2>
     </div>
 </div>
 
