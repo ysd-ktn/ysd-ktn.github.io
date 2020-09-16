@@ -165,7 +165,8 @@ hr {
   .entry .thumbnail_index img {
     width: 100%; }
   .entry h2 {
-    margin-bottom: 40px; }
+    margin-bottom: 40px;
+    color: #505050; }
 
 /* -------------------- about -------------------- */
 .about {
@@ -197,6 +198,10 @@ hr {
     .about .about-contents .about-texts {
       height: max-content;
       text-align: left; }
+      .about .about-contents .about-texts h3 {
+        color: #505050; }
+      .about .about-contents .about-texts p {
+        color: #707070; }
       .about .about-contents .about-texts .sns-icon img {
         width: 32px;
         height: 32px;
@@ -232,6 +237,8 @@ hr {
       margin-bottom: 20px;
       min-width: 200px;
       padding-bottom: 8px; }
+      .skills .skills-table .skills-contents .skills-name {
+        color: #505050; }
       .skills .skills-table .skills-contents .star {
         margin-top: 4px;
         margin-bottom: 4px; }
@@ -241,7 +248,8 @@ hr {
       .skills .skills-table .skills-contents .skills-text {
         max-width: 164px;
         margin: 0 auto;
-        font-size: 12px; }
+        font-size: 12px;
+        color: #707070; }
     .skills .skills-table img {
       width: 60px;
       height: 60px; }
@@ -267,7 +275,7 @@ hr {
         margin-top: 20px;
         color: #707070; }
         .works .works-table .works-contents a h3:hover {
-          color: #2A3132; }
+          color: #707070; }
     .works .works-table .works-contents .design {
       margin-right: 80px;
       margin-left: 80px;
@@ -327,14 +335,14 @@ hr {
       line-height: 60px;
       color: #909090; }
       .footer-wrapper .footer-right .contact a:hover {
-        color: #2A3132; }
+        color: #707070; }
       @media screen and (max-width: 560px) {
         .footer-wrapper .footer-right .contact a {
           text-decoration: none;
           padding-right: 20px;
           color: #909090; }
           .footer-wrapper .footer-right .contact a:hover {
-            color: #2A3132; } }
+            color: #707070; } }
 
 /* -------------------- art -------------------- */
 .article-layer {
@@ -349,7 +357,8 @@ hr {
     text-align: center;
     margin-bottom: 100px; }
     .article-layer .article-block h2 {
-      margin-bottom: 60px; }
+      margin-bottom: 60px;
+      color: #505050; }
     .article-layer .article-block .article-table {
       width: 100%;
       overflow: hidden;
