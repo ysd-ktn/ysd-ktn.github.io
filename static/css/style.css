@@ -160,7 +160,8 @@ hr {
 /* -------------------- entry -------------------- */
 .entry {
   text-align: center;
-  background-color: #efefef; }
+  background-color: #efefef;
+  padding-bottom: 200px; }
   .entry .thumbnail_index img {
     width: 100%; }
   .entry h2 {
@@ -245,11 +246,49 @@ hr {
       width: 60px;
       height: 60px; }
 
+/* -------------------- works -------------------- */
+.works .works-table {
+  max-width: 1060px;
+  margin: 0 auto;
+  border: solid 3px #bcbcbc;
+  border-radius: 10px; }
+  .works .works-table .works-contents {
+    width: fit-content;
+    display: flex;
+    margin: 0 auto; }
+    .works .works-table .works-contents a {
+      display: inline-block;
+      text-decoration: none; }
+      .works .works-table .works-contents a img {
+        width: 320px; }
+        .works .works-table .works-contents a img:hover {
+          opacity: 0.6; }
+      .works .works-table .works-contents a h3 {
+        margin-top: 20px;
+        color: #707070; }
+        .works .works-table .works-contents a h3:hover {
+          color: #2A3132; }
+    .works .works-table .works-contents .design {
+      margin-right: 80px;
+      margin-left: 80px;
+      margin-top: 80px;
+      margin-bottom: 80px; }
+      .works .works-table .works-contents .design .design-img {
+        height: 320px;
+        background-color: #000; }
+    .works .works-table .works-contents .art {
+      margin-right: 80px;
+      margin-left: 80px;
+      margin-top: 80px;
+      margin-bottom: 80px; }
+      .works .works-table .works-contents .art .art-img {
+        height: 320px;
+        background-color: #000; }
+
 /* -------------------- footer -------------------- */
 .footer-border {
   height: 2px;
   width: 100%;
-  background-color: #C4C4C4;
   border: 0; }
 
 .footer-wrapper {

@@ -139,6 +139,7 @@ $font-color: #2A3132;
 $main-color: #1c1c1e;
 $navbar-text: #FDFDFD;
 $dividing-line: #C4C4C4;
+$background-color: #efefef;
 
 
 /* -------------------- navbar -------------------- */
@@ -206,7 +207,8 @@ hr{
 /* -------------------- entry -------------------- */
 .entry{
     text-align: center;
-    background-color: #efefef;
+    background-color: $background-color;
+    padding-bottom: 200px;
     .thumbnail_index{
         img{
             width: 100%;
@@ -317,12 +319,64 @@ $pc_skills_img_width_height: 60px;
     }
 }
 
+/* -------------------- works -------------------- */
+$pc_works_img_width_height: 320px;
+.works{
+    .works-table{
+        max-width: 1060px;
+        margin: 0 auto;
+        border: solid 3px #bcbcbc;
+        border-radius: 10px;
+        .works-contents{
+            width: fit-content;
+            display: flex;
+            margin: 0 auto;
+            a{
+                display: inline-block;
+                text-decoration: none;
+                img{
+                    width: $pc_works_img_width_height;
+                    &:hover{
+                        opacity: 0.6;
+                    }
+                }
+                h3{
+                    margin-top: 20px;
+                    color: #707070;
+                    &:hover{
+                        color:$font-color;
+                    }
+                }
+            }
+            .design{
+                margin-right: 80px;
+                margin-left: 80px;
+                margin-top: 80px;
+                margin-bottom: 80px;
+                .design-img{
+                    height: $pc_works_img_width_height;
+                    background-color: #000;
+                }
+            }
+            .art{
+                margin-right: 80px;
+                margin-left: 80px;
+                margin-top: 80px;
+                margin-bottom: 80px;
+                .art-img{
+                    height: $pc_works_img_width_height;
+                    background-color: #000;
+                }
+            }
+        }
+    }
+}
+
 /* -------------------- footer -------------------- */
 $footer-height: 60px;
 .footer-border {
     height: 2px;
     width: 100%;
-    background-color: $dividing-line;
     border: 0;
 }
 
@@ -330,7 +384,7 @@ $footer-height: 60px;
     width: 100%;
     height: $footer-height;
     display: flex;
-    background-color: #efefef;
+    background-color: $background-color;
     .footer-left {
         width: 50%;
         margin-left: 80px;
