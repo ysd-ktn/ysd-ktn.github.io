@@ -178,9 +178,7 @@ hr {
     width: max-content;
     margin-left: auto;
     margin-right: auto;
-    padding: 40px;
-    border: solid 3px #bcbcbc;
-    border-radius: 10px; }
+    padding: 40px; }
     .about .about-contents .profile-icon {
       max-width: 50%;
       margin-right: 100px; }
@@ -225,18 +223,19 @@ hr {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    justify-content: center;
-    border: solid 3px #bcbcbc;
-    border-radius: 10px;
-    padding: 20px; }
+    justify-content: center; }
     .skills .skills-table .skills-contents {
-      border: solid 2px #bcbcbc;
+      border: solid 1px #bcbcbc;
       border-radius: 15px;
-      margin-right: 40px;
+      margin-right: 20px;
+      margin-left: 20px;
       margin-top: 20px;
       margin-bottom: 20px;
       min-width: 200px;
-      padding-bottom: 8px; }
+      padding-top: 20px;
+      padding-bottom: 20px;
+      padding-right: 10px;
+      padding-left: 10px; }
       .skills .skills-table .skills-contents .skills-name {
         color: #505050; }
       .skills .skills-table .skills-contents .star {
@@ -257,9 +256,7 @@ hr {
 /* -------------------- works -------------------- */
 .works .works-table {
   max-width: 1060px;
-  margin: 0 auto;
-  border: solid 3px #bcbcbc;
-  border-radius: 10px; }
+  margin: 0 auto; }
   .works .works-table .works-contents {
     width: fit-content;
     display: flex;
@@ -295,7 +292,7 @@ hr {
 
 /* -------------------- footer -------------------- */
 .footer-border {
-  height: 2px;
+  height: 1px;
   width: 100%;
   border: 0; }
 
@@ -303,7 +300,9 @@ hr {
   width: 100%;
   height: 60px;
   display: flex;
-  background-color: #efefef; }
+  background-color: #efefef;
+  padding-top: 10px;
+  padding-bottom: 10px; }
   .footer-wrapper .footer-left {
     width: 50%;
     margin-left: 80px;
@@ -362,25 +361,23 @@ hr {
       color: #505050; }
     .article-layer .article-block .article-table {
       width: 100%;
-      overflow: hidden;
-      border: solid 3px #bcbcbc;
-      border-radius: 10px; }
+      overflow: hidden; }
       .article-layer .article-block .article-table a {
         position: relative;
         margin: 30px;
         display: inline-block;
         background-color: #000; }
         .article-layer .article-block .article-table a img {
-          width: 244px;
-          height: 244px;
+          width: 260px;
+          height: 260px;
           object-fit: cover;
           vertical-align: bottom; }
           .article-layer .article-block .article-table a img:hover {
             opacity: 0.6; }
         .article-layer .article-block .article-table a .illustration-name {
           background-color: black;
-          width: 244px;
-          height: 244px;
+          width: 260px;
+          height: 260px;
           position: absolute;
           top: 50%;
           left: 50%;
@@ -400,5 +397,9 @@ hr {
             opacity: 0.6; }
             .article-layer .article-block .article-table a .illustration-name:hover p {
               opacity: 1.0; }
+
+/* -------------------- design --------------------*/
+.thumbnail_design img {
+  width: 100%; }
 
 /*# sourceMappingURL=style.css.map */

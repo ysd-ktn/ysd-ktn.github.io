@@ -232,9 +232,7 @@ hr{
         margin-left: auto;
         margin-right: auto;
         padding: 40px;
-        border: solid 3px #bcbcbc;
-        border-radius: 10px;
-
+        
         .profile-icon{
             max-width: 50%;
             margin-right: 100px;
@@ -295,17 +293,19 @@ $pc_skills_img_width_height: 60px;
         flex-direction: row;
         flex-wrap: wrap;
         justify-content: center;
-        border: solid 3px #bcbcbc;
-        border-radius: 10px;
-        padding: 20px;
+        
         .skills-contents{
-            border: solid 2px #bcbcbc;
+            border: solid 1px #bcbcbc;
             border-radius: 15px;
-            margin-right: 40px;
+            margin-right: 20px;
+            margin-left: 20px;
             margin-top: 20px;
             margin-bottom: 20px;
             min-width: 200px;
-            padding-bottom: 8px;
+            padding-top: 20px;
+            padding-bottom: 20px;
+            padding-right: 10px;
+            padding-left: 10px;
             .skills-name{
                 color: $font-subcolor;
             }
@@ -337,8 +337,7 @@ $pc_works_img_width_height: 320px;
     .works-table{
         max-width: 1060px;
         margin: 0 auto;
-        border: solid 3px #bcbcbc;
-        border-radius: 10px;
+        
         .works-contents{
             width: fit-content;
             display: flex;
@@ -387,7 +386,7 @@ $pc_works_img_width_height: 320px;
 /* -------------------- footer -------------------- */
 $footer-height: 60px;
 .footer-border {
-    height: 2px;
+    height: 1px;
     width: 100%;
     border: 0;
 }
@@ -397,6 +396,8 @@ $footer-height: 60px;
     height: $footer-height;
     display: flex;
     background-color: $background-color;
+    padding-top: 10px;
+    padding-bottom: 10px;
     .footer-left {
         width: 50%;
         margin-left: 80px;
@@ -450,8 +451,8 @@ $footer-height: 60px;
 
 /* -------------------- art -------------------- */
 
-$pc-article-img-width: 244px;
-$pc-article-img-height: 244px;
+$pc-article-img-width: 260px;
+$pc-article-img-height: 260px;
 
 .article-layer {
     width: 100%;
@@ -476,8 +477,6 @@ $pc-article-img-height: 244px;
         .article-table {
             width: 100%;
             overflow: hidden;
-            border: solid 3px #bcbcbc;
-            border-radius: 10px;
 
             a {
                 position: relative;
@@ -534,5 +533,13 @@ $pc-article-img-height: 244px;
             }
 
         }
+    }
+}
+
+/* -------------------- design --------------------*/
+
+.thumbnail_design{
+    img{
+        width: 100%;
     }
 }
