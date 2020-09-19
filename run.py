@@ -21,5 +21,12 @@ def art():
 
     return render_template('art.html', articles_list=articles_list)
 
+@app.route('/design.html')
+def design():
+    contents_json_path = os.path.join(app.static_folder, 'json/contents.json')
+    with open(contents_json_path) as contents_json_file:
+        contents_list = json.load(contents_json_file)
+    return render_template('design.html')
+
 if __name__ == '__main__':
     app.run(debug=True)
