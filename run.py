@@ -26,7 +26,7 @@ def design():
     contents_json_path = os.path.join(app.static_folder, 'json/contents.json')
     with open(contents_json_path) as contents_json_file:
         contents_list = json.load(contents_json_file)
-    return render_template('design.html')
+    return render_template('design.html', contents_list=contents_list)
 
 if __name__ == '__main__':
     app.run(debug=True)
