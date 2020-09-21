@@ -220,7 +220,7 @@ hr{
 .entry{
     text-align: center;
     background-color: $background-color;
-    padding-bottom: 200px;
+    padding-bottom: 100px;
 
     h2{
         margin-bottom: 40px;
@@ -466,84 +466,87 @@ $pc-article-img-height: 260px;
     background-attachment: fixed;
 }
 
-.article-layer {
-    width: 100%;
-    text-align: center;
+.article-comp{
+    padding-bottom: 180px;
     background-color: $background-color;
-    .thumbnail_art{
-        img{
-            width: 100%;
-        }
-    }
-    .article-block {
-        margin-top: 180px;
-        h2 {
-            margin-bottom: 60px;
-            color: $font-subcolor;
-        }
-
-        display: inline-block;
-        max-width: 1060px;
+    .article-layer {
+        width: 100%;
         text-align: center;
-        margin-bottom: 100px;
-        .article-table {
-            width: 100%;
-            overflow: hidden;
-
-            a {
-                position: relative;
-                margin: 30px;
-                display: inline-block;
-                background-color: #000;
-                
-                img {
-                    width: $pc-article-img-width;
-                    height: $pc-article-img-height;
-                    object-fit: cover;
-                    vertical-align: bottom;
-
-                    &:hover {
-                        opacity: 0.6;
+        background-color: $background-color;
+        .thumbnail_art{
+            img{
+                width: 100%;
+            }
+        }
+        .article-block {
+            margin-top: 180px;
+            h2 {
+                margin-bottom: 60px;
+                color: $font-subcolor;
+            }
+    
+            display: inline-block;
+            max-width: 1060px;
+            text-align: center;
+            .article-table {
+                width: 100%;
+                overflow: hidden;
+    
+                a {
+                    position: relative;
+                    margin: 30px;
+                    display: inline-block;
+                    background-color: #000;
+                    
+                    img {
+                        width: $pc-article-img-width;
+                        height: $pc-article-img-height;
+                        object-fit: cover;
+                        vertical-align: bottom;
+    
+                        &:hover {
+                            opacity: 0.6;
+                        }
+    
                     }
-
-                }
-
-
-                .illustration-name {
-                    background-color: black;
-                    width: $pc-article-img-width;
-                    height: $pc-article-img-width;
-
-                    position: absolute;
-                    top: 50%;
-                    left: 50%;
-                    transform : translate(-50%,-50%);
-                    -webkit-transform : translate(-50%,-50%);
-                    opacity: 0.0;
-
-                    p {
-                        color: white;
-                        width: 100px;
+    
+    
+                    .illustration-name {
+                        background-color: black;
+                        width: $pc-article-img-width;
+                        height: $pc-article-img-width;
+    
                         position: absolute;
                         top: 50%;
                         left: 50%;
                         transform : translate(-50%,-50%);
                         -webkit-transform : translate(-50%,-50%);
                         opacity: 0.0;
-                    }
-
-                    &:hover { 
-                        opacity: 0.6;
+    
                         p {
-                            opacity: 1.0;
+                            color: white;
+                            width: 100px;
+                            position: absolute;
+                            top: 50%;
+                            left: 50%;
+                            transform : translate(-50%,-50%);
+                            -webkit-transform : translate(-50%,-50%);
+                            opacity: 0.0;
                         }
-                     }
-
+    
+                        &:hover { 
+                            opacity: 0.6;
+                            p {
+                                opacity: 1.0;
+                            }
+                         }
+    
+                    }
+                    
+                 
                 }
-                
-             
+    
             }
-
         }
     }
 }

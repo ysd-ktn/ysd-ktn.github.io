@@ -4,20 +4,22 @@
 <div class="thumbnail design">
 </div>
 
-<div class="article-layer">
-    <div class="article-block">
-        <h2>
-            30days UI Challenge
-        </h2>
-        <div class="article-table">
-            {% for contents in contents_list['30days_UI_Challenge'] %}
-                <a href="">
-                    <img src="{{ url_for('static', filename='images/contents/'+contents.filename) }}">
-                    <div class="illustration-name">
-                        <p>{{ contents.name }}</p>
-                    </div>
-                </a>
-            {% endfor %}
+<div class="article-comp">
+    <div class="article-layer">
+        <div class="article-block">
+            <h2>
+                30days UI Challenge
+            </h2>
+            <div class="article-table">
+                {% for contents in contents_list['30days_UI_Challenge'] %}
+                    <a href="">
+                        <img src="{{ url_for('static', filename='images/contents/'+contents.filename) }}">
+                        <div class="illustration-name">
+                            <p>{{ contents.name }}</p>
+                        </div>
+                    </a>
+                {% endfor %}
+            </div>
         </div>
     </div>
 </div>

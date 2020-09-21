@@ -3,34 +3,37 @@
 <div class="thumbnail art">
 </div>
 
-<div class="article-layer">
-    <div class="article-block">
-        <h2>
-            Illustration
-        </h2>
-        <div class="article-table">
-            {% for article in articles_list['illustration'] %}
-                <a href="{{ url_for('static', filename='images/articles/'+article.filename) }}" data-lightbox="illustration-group" data-title="{{ article.name }}">
-                    <img src="{{ url_for('static', filename='images/articles/'+article.filename) }}">
-                    <div class="illustration-name">
-                        <p>{{ article.name }}</p>
-                    </div>
-                </a>
-            {% endfor %}
+<div class="article-comp">
+    <div class="article-layer">
+        <div class="article-block">
+            <h2>
+                Illustration
+            </h2>
+            <div class="article-table">
+                {% for article in articles_list['illustration'] %}
+                    <a href="{{ url_for('static', filename='images/articles/'+article.filename) }}" data-lightbox="illustration-group" data-title="{{ article.name }}">
+                        <img src="{{ url_for('static', filename='images/articles/'+article.filename) }}">
+                        <div class="illustration-name">
+                            <p>{{ article.name }}</p>
+                        </div>
+                    </a>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="article-layer">
+        <div class="article-block">
+            <h2>
+                Sketch
+            </h2>
+            <div class="article-table">
+                {% for article in articles_list['sketch'] %}
+                    <a href="{{ url_for('static', filename='images/articles/'+article.filename) }}" data-lightbox="sketch-group"><img src="{{ url_for('static', filename='images/articles/'+article.filename) }}"></a>
+                {% endfor %}
+            </div>
         </div>
     </div>
 </div>
 
-<div class="article-layer">
-    <div class="article-block">
-        <h2>
-            Sketch
-        </h2>
-        <div class="article-table">
-            {% for article in articles_list['sketch'] %}
-                <a href="{{ url_for('static', filename='images/articles/'+article.filename) }}" data-lightbox="sketch-group"><img src="{{ url_for('static', filename='images/articles/'+article.filename) }}"></a>
-            {% endfor %}
-        </div>
-    </div>
-</div>
 {% endblock %}
