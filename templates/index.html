@@ -1,10 +1,10 @@
 {% extends "base.html" %}
 {% block content %}
 
+<div class="thumbnail index">
+</div>
+
 <div class="entry">
-    <div class="thumbnail_index">
-        <img src="{{ url_for('static', filename='images/HP_thumbnail_index.png') }}">
-    </div>
     <div class="about">
         <h2>ABOUT</h2>
         <div class="about-contents">
@@ -48,22 +48,24 @@
         <h2>WORKS</h2>
         <div class="works-table">
             <div class="works-contents">
-                <div class="design" >
-                    <a class="design-img" href="{{ url_for('design') }}">
+                <div class="works-content" >
+                    <a class="works-img" href="{{ url_for('design') }}">
                         <img src="{{ url_for('static', filename='images/works_design_img.png') }}">
                     </a>
-                    <a href="{{ url_for('design') }}">
-                        <h2>design</h2>
-                        <p>view more</p>
+                    <br>
+                    <a class="works-contents-text" href="{{ url_for('design') }}">
+                        <h3>design</h3>
+                        <p>▶︎ view more </p>
                     </a>
                 </div>
-                <div class="art">
-                    <a class="art-img" href="{{ url_for('art') }}">
+                <div class="works-content">
+                    <a class="works-img" href="{{ url_for('art') }}">
                         <img src="{{ url_for('static', filename='images/works_art_img.JPG') }}">
                     </a>
-                    <a href="{{ url_for('art') }}">
-                        <h2>art</h2>
-                        <p>view more</p>
+                    <br>
+                    <a class="works-contents-text" href="{{ url_for('art') }}">
+                        <h3>art</h3>
+                        <p>▶︎ view more </p>
                     </a>
                 </div>
             </div>

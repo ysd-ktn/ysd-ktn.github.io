@@ -3,6 +3,11 @@
   padding: 0px;
   font-family: "DIN Alternate"; }
 
+html {
+  height: 100%; }
+  html body {
+    height: 100%; }
+
 /* -------------------- Font-size -------------------- */
 /* iPhone */
 /* iPad */
@@ -158,19 +163,20 @@ hr {
   margin: auto; }
 
 /* -------------------- entry -------------------- */
+.index {
+  background-image: url("../images/HP_thumbnail_index.png"); }
+
 .entry {
   text-align: center;
   background-color: #efefef;
   padding-bottom: 200px; }
-  .entry .thumbnail_index img {
-    width: 100%; }
   .entry h2 {
     margin-bottom: 40px;
     color: #505050; }
 
 /* -------------------- about -------------------- */
 .about {
-  margin-top: 100px;
+  padding-top: 100px;
   margin-bottom: 200px;
   display: block; }
   .about .about-contents {
@@ -270,23 +276,17 @@ hr {
           opacity: 0.6; }
       .works .works-table .works-contents a h3 {
         margin-top: 20px;
+        margin-bottom: 20px;
+        color: #505050; }
+    .works .works-table .works-contents .works-content {
+      margin-right: 40px;
+      margin-left: 40px;
+      margin-bottom: 80px; }
+      .works .works-table .works-contents .works-content p {
         color: #707070; }
-        .works .works-table .works-contents a h3:hover {
-          color: #505050; }
-    .works .works-table .works-contents .design {
-      margin-right: 80px;
-      margin-left: 80px;
-      margin-top: 80px;
-      margin-bottom: 80px; }
-      .works .works-table .works-contents .design .design-img {
-        height: 320px;
-        background-color: #000; }
-    .works .works-table .works-contents .art {
-      margin-right: 80px;
-      margin-left: 80px;
-      margin-top: 80px;
-      margin-bottom: 80px; }
-      .works .works-table .works-contents .art .art-img {
+        .works .works-table .works-contents .works-content p:hover {
+          color: #000000; }
+      .works .works-table .works-contents .works-content .works-img {
         height: 320px;
         background-color: #000; }
 
@@ -344,6 +344,16 @@ hr {
             color: #707070; } }
 
 /* -------------------- art -------------------- */
+.art {
+  background-image: url("../images/HP_thumbnail_art.png"); }
+
+.thumbnail {
+  min-height: 80%;
+  height: 84%;
+  background-repeat: no-repeat;
+  background-size: 100% auto;
+  background-attachment: fixed; }
+
 .article-layer {
   width: 100%;
   text-align: center;
@@ -399,7 +409,7 @@ hr {
               opacity: 1.0; }
 
 /* -------------------- design --------------------*/
-.thumbnail_design img {
-  width: 100%; }
+.design {
+  background-image: url("../images/HP_thumbnail_design.png"); }
 
 /*# sourceMappingURL=style.css.map */

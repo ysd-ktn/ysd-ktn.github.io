@@ -3,6 +3,13 @@
     padding: 0px;
     font-family: "DIN Alternate";
 }
+
+html{
+    height: 100%;
+    body{
+        height: 100%;
+    }
+}
 /* -------------------- Font-size -------------------- */
 /* iPhone */
 $iphone5se-width: 320px;
@@ -206,15 +213,15 @@ hr{
 }
 
 /* -------------------- entry -------------------- */
+.index{
+    background-image: url("../images/HP_thumbnail_index.png");
+}
+
 .entry{
     text-align: center;
     background-color: $background-color;
     padding-bottom: 200px;
-    .thumbnail_index{
-        img{
-            width: 100%;
-        }
-    }
+
     h2{
         margin-bottom: 40px;
         color: $font-subcolor;
@@ -223,7 +230,7 @@ hr{
 
 /* -------------------- about -------------------- */
 .about{
-    margin-top: 100px;
+    padding-top: 100px;
     margin-bottom: 200px;
     display: block;
     .about-contents{
@@ -353,28 +360,21 @@ $pc_works_img_width_height: 320px;
                 }
                 h3{
                     margin-top: 20px;
-                    color: #707070;
+                    margin-bottom: 20px;
+                    color:$font-subcolor;
+                }
+            }
+            .works-content{
+                margin-right: 40px;
+                margin-left: 40px;
+                margin-bottom: 80px;
+                p{
+                    color: $font-color;
                     &:hover{
-                        color:$font-subcolor;
+                        color: #000000;
                     }
                 }
-            }
-            .design{
-                margin-right: 80px;
-                margin-left: 80px;
-                margin-top: 80px;
-                margin-bottom: 80px;
-                .design-img{
-                    height: $pc_works_img_width_height;
-                    background-color: #000;
-                }
-            }
-            .art{
-                margin-right: 80px;
-                margin-left: 80px;
-                margin-top: 80px;
-                margin-bottom: 80px;
-                .art-img{
+                .works-img{
                     height: $pc_works_img_width_height;
                     background-color: #000;
                 }
@@ -453,6 +453,18 @@ $footer-height: 60px;
 
 $pc-article-img-width: 260px;
 $pc-article-img-height: 260px;
+
+.art{
+    background-image: url("../images/HP_thumbnail_art.png");
+}
+
+.thumbnail{
+    min-height: 80%;
+    height: 84%;
+    background-repeat: no-repeat;
+    background-size:100% auto;
+    background-attachment: fixed;
+}
 
 .article-layer {
     width: 100%;
@@ -538,8 +550,6 @@ $pc-article-img-height: 260px;
 
 /* -------------------- design --------------------*/
 
-.thumbnail_design{
-    img{
-        width: 100%;
-    }
+.design{
+    background-image: url("../images/HP_thumbnail_design.png");
 }
