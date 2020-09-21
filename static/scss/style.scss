@@ -259,29 +259,39 @@ hr{
         }
 
         .about-texts{
-            height: max-content;
-            text-align: left;
-            h3{
-                color: $font-subcolor;
-            }
-            p{
-                color: $font-color;
-            }
-            .sns-icon{
-                img{
-                    width: 32px;
-                    height: 32px;
-                    margin-right: 28px;
+            height: 18vw;
+
+            .texts-contents{
+                height: 18vw;
+                display: table-cell;
+                text-align: center;
+                vertical-align: middle;
+                text-align: left;
+
+                h3{
+                    color: $font-subcolor;
                 }
-                @media screen and (max-width: $threshold-width) {
-                    margin-top: 30px;
-                    margin-bottom: 50px;
+                p{
+                    color: $font-color;
+                    margin-bottom: 10px;
+                }
+                .sns-icon{
+                    margin-top: 24px;
                     img{
-                        width: 30px;
-                        height: 30px;
-                        margin-right: 10px;
-                        margin-left: 10px;
-                    } 
+                        width: 32px;
+                        height: 32px;
+                        margin-right: 28px;
+                    }
+                    @media screen and (max-width: $threshold-width) {
+                        margin-top: 30px;
+                        margin-bottom: 50px;
+                        img{
+                            width: 30px;
+                            height: 30px;
+                            margin-right: 10px;
+                            margin-left: 10px;
+                        } 
+                    }
                 }
             }
         }

@@ -200,25 +200,33 @@ hr {
             margin-top: 30px;
             margin-bottom: 30px; } }
     .about .about-contents .about-texts {
-      height: max-content;
-      text-align: left; }
-      .about .about-contents .about-texts h3 {
-        color: #505050; }
-      .about .about-contents .about-texts p {
-        color: #707070; }
-      .about .about-contents .about-texts .sns-icon img {
-        width: 32px;
-        height: 32px;
-        margin-right: 28px; }
-      @media screen and (max-width: 560px) {
-        .about .about-contents .about-texts .sns-icon {
-          margin-top: 30px;
-          margin-bottom: 50px; }
-          .about .about-contents .about-texts .sns-icon img {
-            width: 30px;
-            height: 30px;
-            margin-right: 10px;
-            margin-left: 10px; } }
+      height: 18vw; }
+      .about .about-contents .about-texts .texts-contents {
+        height: 18vw;
+        display: table-cell;
+        text-align: center;
+        vertical-align: middle;
+        text-align: left; }
+        .about .about-contents .about-texts .texts-contents h3 {
+          color: #505050; }
+        .about .about-contents .about-texts .texts-contents p {
+          color: #707070;
+          margin-bottom: 10px; }
+        .about .about-contents .about-texts .texts-contents .sns-icon {
+          margin-top: 24px; }
+          .about .about-contents .about-texts .texts-contents .sns-icon img {
+            width: 32px;
+            height: 32px;
+            margin-right: 28px; }
+          @media screen and (max-width: 560px) {
+            .about .about-contents .about-texts .texts-contents .sns-icon {
+              margin-top: 30px;
+              margin-bottom: 50px; }
+              .about .about-contents .about-texts .texts-contents .sns-icon img {
+                width: 30px;
+                height: 30px;
+                margin-right: 10px;
+                margin-left: 10px; } }
 
 /* -------------------- skills -------------------- */
 .skills {
