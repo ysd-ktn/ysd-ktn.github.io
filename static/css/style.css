@@ -422,4 +422,42 @@ hr {
 .design {
   background-image: url("../images/HP_thumbnail_design.png"); }
 
+.contents-comp {
+  padding-bottom: 180px;
+  background-color: #efefef; }
+  .contents-comp .contents-layer {
+    width: 100%;
+    text-align: center;
+    background-color: #efefef; }
+    .contents-comp .contents-layer .contents-block {
+      margin-top: 180px;
+      display: inline-block;
+      max-width: 1060px;
+      text-align: center; }
+      .contents-comp .contents-layer .contents-block h2 {
+        margin-bottom: 60px;
+        color: #505050; }
+      .contents-comp .contents-layer .contents-block .contents-table {
+        width: 100%; }
+        .contents-comp .contents-layer .contents-block .contents-table a {
+          position: relative;
+          margin: 30px;
+          display: inline-block;
+          text-decoration: none; }
+          .contents-comp .contents-layer .contents-block .contents-table a .contents-img {
+            background-color: #000; }
+            .contents-comp .contents-layer .contents-block .contents-table a .contents-img img {
+              width: 260px;
+              height: 260px;
+              object-fit: cover;
+              vertical-align: bottom; }
+              .contents-comp .contents-layer .contents-block .contents-table a .contents-img img:hover {
+                opacity: 0.6; }
+          .contents-comp .contents-layer .contents-block .contents-table a .contents-name {
+            margin-top: 28px; }
+            .contents-comp .contents-layer .contents-block .contents-table a .contents-name p {
+              color: #707070; }
+              .contents-comp .contents-layer .contents-block .contents-table a .contents-name p:hover {
+                color: #000; }
+
 /*# sourceMappingURL=style.css.map */

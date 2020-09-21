@@ -566,3 +566,64 @@ $pc-article-img-height: 260px;
 .design{
     background-image: url("../images/HP_thumbnail_design.png");
 }
+
+.contents-comp{
+    padding-bottom: 180px;
+    background-color: $background-color;
+    .contents-layer {
+        width: 100%;
+        text-align: center;
+        background-color: $background-color;
+    
+        .contents-block {
+            margin-top: 180px;
+            h2 {
+                margin-bottom: 60px;
+                color: $font-subcolor;
+            }
+    
+            display: inline-block;
+            max-width: 1060px;
+            text-align: center;
+            .contents-table {
+                width: 100%;
+    
+                a {
+                    position: relative;
+                    margin: 30px;
+                    display: inline-block;
+                    text-decoration: none;
+
+                    .contents-img{
+                        background-color: #000;
+                        img {
+                            width: $pc-article-img-width;
+                            height: $pc-article-img-height;
+                            object-fit: cover;
+                            vertical-align: bottom;
+        
+                            &:hover {
+                                opacity: 0.6;
+                            }
+        
+                        }
+                    }
+
+                    .contents-name{
+                        margin-top: 28px;
+
+                        p{
+                            color: $font-color;
+
+                            &:hover{
+                                color: #000;
+                            }
+                        }
+                    }
+                    
+                }
+    
+            }
+        }
+    }
+}

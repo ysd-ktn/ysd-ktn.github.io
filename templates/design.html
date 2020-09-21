@@ -4,17 +4,19 @@
 <div class="thumbnail design">
 </div>
 
-<div class="article-comp">
-    <div class="article-layer">
-        <div class="article-block">
+<div class="contents-comp">
+    <div class="contents-layer">
+        <div class="contents-block">
             <h2>
                 30days UI Challenge
             </h2>
-            <div class="article-table">
+            <div class="contents-table">
                 {% for contents in contents_list['30days_UI_Challenge'] %}
                     <a href="">
-                        <img src="{{ url_for('static', filename='images/contents/'+contents.filename) }}">
-                        <div class="illustration-name">
+                        <div class="contents-img">
+                            <img src="{{ url_for('static', filename='images/contents/'+contents.filename) }}">
+                        </div>
+                        <div class="contents-name">
                             <p>{{ contents.name }}</p>
                         </div>
                     </a>
