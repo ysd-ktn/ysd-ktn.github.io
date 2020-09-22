@@ -305,6 +305,16 @@ $threshold-width: 560px;
     }
 }
 
+/* -------------------- thumbnail -------------------- */
+
+.thumbnail{
+    min-height: 80%;
+    height: 90%;
+    background-repeat: no-repeat;
+    background-size:100% auto;
+    background-attachment: fixed;
+}
+
 /* -------------------- dividing-line -------------------- */
 hr{
     height: 2px;
@@ -635,6 +645,11 @@ $footer-height: 60px;
     @media screen and (min-width: $threshold-width+1px) and (max-width: $ipadpro-width) {
         .footer-left{
             margin-left: 60px;
+            p{
+                font-size: 16px;
+                margin-left: 20px;
+                line-height: 60px;
+            }
         }
 
         .footer-right{
@@ -650,14 +665,6 @@ $pc-article-img-height: 260px;
 
 .art{
     background-image: url("../images/HP_thumbnail_art.png");
-}
-
-.thumbnail{
-    min-height: 80%;
-    height: 90%;
-    background-repeat: no-repeat;
-    background-size:100% auto;
-    background-attachment: fixed;
 }
 
 .article-comp{

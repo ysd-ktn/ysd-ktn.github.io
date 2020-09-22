@@ -225,6 +225,14 @@ body {
         .navbar-wrapper ul a:hover {
           color: #FDFDFD; } }
 
+/* -------------------- thumbnail -------------------- */
+.thumbnail {
+  min-height: 80%;
+  height: 90%;
+  background-repeat: no-repeat;
+  background-size: 100% auto;
+  background-attachment: fixed; }
+
 /* -------------------- dividing-line -------------------- */
 hr {
   height: 2px;
@@ -468,19 +476,16 @@ hr {
   @media screen and (min-width: 561px) and (max-width: 1024px) {
     .footer-wrapper .footer-left {
       margin-left: 60px; }
+      .footer-wrapper .footer-left p {
+        font-size: 16px;
+        margin-left: 20px;
+        line-height: 60px; }
     .footer-wrapper .footer-right {
       margin-right: 60px; } }
 
 /* -------------------- art -------------------- */
 .art {
   background-image: url("../images/HP_thumbnail_art.png"); }
-
-.thumbnail {
-  min-height: 80%;
-  height: 90%;
-  background-repeat: no-repeat;
-  background-size: 100% auto;
-  background-attachment: fixed; }
 
 .article-comp {
   padding-bottom: 180px;
