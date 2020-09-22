@@ -261,10 +261,29 @@ hr {
 /* -------------------- entry -------------------- */
 .index {
   background-image: url("../images/HP_thumbnail_index.png"); }
-  @media screen and (min-width: 0px) and (max-width: 560px) {
-    .index {
-      background-position: 0px 40px; } }
 
+@media screen and (min-width: 0px) and (max-width: 560px) {
+  .index {
+    background-position: 0px 40px; }
+
+  ::before {
+    background: url("../images/HP_thumbnail_index.png") no-repeat center center;
+    display: block;
+    position: fixed;
+    width: 100%;
+    z-index: -1;
+    transform: translateZ(0); } }
+@media screen and (min-width: 561px) and (max-width: 1024px) {
+  .index {
+    background-position: 0px 60px; }
+
+  ::before {
+    background: url("../images/HP_thumbnail_index.png") no-repeat center center;
+    display: block;
+    position: fixed;
+    width: 100%;
+    z-index: -1;
+    transform: translateZ(0); } }
 .entry {
   text-align: center;
   background-color: #efefef;
@@ -506,10 +525,29 @@ hr {
 /* -------------------- art -------------------- */
 .art {
   background-image: url("../images/HP_thumbnail_art.png"); }
-  @media screen and (min-width: 0px) and (max-width: 560px) {
-    .art {
-      background-position: 0px 40px; } }
 
+@media screen and (min-width: 0px) and (max-width: 560px) {
+  .art {
+    background-position: 0px 40px; }
+
+  ::before {
+    background: url("../images/HP_thumbnail_art.png") no-repeat center center;
+    display: block;
+    position: fixed;
+    width: 100%;
+    z-index: -1;
+    transform: translateZ(0); } }
+@media screen and (min-width: 561px) and (max-width: 1024px) {
+  .art {
+    background-position: 0px 60px; }
+
+  ::before {
+    background: url("../images/HP_thumbnail_art.png") no-repeat center center;
+    display: block;
+    position: fixed;
+    width: 100%;
+    z-index: -1;
+    transform: translateZ(0); } }
 .article-comp {
   padding-bottom: 180px;
   background-color: #efefef; }
@@ -654,10 +692,29 @@ hr {
 /* -------------------- design --------------------*/
 .design {
   background-image: url("../images/HP_thumbnail_design.png"); }
-  @media screen and (min-width: 0px) and (max-width: 560px) {
-    .design {
-      background-position: 0px 40px; } }
 
+@media screen and (min-width: 0px) and (max-width: 560px) {
+  .design {
+    background-position: 0px 40px; }
+
+  ::before {
+    background: url("../images/HP_thumbnail_design.png") no-repeat center center;
+    display: block;
+    position: fixed;
+    width: 100%;
+    z-index: -1;
+    transform: translateZ(0); } }
+@media screen and (min-width: 561px) and (max-width: 1024px) {
+  .design {
+    background-position: 0px 60px; }
+
+  ::before {
+    background: url("../images/HP_thumbnail_design.png") no-repeat center center;
+    display: block;
+    position: fixed;
+    width: 100%;
+    z-index: -1;
+    transform: translateZ(0); } }
 .contents-comp {
   padding-bottom: 180px;
   background-color: #efefef; }
