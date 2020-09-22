@@ -182,9 +182,111 @@ $threshold-width: 560px;
             font-size: 24px;
         }
     }
-    @media screen and (max-width: $threshold-width) {
+    @media screen and (min-width: 0px) and (max-width: $iphone5se-width){
+        height: 40px;
+        .navbar-logo{
+            margin-left: 32px;
+            height: 19.95px;
+            img{
+                width: 20px;
+            }
+        } 
 
+        .navbar-list{
+            margin: 0 0 0 auto; 
+            .navbar-item{
+                margin-right: 32px;
+                a{
+                    line-height: 40px;
+                    color: #CDCDCD;
+                    text-decoration: none;
+                    &:hover{
+                        color: $navbar-text;
+                    }
+                }
+            }
+            ul{
+                display: flex;
+                font-size: 16px;
+                list-style: none;
+            }
+        } 
     }
+
+    @media screen and (min-width: $iphone5se-width+1px) and (max-width: $iphone678p-width){
+        height: 40px;
+        .navbar-logo{
+            margin-left: 40px;
+            height: 19.95px;
+            img{
+                width: 20px;
+            }
+        } 
+
+        .navbar-list{
+            margin: 0 0 0 auto; 
+            .navbar-item{
+                margin-right: 40px;
+                a{
+                    line-height: 40px;
+                    color: #CDCDCD;
+                    text-decoration: none;
+                    &:hover{
+                        color: $navbar-text;
+                    }
+                }
+            }
+            ul{
+                display: flex;
+                font-size: 16px;
+                list-style: none;
+            }
+        }
+    }
+
+    @media screen and (min-width: $iphone678p-width+1px) and (max-width: $threshold-width) {
+        height: 40px;
+        .navbar-logo{
+            margin-left: 40px;
+            height: 23.95px;
+            img{
+                width: 24px;
+            }
+        }
+
+        .navbar-list{
+            margin: 0 0 0 auto; 
+            .navbar-item{
+                margin-right: 60px;
+                a{
+                    line-height: 40px;
+                    color: #CDCDCD;
+                    text-decoration: none;
+                    &:hover{
+                        color: $navbar-text;
+                    }
+                }
+            }
+            ul{
+                display: flex;
+                font-size: 20px;
+                list-style: none;
+            }
+        }
+    }
+    
+    @media screen and (min-width: $threshold-width+1px) and (max-width: $ipadpro-width) {
+        .navbar-logo{
+            margin-left: 80px;
+        }
+        
+        .navbar-list{
+            .navbar-item{
+                margin-right: 100px;
+            }
+        }
+    }
+
     @media screen and (min-width: $threshold-width+1px) {
         ul{
             display: flex;
