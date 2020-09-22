@@ -348,33 +348,7 @@ hr{
 /* -------------------- entry -------------------- */
 .index{
     background-image: url("../images/HP_thumbnail_index.png");
-}
-@media screen and (min-width: 0px) and (max-width: $threshold-width) {
-    .index {
-        background-position: 0px 40px; 
-    }
-    ::before {
-        background: url("../images/HP_thumbnail_index.png") no-repeat center center;
-        display: block;
-        position: fixed;
-        width: 100%;
-        z-index: -1;
-        transform: translateZ(0);
-      }
-}
-
-@media screen and (min-width: $threshold-width+1px) and (max-width: $ipadpro-width) {
-    .index {
-        background-position: 0px 60px; 
-    }
-    ::before {
-        background: url("../images/HP_thumbnail_index.png") no-repeat center center;
-        display: block;
-        position: fixed;
-        width: 100%;
-        z-index: -1;
-        transform: translateZ(0);
-      }
+    
 }
 
 
@@ -714,34 +688,9 @@ $pc-article-img-height: 260px;
 
 .art{
     background-image: url("../images/HP_thumbnail_art.png");
-}
-
-@media screen and (min-width: 0px) and (max-width: $threshold-width) {
-    .art {
+    @media screen and (min-width: 0px) and (max-width: $threshold-width) {
         background-position: 0px 40px; 
     }
-    ::before {
-        background: url("../images/HP_thumbnail_art.png") no-repeat center center;
-        display: block;
-        position: fixed;
-        width: 100%;
-        z-index: -1;
-        transform: translateZ(0);
-      }
-}
-
-@media screen and (min-width: $threshold-width+1px) and (max-width: $ipadpro-width) {
-    .art {
-        background-position: 0px 60px; 
-    }
-    ::before {
-        background: url("../images/HP_thumbnail_art.png") no-repeat center center;
-        display: block;
-        position: fixed;
-        width: 100%;
-        z-index: -1;
-        transform: translateZ(0);
-      }
 }
 
 .article-comp{
@@ -976,34 +925,9 @@ $pc-article-img-height: 260px;
 
 .design{
     background-image: url("../images/HP_thumbnail_design.png");
-}
-
-@media screen and (min-width: 0px) and (max-width: $threshold-width) {
-    .design {
+    @media screen and (min-width: 0px) and (max-width: $threshold-width) {
         background-position: 0px 40px; 
     }
-    ::before {
-        background: url("../images/HP_thumbnail_design.png") no-repeat center center;
-        display: block;
-        position: fixed;
-        width: 100%;
-        z-index: -1;
-        transform: translateZ(0);
-      }
-}
-
-@media screen and (min-width: $threshold-width+1px) and (max-width: $ipadpro-width) {
-    .design {
-        background-position: 0px 60px; 
-    }
-    ::before {
-        background: url("../images/HP_thumbnail_design.png") no-repeat center center;
-        display: block;
-        position: fixed;
-        width: 100%;
-        z-index: -1;
-        transform: translateZ(0);
-      }
 }
 
 .contents-comp{
