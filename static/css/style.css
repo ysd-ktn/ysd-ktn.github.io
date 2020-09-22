@@ -565,7 +565,92 @@ hr {
               opacity: 0.6; }
               .article-comp .article-layer .article-block .article-table a .illustration-name:hover p {
                 opacity: 1.0; }
+        @media screen and (min-width: 0px) and (max-width: 320px) {
+          .article-comp .article-layer .article-block .article-table a {
+            margin-top: 0px;
+            margin-bottom: 4px;
+            margin-left: 0px;
+            margin-right: 0px; }
+            .article-comp .article-layer .article-block .article-table a img {
+              width: 100px;
+              height: 100px; }
+            .article-comp .article-layer .article-block .article-table a .illustration-name {
+              width: 100px;
+              height: 100px;
+              display: none; }
+              .article-comp .article-layer .article-block .article-table a .illustration-name p {
+                display: none; } }
+        @media screen and (min-width: 321px) and (max-width: 414px) {
+          .article-comp .article-layer .article-block .article-table a {
+            margin-top: 0px;
+            margin-bottom: 4px;
+            margin-left: 0px;
+            margin-right: 0px; }
+            .article-comp .article-layer .article-block .article-table a img {
+              width: 116px;
+              height: 116px; }
+            .article-comp .article-layer .article-block .article-table a .illustration-name {
+              width: 116px;
+              height: 116px;
+              display: none; }
+              .article-comp .article-layer .article-block .article-table a .illustration-name p {
+                display: none; } }
+        @media screen and (min-width: 415px) and (max-width: 560px) {
+          .article-comp .article-layer .article-block .article-table {
+            max-width: 520px; }
+            .article-comp .article-layer .article-block .article-table a {
+              margin: 4px; }
+              .article-comp .article-layer .article-block .article-table a img {
+                width: 140px;
+                height: 140px; }
+              .article-comp .article-layer .article-block .article-table a .illustration-name {
+                width: 140px;
+                height: 140px; }
+                .article-comp .article-layer .article-block .article-table a .illustration-name p {
+                  font-size: 16px; } }
+        @media screen and (min-width: 561px) and (max-width: 1024px) {
+          .article-comp .article-layer .article-block .article-table {
+            max-width: 760px; }
+            .article-comp .article-layer .article-block .article-table a {
+              margin: 4px; }
+              .article-comp .article-layer .article-block .article-table a img {
+                width: 180px;
+                height: 180px; }
+              .article-comp .article-layer .article-block .article-table a .illustration-name {
+                width: 180px;
+                height: 180px; } }
 
+@media screen and (min-width: 0px) and (max-width: 320px) {
+  .article-comp {
+    padding-bottom: 60px; }
+    .article-comp .article-layer .article-block {
+      margin-top: 60px; }
+      .article-comp .article-layer .article-block h2 {
+        font-size: 20px;
+        margin-bottom: 28px; } }
+@media screen and (min-width: 321px) and (max-width: 414px) {
+  .article-comp {
+    padding-bottom: 80px; }
+    .article-comp .article-layer .article-block {
+      margin-top: 100px; }
+      .article-comp .article-layer .article-block h2 {
+        font-size: 24px;
+        margin-bottom: 32px; } }
+@media screen and (min-width: 415px) and (max-width: 560px) {
+  .article-comp {
+    padding-bottom: 100px; }
+    .article-comp .article-layer .article-block {
+      margin-top: 120px; }
+      .article-comp .article-layer .article-block h2 {
+        font-size: 24px;
+        margin-bottom: 40px; } }
+@media screen and (min-width: 561px) and (max-width: 1024px) {
+  .article-comp {
+    padding-bottom: 120px; }
+    .article-comp .article-layer .article-block {
+      margin-top: 140px; }
+      .article-comp .article-layer .article-block h2 {
+        margin-bottom: 40px; } }
 /* -------------------- design --------------------*/
 .design {
   background-image: url("../images/HP_thumbnail_design.png"); }
