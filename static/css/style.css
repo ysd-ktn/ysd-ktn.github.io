@@ -227,11 +227,28 @@ body {
 
 /* -------------------- thumbnail -------------------- */
 .thumbnail {
+  background-color: #efefef;
   min-height: 80%;
   height: 90%;
   background-repeat: no-repeat;
   background-size: 100% auto;
   background-attachment: fixed; }
+  @media screen and (min-width: 0px) and (max-width: 320px) {
+    .thumbnail {
+      min-height: 0%;
+      height: 36%; } }
+  @media screen and (min-width: 321px) and (max-width: 414px) {
+    .thumbnail {
+      min-height: 0%;
+      height: 36%; } }
+  @media screen and (min-width: 415px) and (max-width: 560px) {
+    .thumbnail {
+      min-height: 0%;
+      height: 40%; } }
+  @media screen and (min-width: 561px) and (max-width: 1024px) {
+    .thumbnail {
+      min-height: 0%;
+      height: 44%; } }
 
 /* -------------------- dividing-line -------------------- */
 hr {
@@ -244,6 +261,9 @@ hr {
 /* -------------------- entry -------------------- */
 .index {
   background-image: url("../images/HP_thumbnail_index.png"); }
+  @media screen and (min-width: 0px) and (max-width: 560px) {
+    .index {
+      background-position: 0px 40px; } }
 
 .entry {
   text-align: center;
@@ -486,6 +506,9 @@ hr {
 /* -------------------- art -------------------- */
 .art {
   background-image: url("../images/HP_thumbnail_art.png"); }
+  @media screen and (min-width: 0px) and (max-width: 560px) {
+    .art {
+      background-position: 0px 40px; } }
 
 .article-comp {
   padding-bottom: 180px;
@@ -546,6 +569,9 @@ hr {
 /* -------------------- design --------------------*/
 .design {
   background-image: url("../images/HP_thumbnail_design.png"); }
+  @media screen and (min-width: 0px) and (max-width: 560px) {
+    .design {
+      background-position: 0px 40px; } }
 
 .contents-comp {
   padding-bottom: 180px;

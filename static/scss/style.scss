@@ -308,11 +308,32 @@ $threshold-width: 560px;
 /* -------------------- thumbnail -------------------- */
 
 .thumbnail{
+    background-color: $background-color;
     min-height: 80%;
     height: 90%;
     background-repeat: no-repeat;
     background-size:100% auto;
     background-attachment: fixed;
+
+    @media screen and (min-width: 0px) and (max-width: $iphone5se-width) {
+        min-height: 0%;
+        height: 36%; 
+    }
+
+    @media screen and (min-width: $iphone5se-width+1px) and (max-width: $iphone678p-width) {
+        min-height: 0%;
+        height: 36%;  
+    }
+
+    @media screen and (min-width: $iphone678p-width+1px) and (max-width: $threshold-width) {
+        min-height: 0%;
+        height: 40%; 
+    }
+
+    @media screen and (min-width: $threshold-width+1px) and (max-width: $ipadpro-width) {
+        min-height: 0%;
+        height: 44%;
+    }
 }
 
 /* -------------------- dividing-line -------------------- */
@@ -327,6 +348,9 @@ hr{
 /* -------------------- entry -------------------- */
 .index{
     background-image: url("../images/HP_thumbnail_index.png");
+    @media screen and (min-width: 0px) and (max-width: $threshold-width) {
+        background-position: 0px 40px; 
+    }
 }
 
 .entry{
@@ -665,6 +689,9 @@ $pc-article-img-height: 260px;
 
 .art{
     background-image: url("../images/HP_thumbnail_art.png");
+    @media screen and (min-width: 0px) and (max-width: $threshold-width) {
+        background-position: 0px 40px; 
+    }
 }
 
 .article-comp{
@@ -756,6 +783,9 @@ $pc-article-img-height: 260px;
 
 .design{
     background-image: url("../images/HP_thumbnail_design.png");
+    @media screen and (min-width: 0px) and (max-width: $threshold-width) {
+        background-position: 0px 40px; 
+    }
 }
 
 .contents-comp{
