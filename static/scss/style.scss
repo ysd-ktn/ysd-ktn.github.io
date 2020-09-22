@@ -514,11 +514,7 @@ $footer-height: 60px;
         width: 50%;
         margin-left: 80px;
         display: flex;
-        @media screen and (max-width: $threshold-width) {
-            width: 50%;
-            margin-top: 30px;
-            padding-left: 20px; 
-        }
+       
         .footer-logo{
             height: 39.92px;
             display: block;
@@ -548,16 +544,102 @@ $footer-height: 60px;
                 &:hover{
                     color: $font-color;
                }
-              @media screen and (max-width: $threshold-width) {
-                text-decoration: none;
-                padding-right: 20px;
-                color: #909090;
-                &:hover{
-                    color: $font-color;
-               } 
-              } 
+            
             }
         } 
+    }
+
+    @media screen and (min-width: 0px) and (max-width: $iphone5se-width) {
+        height: 28px;
+        .footer-left{
+            margin-left: 28px;
+            .footer-logo{
+                height: 31.94px;
+                img{
+                    width: 28px;
+                }
+            }
+            p{
+               display: none; 
+            }
+        }
+        .footer-right{
+            text-align: right;
+            width: 38%;
+            margin-right: 28px;
+            .contact{
+                a{
+                    font-size: 16px;
+                    line-height: 28px;
+                }
+            }
+        }  
+    }
+
+    @media screen and (min-width: $iphone5se-width+1px) and (max-width: $iphone678p-width) {
+        height: 40px;
+        .footer-left{
+            margin-left: 28px;
+            .footer-logo{
+                height: 31.94px;
+                img{
+                    width: 32px;
+                }
+            }
+            p{
+                font-size: 12px;
+                margin-left: 16px;
+                line-height: 40px;
+            }
+        }
+        .footer-right{
+            text-align: right;
+            width: 40%;
+            margin-right: 28px;
+            .contact{
+                a{
+                    font-size: 20px;
+                    line-height: 40px;
+                }
+            }
+        } 
+    }
+
+    @media screen and (min-width: $iphone678p-width+1px) and (max-width: $threshold-width) {
+        height: 40px;
+        .footer-left{
+            margin-left: 40px;
+            .footer-logo{
+                height: 31.94px;
+                img{
+                    width: 32px;
+                }
+            }
+            p{
+                font-size: 12px;
+                margin-left: 20px;
+                line-height: 40px;
+            }
+        }
+        .footer-right{
+            margin-right: 40px;
+            .contact{
+                a{
+                    font-size: 20px;
+                    line-height: 40px;
+                }
+            }
+        }
+    }
+
+    @media screen and (min-width: $threshold-width+1px) and (max-width: $ipadpro-width) {
+        .footer-left{
+            margin-left: 60px;
+        }
+
+        .footer-right{
+            margin-right: 60px;
+        }
     }
 }
 
