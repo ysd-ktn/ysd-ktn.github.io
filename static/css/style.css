@@ -448,6 +448,82 @@ hr {
       width: 60px;
       height: 60px; }
 
+@media screen and (min-width: 0px) and (max-width: 320px) {
+  .skills {
+    margin-bottom: 80px; }
+    .skills h2 {
+      font-size: 20px;
+      margin-bottom: 28px; }
+    .skills .skills-table .skills-contents {
+      min-width: 120px;
+      min-height: 160px;
+      margin-right: 4px;
+      margin-left: 4px;
+      margin-top: 8px;
+      margin-bottom: 8px;
+      padding-top: 10px;
+      padding-bottom: 10px;
+      padding-right: 4px;
+      padding-left: 4px; }
+      .skills .skills-table .skills-contents img {
+        width: 40px;
+        height: 40px; }
+      .skills .skills-table .skills-contents .skills-name {
+        font-size: 14px; }
+      .skills .skills-table .skills-contents .star {
+        margin-top: 4px;
+        margin-bottom: 4px; }
+        .skills .skills-table .skills-contents .star img {
+          width: 112.5px;
+          height: 15px; }
+      .skills .skills-table .skills-contents .skills-text {
+        max-width: 100px;
+        font-size: 8px; } }
+@media screen and (min-width: 321px) and (max-width: 414px) {
+  .skills {
+    margin-bottom: 80px; }
+    .skills h2 {
+      font-size: 24px;
+      margin-bottom: 28px; }
+    .skills .skills-table .skills-contents {
+      min-width: 120px;
+      margin-right: 4px;
+      margin-left: 4px;
+      margin-top: 8px;
+      margin-bottom: 8px;
+      padding-top: 10px;
+      padding-bottom: 10px;
+      padding-right: 8px;
+      padding-left: 8px; }
+      .skills .skills-table .skills-contents img {
+        width: 40px;
+        height: 40px; }
+      .skills .skills-table .skills-contents .skills-name {
+        font-size: 14px; }
+      .skills .skills-table .skills-contents .star {
+        margin-top: 4px;
+        margin-bottom: 4px; }
+        .skills .skills-table .skills-contents .star img {
+          width: 112.5px;
+          height: 15px; }
+      .skills .skills-table .skills-contents .skills-text {
+        max-width: 140px;
+        font-size: 8px; } }
+@media screen and (min-width: 415px) and (max-width: 560px) {
+  .skills {
+    margin-bottom: 80px; }
+    .skills h2 {
+      font-size: 24px;
+      margin-bottom: 28px; }
+    .skills .skills-table .skills-contents {
+      margin: 10px; } }
+@media screen and (min-width: 561px) and (max-width: 1024px) {
+  .skills {
+    margin-bottom: 120px; }
+    .skills h2 {
+      margin-bottom: 40px; }
+    .skills .skills-table .skills-contents {
+      margin: 10px; } }
 /* -------------------- works -------------------- */
 .works .works-table {
   max-width: 1060px;

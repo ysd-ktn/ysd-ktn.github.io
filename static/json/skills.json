@@ -7,6 +7,6 @@
         {"name": "HTML&CSS", "filename": "html&css.png", "star": "star2.png", "text": "レスポンシブ対応したサイトを制作できます。"},
         {"name": "Adobe Indesign", "filename": "indesign.png", "star": "star4.png", "text": "フリーペーパーの制作で使用したことがあります。十分に使用できます。"},
         {"name": "Adobe Premiere Pro", "filename": "premierepro.png", "star": "star3.png", "text": "一度簡単なモーショングラフィックスを制作しました。"},
-        {"name": "Adobe After Effects", "filename": "aftereffects.png", "star": "star2.png", "text": "大学の課題で3分ほどのプロモーションビデオを製作しました。問題なく使用できます。"}
+        {"name": "Adobe After Effects", "filename": "aftereffects.png", "star": "star2.png", "text": "大学の課題で3分ほどのプロモーションビデオを製作しました。"}
     ]
 }

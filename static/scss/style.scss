@@ -621,6 +621,131 @@ $pc_skills_img_width_height: 60px;
     }
 }
 
+@media screen and (min-width: 0px) and (max-width: $iphone5se-width) {
+    .skills {
+        margin-bottom: 80px;
+        h2 {
+            font-size: 20px;
+            margin-bottom: 28px; 
+        }
+        .skills-table {
+            .skills-contents {
+                min-width: 120px;
+                min-height: 160px;
+                margin-right: 4px;
+                margin-left: 4px;
+                margin-top: 8px;
+                margin-bottom: 8px; 
+                padding-top: 10px;
+                padding-bottom: 10px;
+                padding-right: 4px;
+                padding-left: 4px;
+                img {
+                    width: 40px;
+                    height: 40px;
+                }
+                .skills-name {
+                    font-size: 14px;
+                }
+                .star{
+                    margin-top: 4px;
+                    margin-bottom: 4px;
+                    img{
+                        width: 112.5px;
+                        height: 15px;
+                    }
+                }
+                .skills-text {
+                    max-width: 100px;
+                   font-size: 8px;
+                }
+            }
+        }
+    }
+}
+
+@media screen and (min-width: $iphone5se-width+1px) and (max-width: $iphone678p-width) {
+    .skills {
+        margin-bottom: 80px;
+        h2 {
+            font-size: 24px;
+            margin-bottom: 28px; 
+        }
+        .skills-table {
+            .skills-contents {
+                min-width: 120px;
+                margin-right: 4px;
+                margin-left: 4px;
+                margin-top: 8px;
+                margin-bottom: 8px; 
+                padding-top: 10px;
+                padding-bottom: 10px;
+                padding-right: 8px;
+                padding-left: 8px;
+                img {
+                    width: 40px;
+                    height: 40px;
+                }
+                .skills-name {
+                    font-size: 14px;
+                }
+                .star{
+                    margin-top: 4px;
+                    margin-bottom: 4px;
+                    img{
+                        width: 112.5px;
+                        height: 15px;
+                    }
+                }
+                .skills-text {
+                    max-width: 140px;
+                   font-size: 8px;
+                }
+            }
+        }
+    } 
+}
+
+@media screen and (min-width: $iphone678p-width+1px) and (max-width: $threshold-width) {
+    .skills {
+        margin-bottom: 80px;
+        h2 {
+            font-size: 24px;
+            margin-bottom: 28px; 
+        }
+        .skills-table {
+            .skills-contents {
+                margin: 10px;
+                .star{
+                    img{
+                    }
+                }
+                .skills-text {
+                }
+            }
+        }
+    } 
+}
+
+@media screen and (min-width: $threshold-width+1px) and (max-width: $ipadpro-width) {
+    .skills {
+        margin-bottom: 120px;
+        h2 {
+            margin-bottom: 40px; 
+        }
+        .skills-table {
+            .skills-contents {
+                margin: 10px;
+                .star{
+                    img{
+                    }
+                }
+                .skills-text {
+                }
+            }
+        }
+    } 
+}
 /* -------------------- works -------------------- */
 $pc_works_img_width_height: 320px;
 .works{
