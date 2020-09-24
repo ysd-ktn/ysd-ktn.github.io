@@ -365,6 +365,11 @@ hr{
         color: $font-subcolor;
     }
 }
+@media screen and (min-width: 0px) and (max-width: $iphone678p-width) {
+    .entry {
+        padding-bottom: 60px;
+    }
+}
 
 /* -------------------- about -------------------- */
 .about{
@@ -382,10 +387,11 @@ hr{
             max-width: 50%;
             margin-right: 100px;
             .profile-img{
+                max-width: 300px;
                 width: 18vw;
                 border-radius: 100vw;
                 display: block;
-            
+                
                 @media screen and (min-width: 0px) and(max-width: $threshold-width) {
                     width: 30vw;
                     border-radius: 100vw;
@@ -789,6 +795,139 @@ $pc_works_img_width_height: 320px;
             }
         }
     }
+}
+
+@media screen and (min-width: 0px) and (max-width: $iphone5se-width) {
+    .works {
+        h2 {
+            font-size: 20px;
+            margin-bottom: 28px;
+        }
+        .works-table {
+            .works-contents {
+                display: block;
+                .works-content {
+                    margin-bottom: 44px;
+                    .works-img {
+                        height: 200px;
+                        img {
+                            width: 200px;
+                            height: 200px;
+                        }
+                    }
+                    .works-contents-text {
+                        h3 {
+                            font-size: 18px;
+                            margin-bottom: 10px;
+                        }
+                        p {
+                            font-size: 14px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media screen and (min-width: $iphone5se-width+1px) and (max-width: $iphone678p-width) {
+    .works {
+        h2 {
+            font-size: 24px;
+            margin-bottom: 28px;
+        }
+        .works-table {
+            .works-contents {
+                display: block;
+                .works-content {
+                    margin-bottom: 44px;
+                    .works-img {
+                        height: 240px;
+                        img {
+                            width: 240px;
+                            height: 240px;
+                        }
+                    }
+                    .works-contents-text {
+                        h3 {
+                            font-size: 18px;
+                            margin-bottom: 10px;
+                        }
+                        p {
+                            font-size: 14px;
+                        }
+                    }
+                }
+            }
+        }
+    } 
+}
+
+@media screen and (min-width: $iphone678p-width+1px) and (max-width: $threshold-width) {
+    .works {
+        h2 {
+            font-size: 24px;
+            margin-bottom: 28px;
+        }
+        .works-table {
+            .works-contents {
+                .works-content {
+                    margin-left: 16px;
+                    margin-right: 16px;
+                    margin-bottom: 0px;
+                    .works-img {
+                        height: 180px;
+                        img {
+                            width: 180px;
+                            height: 180px;
+                        }
+                    }
+                    .works-contents-text {
+                        h3 {
+                            font-size: 20px;
+                            margin-bottom: 10px;
+                        }
+                        p {
+                            font-size: 14px;
+                        }
+                    }
+                }
+            }
+        }
+    }  
+}
+
+@media screen and (min-width: $threshold-width+1px) and (max-width: $ipadpro-width) {
+    .works {
+        h2 {
+            margin-bottom: 44px;
+        }
+        .works-table {
+            .works-contents {
+                .works-content {
+                    margin-left: 20px;
+                    margin-right: 20px;
+                    margin-bottom: 0px;
+                    .works-img {
+                        height: 240px;
+                        img {
+                            width: 240px;
+                            height: 240px;
+                        }
+                    }
+                    .works-contents-text {
+                        h3 {
+                            font-size: 24px;
+                            margin-bottom: 10px;
+                        }
+                        p {
+                            font-size: 16px;
+                        }
+                    }
+                }
+            }
+        }
+    }   
 }
 
 /* -------------------- footer -------------------- */
