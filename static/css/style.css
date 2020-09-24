@@ -291,13 +291,10 @@ hr {
         width: 18vw;
         border-radius: 100vw;
         display: block; }
-        @media screen and (min-width: 0px) and (max-width: 415px) {
+        @media screen and (min-width: 0px) and (max-width: 560px) {
           .about .about-contents .profile-icon .profile-img {
             width: 30vw;
-            border-radius: 100vw;
-            display: block;
-            margin-top: 30px;
-            margin-bottom: 30px; } }
+            border-radius: 100vw; } }
     .about .about-contents .about-texts {
       height: 18vw; }
       .about .about-contents .about-texts .texts-contents {
@@ -327,6 +324,91 @@ hr {
                 margin-right: 10px;
                 margin-left: 10px; } }
 
+@media screen and (min-width: 0px) and (max-width: 320px) {
+  .about {
+    padding-top: 60px; }
+    .about h2 {
+      font-size: 20px;
+      margin-bottom: 28px; }
+    .about .about-contents {
+      display: block;
+      padding: 0; }
+      .about .about-contents .profile-icon {
+        margin-top: 0;
+        margin-bottom: 16px;
+        margin-right: auto;
+        margin-left: auto; }
+        .about .about-contents .profile-icon .profile-img {
+          margin: 0 auto; }
+      .about .about-contents .about-texts .texts-contents {
+        text-align: center; }
+        .about .about-contents .about-texts .texts-contents h3 {
+          font-size: 16px; }
+        .about .about-contents .about-texts .texts-contents p {
+          font-size: 12px; } }
+@media screen and (min-width: 321px) and (max-width: 414px) {
+  .about {
+    padding-top: 80px; }
+    .about h2 {
+      font-size: 24px;
+      margin-bottom: 28px; }
+    .about .about-contents {
+      display: block;
+      padding: 0; }
+      .about .about-contents .profile-icon {
+        margin-top: 0;
+        margin-bottom: 16px;
+        margin-right: auto;
+        margin-left: auto; }
+        .about .about-contents .profile-icon .profile-img {
+          margin: 0 auto; }
+      .about .about-contents .about-texts .texts-contents {
+        text-align: center; }
+        .about .about-contents .about-texts .texts-contents h3 {
+          font-size: 16px; }
+        .about .about-contents .about-texts .texts-contents p {
+          font-size: 12px; } }
+@media screen and (min-width: 415px) and (max-width: 560px) {
+  .about {
+    padding-top: 100px; }
+    .about h2 {
+      font-size: 24px;
+      margin-bottom: 28px; }
+    .about .about-contents {
+      display: block;
+      padding: 0; }
+      .about .about-contents .profile-icon {
+        max-width: 100%;
+        margin-top: 0;
+        margin-bottom: 16px;
+        margin-left: 0;
+        margin-right: 0; }
+        .about .about-contents .profile-icon .profile-img {
+          margin: 0 auto; }
+      .about .about-contents .about-texts .texts-contents {
+        text-align: center; }
+        .about .about-contents .about-texts .texts-contents h3 {
+          font-size: 20px; }
+        .about .about-contents .about-texts .texts-contents p {
+          font-size: 14px; } }
+@media screen and (min-width: 561px) and (max-width: 1024px) {
+  .about {
+    padding-top: 120px; }
+    .about h2 {
+      margin-bottom: 40px; }
+    .about .about-contents {
+      padding: 0; }
+      .about .about-contents .profile-icon {
+        margin: auto 0;
+        padding-right: 80px; }
+        .about .about-contents .profile-icon .profile-img {
+          margin: 0 auto; }
+      .about .about-contents .about-texts {
+        height: fit-content; }
+        .about .about-contents .about-texts .texts-contents h3 {
+          font-size: 24px; }
+        .about .about-contents .about-texts .texts-contents p {
+          font-size: 16px; } }
 /* -------------------- skills -------------------- */
 .skills {
   margin-bottom: 200px; }

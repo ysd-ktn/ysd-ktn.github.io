@@ -386,12 +386,9 @@ hr{
                 border-radius: 100vw;
                 display: block;
             
-                @media screen and (min-width: 0px) and(max-width: $iphone678p-width+1) {
+                @media screen and (min-width: 0px) and(max-width: $threshold-width) {
                     width: 30vw;
                     border-radius: 100vw;
-                    display: block;
-                    margin-top: 30px;
-                    margin-bottom: 30px;
                 }
             }
         }
@@ -434,6 +431,144 @@ hr{
             }
         }
     }
+}
+
+@media screen and (min-width: 0px) and (max-width: $iphone5se-width) {
+    .about {
+        padding-top: 60px;
+        h2 {
+            font-size: 20px;
+            margin-bottom: 28px;
+        }
+        .about-contents {
+            display: block;
+            padding: 0;
+            .profile-icon {
+                margin-top: 0;
+                margin-bottom: 16px;
+                margin-right: auto;
+                margin-left: auto;
+                .profile-img {
+                    margin: 0 auto;
+                    
+                }
+            }
+            .about-texts {
+                .texts-contents {
+                    text-align: center;
+                    h3 {
+                        font-size: 16px;
+                    }
+                    p {
+                        font-size: 12px;
+                    }
+                }
+            }
+        }
+    }
+
+}
+
+@media screen and (min-width: $iphone5se-width+1px) and (max-width: $iphone678p-width) {
+    .about {
+        padding-top: 80px;
+        h2 {
+            font-size: 24px;
+            margin-bottom: 28px;
+        }
+        .about-contents {
+            display: block;
+            padding: 0;
+            .profile-icon {
+                margin-top: 0;
+                margin-bottom: 16px;
+                margin-right: auto;
+                margin-left: auto;
+                .profile-img {
+                    margin: 0 auto;
+                    
+                }
+            }
+            .about-texts {
+                .texts-contents {
+                    text-align: center;
+                    h3 {
+                        font-size: 16px;
+                    }
+                    p {
+                        font-size: 12px;
+                    }
+                }
+            }
+        }
+    } 
+}
+
+@media screen and (min-width: $iphone678p-width+1px) and (max-width: $threshold-width) {
+    .about {
+        padding-top: 100px;
+        h2 {
+            font-size: 24px;
+            margin-bottom: 28px;
+        }
+        .about-contents {
+            display: block;
+            padding: 0;
+            .profile-icon {
+                max-width: 100%;
+                margin-top: 0;
+                margin-bottom: 16px;
+                margin-left: 0;
+                margin-right: 0;
+                .profile-img {
+                    margin: 0 auto;
+                    
+                }
+            }
+            .about-texts {
+                .texts-contents {
+                    text-align: center;
+                    h3 {
+                        font-size: 20px;
+                    }
+                    p {
+                        font-size: 14px;
+                    }
+                }
+            }
+        }
+    }  
+}
+
+@media screen and (min-width: $threshold-width+1px) and (max-width: $ipadpro-width) {
+    .about {
+        padding-top: 120px;
+        h2 {
+            margin-bottom: 40px;
+        }
+        .about-contents {
+            padding: 0;
+            .profile-icon {
+                margin: auto 0;
+                padding-right: 80px;
+                .profile-img {
+                    margin: 0 auto;
+                    
+                }
+            }
+            .about-texts {
+                height: fit-content;
+                .texts-contents {
+                    h3 {
+                        font-size: 24px;
+                    }
+                    p {
+                        font-size: 16px;
+                    }
+                }
+            }
+        }
+    }   
 }
 
 /* -------------------- skills -------------------- */
