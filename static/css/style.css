@@ -229,10 +229,7 @@ body {
 .thumbnail {
   background-color: #efefef;
   min-height: 80%;
-  height: 90%;
-  background-repeat: no-repeat;
-  background-size: 100% auto;
-  background-attachment: fixed; }
+  height: 90%; }
   @media screen and (min-width: 0px) and (max-width: 320px) {
     .thumbnail {
       min-height: 0%;
@@ -260,10 +257,17 @@ hr {
 
 /* -------------------- entry -------------------- */
 .index {
-  background-image: url("../images/HP_thumbnail_index.png"); }
+  background-image: url("../images/HP_thumbnail_index.png");
+  background-repeat: no-repeat;
+  background-size: 100% auto;
+  background-attachment: fixed; }
   @media screen and (min-width: 0px) and (max-width: 560px) {
     .index {
-      background-position: 0px 40px; } }
+      background-position: 0px 40px;
+      background-attachment: scroll; } }
+  @media screen and (min-width: 561px) and (max-width: 1024px) {
+    .index {
+      background-attachment: scroll; } }
 
 .entry {
   text-align: center;
@@ -738,10 +742,17 @@ hr {
 
 /* -------------------- art -------------------- */
 .art {
-  background-image: url("../images/HP_thumbnail_art.png"); }
+  background-image: url("../images/HP_thumbnail_art.png");
+  background-repeat: no-repeat;
+  background-size: 100% auto;
+  background-attachment: fixed; }
   @media screen and (min-width: 0px) and (max-width: 560px) {
     .art {
-      background-position: 0px 40px; } }
+      background-position: 0px 40px;
+      background-attachment: scroll; } }
+  @media screen and (min-width: 561px) and (max-width: 1024px) {
+    .art {
+      background-attachment: scroll; } }
 
 .article-comp {
   padding-bottom: 180px;
@@ -886,10 +897,17 @@ hr {
         margin-bottom: 40px; } }
 /* -------------------- design --------------------*/
 .design {
-  background-image: url("../images/HP_thumbnail_design.png"); }
+  background-image: url("../images/HP_thumbnail_design.png");
+  background-repeat: no-repeat;
+  background-size: 100% auto;
+  background-attachment: fixed; }
   @media screen and (min-width: 0px) and (max-width: 560px) {
     .design {
-      background-position: 0px 40px; } }
+      background-position: 0px 40px;
+      background-attachment: scroll; } }
+  @media screen and (min-width: 561px) and (max-width: 1024px) {
+    .design {
+      background-attachment: scroll; } }
 
 .contents-comp {
   padding-bottom: 180px;

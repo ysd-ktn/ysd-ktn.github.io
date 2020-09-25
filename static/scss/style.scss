@@ -311,9 +311,6 @@ $threshold-width: 560px;
     background-color: $background-color;
     min-height: 80%;
     height: 90%;
-    background-repeat: no-repeat;
-    background-size:100% auto;
-    background-attachment: fixed;
 
     @media screen and (min-width: 0px) and (max-width: $iphone5se-width) {
         min-height: 0%;
@@ -348,8 +345,15 @@ hr{
 /* -------------------- entry -------------------- */
 .index{
     background-image: url("../images/HP_thumbnail_index.png");
+    background-repeat: no-repeat;
+    background-size:100% auto;
+    background-attachment: fixed;
     @media screen and (min-width: 0px) and (max-width: $threshold-width) {
         background-position: 0px 40px; 
+        background-attachment: scroll;
+    }
+    @media screen and (min-width: $threshold-width+1px) and (max-width: $ipadpro-width) {
+        background-attachment: scroll;
     }
     
 }
@@ -1090,8 +1094,15 @@ $pc-article-img-height: 260px;
 
 .art{
     background-image: url("../images/HP_thumbnail_art.png");
+    background-repeat: no-repeat;
+    background-size:100% auto;
+    background-attachment: fixed;
     @media screen and (min-width: 0px) and (max-width: $threshold-width) {
         background-position: 0px 40px; 
+        background-attachment: scroll;
+    }
+    @media screen and (min-width: $threshold-width+1px) and (max-width: $ipadpro-width) {
+        background-attachment: scroll;
     }
 }
 
@@ -1327,8 +1338,16 @@ $pc-article-img-height: 260px;
 
 .design{
     background-image: url("../images/HP_thumbnail_design.png");
+    background-repeat: no-repeat;
+    background-size:100% auto;
+    background-attachment: fixed;
     @media screen and (min-width: 0px) and (max-width: $threshold-width) {
         background-position: 0px 40px; 
+        background-attachment: scroll;
+
+    }
+    @media screen and (min-width: $threshold-width+1px) and (max-width: $ipadpro-width) {
+        background-attachment: scroll;
     }
 }
 
