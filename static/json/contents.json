@@ -1,6 +1,6 @@
 {
     "30days_UI_Challenge":[
-        {"name": "#1 profile", "filename": "day1.png", "img": ["day1_1.png", "day1_2.png"]},
+        {"name": "#1 profile", "filename": "day1.png", "img": ["day1_1.png", "day1_2.png"], "title": "整理と発表を同時にできる作品投稿アプリ", "summary": "ニューモフィズムを用いることで、スタイリッシュ且つ作品を際立たせるためのシンプルさを表現。作品へのアクセスを容易にするため、全体検索の際だけでなくプロフィール内でのタグ検索を可能にした。", "skill": "photoshop, xd"},
         {"name": "#2 favorite", "filename": "day2.gif"},
         {"name": "#3 portfolio", "filename": "day3.png"},
         {"name": "#4 share", "filename": "day4.png"},

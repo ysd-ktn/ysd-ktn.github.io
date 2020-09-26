@@ -10,9 +10,15 @@
     <br>
     <br>
     <br>
-    {% for img  in contents['img'] %}
-        <img src="{{ url_for('static', filename='images/contents/'+img) }}">
-    {% endfor %}
+
+    <div class="contents-entire">
+        <div class="contents-left">
+            {% for img  in contents['img'] %}
+            <img src="{{ url_for('static', filename='images/contents/'+img) }}">
+            {% endfor %}
+        </div>
+        <div class="contents-right"></div>
+    </div>
 
 
 {% endblock %}
