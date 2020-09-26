@@ -17,7 +17,15 @@
             <img src="{{ url_for('static', filename='images/contents/'+img) }}">
             {% endfor %}
         </div>
-        <div class="contents-right"></div>
+        <div class="contents-right">
+            <h1>{{ contents.title }}</h1>
+            <br>
+            <h3>作品概要</h3>
+            <p>{{ contents.summary }}</p>
+            <h3>使用スキル, ツール</h3>
+            <p>{{ contents.skill }}</p>
+
+        </div>
     </div>
 
 
