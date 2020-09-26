@@ -1,6 +1,6 @@
 {
     "30days_UI_Challenge":[
-        {"name": "#1 profile", "filename": "day1.png"},
+        {"name": "#1 profile", "filename": "day1.png", "img": ["day1_1.png", "day1_2.png"]},
         {"name": "#2 favorite", "filename": "day2.gif"},
         {"name": "#3 portfolio", "filename": "day3.png"},
         {"name": "#4 share", "filename": "day4.png"},

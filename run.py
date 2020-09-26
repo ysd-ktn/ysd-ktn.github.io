@@ -28,5 +28,13 @@ def design():
         contents_list = json.load(contents_json_file)
     return render_template('design.html', contents_list=contents_list)
 
+@app.route('/contents/<contents_id>.html')
+def contents_30days(contents_id):
+    contents_json_path = os.path.join(app.static_folder, 'json/contents.json')
+    with open(contents_json_path) as contents_json_file:
+        contents_list = json.load(contents_json_file)
+    contents = contents_list["30days_UI_Challenge"][int(contents_id)]
+    return render_template('/designpages/contents.html', contents=contents)
+
 if __name__ == '__main__':
     app.run(debug=True)
