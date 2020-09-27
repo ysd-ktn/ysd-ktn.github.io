@@ -1,3 +1,4 @@
+@charset "UTF-8";
 * {
   margin: 0px;
   padding: 0px;
@@ -1042,5 +1043,32 @@ hr {
       margin-top: 140px; }
       .contents-comp .contents-layer .contents-block h2 {
         margin-bottom: 40px; } }
+/* -------------------- design個別ページ --------------------*/
+.background-color {
+  background-color: #efefef; }
+  .background-color .contents-entire {
+    max-width: 70%;
+    margin: 0 auto;
+    padding-top: 180px;
+    padding-bottom: 180px;
+    display: flex; }
+    .background-color .contents-entire .contents-left {
+      width: 600px; }
+      .background-color .contents-entire .contents-left img {
+        width: 600px;
+        margin-bottom: 60px; }
+    .background-color .contents-entire .contents-right {
+      margin-left: 100px; }
+      .background-color .contents-entire .contents-right h3 {
+        font-size: 24px;
+        color: #505050;
+        margin-bottom: 16px; }
+      .background-color .contents-entire .contents-right h4 {
+        font-size: 20px;
+        color: #505050;
+        margin-bottom: 8px; }
+      .background-color .contents-entire .contents-right p {
+        font-size: 16px;
+        color: #707070; }
 
 /*# sourceMappingURL=style.css.map */

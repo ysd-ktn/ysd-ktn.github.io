@@ -1,32 +1,26 @@
 {% extends "base.html" %}
 {% block content %}
 
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-
+<div class="background-color">
     <div class="contents-entire">
         <div class="contents-left">
             {% for img  in contents['img'] %}
-            <img src="{{ url_for('static', filename='images/contents/'+img) }}">
+            <a href="{{ url_for('static', filename='images/contents/'+img) }}" data-lightbox="design-contents" data-title="">
+                <img src="{{ url_for('static', filename='images/contents/'+img) }}">
+            </a>
             {% endfor %}
         </div>
         <div class="contents-right">
-            <h1>{{ contents.title }}</h1>
+            <h3>{{ contents.title }}</h3>
             <br>
-            <h3>作品概要</h3>
+            <h4>作品概要</h4>
             <p>{{ contents.summary }}</p>
-            <h3>使用スキル, ツール</h3>
+            <br>
+            <h4>使用スキル, ツール</h4>
             <p>{{ contents.skill }}</p>
 
         </div>
     </div>
-
+</div>
 
 {% endblock %}

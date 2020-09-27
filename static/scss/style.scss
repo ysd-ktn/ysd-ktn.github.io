@@ -1564,3 +1564,40 @@ $pc-article-img-height: 260px;
         }
     }
 }
+
+/* -------------------- design個別ページ --------------------*/
+
+.background-color {
+    background-color: $background-color;
+    .contents-entire {
+        max-width: 70%;
+        margin: 0 auto;
+        padding-top: 180px;
+        padding-bottom: 180px;
+        display: flex;
+        .contents-left {
+            width: 600px;
+            img {
+                width: 600px;
+                margin-bottom: 60px;
+            }
+        }
+        .contents-right {
+            margin-left: 100px;
+            h3 {
+                font-size: 24px;
+                color: $font-subcolor;
+                margin-bottom: 16px;
+            }
+            h4 {
+                font-size: 20px;
+                color: $font-subcolor;
+                margin-bottom: 8px;
+            }
+            p {
+                font-size: 16px;
+                color: $font-color;
+            }
+        }
+    }
+}
