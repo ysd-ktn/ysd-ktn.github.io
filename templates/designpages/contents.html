@@ -3,6 +3,9 @@
 
 <div class="background-color">
     <div class="contents-entire">
+        <div class="iphone-title">
+            <h3>{{ contents.title }}</h3>
+        </div>
         <div class="contents-left">
             {% for img  in contents['img'] %}
             <a href="{{ url_for('static', filename='images/contents/'+img) }}" data-lightbox="design-contents" data-title="">

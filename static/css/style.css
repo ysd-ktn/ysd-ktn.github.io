@@ -1052,6 +1052,8 @@ hr {
     padding-top: 180px;
     padding-bottom: 180px;
     display: flex; }
+    .background-color .contents-entire .iphone-title {
+      display: none; }
     .background-color .contents-entire .contents-left {
       width: 600px; }
       .background-color .contents-entire .contents-left img {
@@ -1070,5 +1072,160 @@ hr {
       .background-color .contents-entire .contents-right p {
         font-size: 16px;
         color: #707070; }
+
+@media screen and (min-width: 0px) and (max-width: 320px) {
+  .background-color .contents-entire {
+    max-width: 100%;
+    display: block;
+    text-align: center;
+    padding-top: 68px;
+    padding-bottom: 60px; }
+    .background-color .contents-entire .iphone-title {
+      display: inline; }
+      .background-color .contents-entire .iphone-title h3 {
+        max-width: 80%;
+        margin: 0 auto;
+        font-size: 16px;
+        margin-bottom: 28px;
+        color: #505050; }
+    .background-color .contents-entire .contents-left {
+      width: 100%; }
+      .background-color .contents-entire .contents-left a {
+        display: inline-block;
+        position: relative;
+        width: 256px; }
+        .background-color .contents-entire .contents-left a img {
+          width: 256px;
+          object-fit: cover;
+          vertical-align: bottom;
+          margin-bottom: 20px; }
+    .background-color .contents-entire .contents-right {
+      max-width: 80%;
+      margin: 0 auto; }
+      .background-color .contents-entire .contents-right h3 {
+        display: none; }
+      .background-color .contents-entire .contents-right h4 {
+        font-size: 14px;
+        color: #505050;
+        margin-bottom: 8px; }
+      .background-color .contents-entire .contents-right p {
+        font-size: 12px;
+        color: #707070; } }
+@media screen and (min-width: 321px) and (max-width: 414px) {
+  .background-color .contents-entire {
+    max-width: 100%;
+    display: block;
+    text-align: center;
+    padding-top: 80px;
+    padding-bottom: 80px; }
+    .background-color .contents-entire .iphone-title {
+      display: inline; }
+      .background-color .contents-entire .iphone-title h3 {
+        max-width: 80%;
+        margin: 0 auto;
+        font-size: 16px;
+        margin-bottom: 28px;
+        color: #505050; }
+    .background-color .contents-entire .contents-left {
+      width: 100%; }
+      .background-color .contents-entire .contents-left a {
+        display: inline-block;
+        position: relative;
+        width: 256px; }
+        .background-color .contents-entire .contents-left a img {
+          width: 256px;
+          object-fit: cover;
+          vertical-align: bottom;
+          margin-bottom: 20px; }
+    .background-color .contents-entire .contents-right {
+      max-width: 80%;
+      margin: 0 auto; }
+      .background-color .contents-entire .contents-right h3 {
+        display: none; }
+      .background-color .contents-entire .contents-right h4 {
+        font-size: 14px;
+        color: #505050;
+        margin-bottom: 8px; }
+      .background-color .contents-entire .contents-right p {
+        font-size: 12px;
+        color: #707070; } }
+@media screen and (min-width: 415px) and (max-width: 1260px) {
+  .background-color .contents-entire {
+    max-width: 100%;
+    display: block;
+    text-align: center;
+    padding-top: 100px;
+    padding-bottom: 100px; }
+    .background-color .contents-entire .iphone-title {
+      display: inline; }
+      .background-color .contents-entire .iphone-title h3 {
+        max-width: 80%;
+        margin: 0 auto;
+        font-size: 20px;
+        margin-bottom: 28px;
+        color: #505050; }
+    .background-color .contents-entire .contents-left {
+      width: 100%; }
+      .background-color .contents-entire .contents-left a {
+        display: inline-block;
+        position: relative;
+        width: 400px; }
+        .background-color .contents-entire .contents-left a img {
+          width: 400px;
+          object-fit: cover;
+          vertical-align: bottom;
+          margin-bottom: 20px; }
+    .background-color .contents-entire .contents-right {
+      max-width: 80%;
+      margin: 0 auto; }
+      .background-color .contents-entire .contents-right h3 {
+        display: none; }
+      .background-color .contents-entire .contents-right h4 {
+        font-size: 16px;
+        color: #505050;
+        margin-bottom: 8px; }
+      .background-color .contents-entire .contents-right p {
+        font-size: 14px;
+        color: #707070; } }
+@media screen and (min-width: 561px) and (max-width: 1024px) {
+  .background-color .contents-entire {
+    max-width: 100%;
+    display: block;
+    text-align: center;
+    padding-top: 120px;
+    padding-bottom: 120px; }
+    .background-color .contents-entire .iphone-title {
+      display: inline; }
+      .background-color .contents-entire .iphone-title h3 {
+        max-width: 80%;
+        margin: 0 auto;
+        font-size: 20px;
+        margin-bottom: 40px;
+        color: #505050; }
+    .background-color .contents-entire .contents-left {
+      width: 100%; }
+      .background-color .contents-entire .contents-left a {
+        display: inline-block;
+        position: relative;
+        width: 520px; }
+        .background-color .contents-entire .contents-left a img {
+          width: 520px;
+          object-fit: cover;
+          vertical-align: bottom;
+          margin-bottom: 40px; }
+    .background-color .contents-entire .contents-right {
+      max-width: 80%;
+      margin: 0 auto;
+      margin-top: 40px; }
+      .background-color .contents-entire .contents-right h3 {
+        display: none; }
+      .background-color .contents-entire .contents-right h4 {
+        font-size: 20px;
+        color: #505050;
+        margin-bottom: 8px; }
+      .background-color .contents-entire .contents-right p {
+        font-size: 16px;
+        color: #707070;
+        margin-bottom: 40px; } }
 
 /*# sourceMappingURL=style.css.map */

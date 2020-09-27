@@ -1575,6 +1575,9 @@ $pc-article-img-height: 260px;
         padding-top: 180px;
         padding-bottom: 180px;
         display: flex;
+        .iphone-title {
+            display: none;
+        }
         .contents-left {
             width: 600px;
             img {
@@ -1600,4 +1603,214 @@ $pc-article-img-height: 260px;
             }
         }
     }
+}
+
+@media screen and (min-width: 0px) and (max-width: $iphone5se-width) {
+    .background-color {
+        .contents-entire {
+            max-width: 100%;
+            display: block;
+            text-align: center;
+            padding-top: 68px;
+            padding-bottom: 60px;
+            .iphone-title {
+                display: inline;
+                h3 {
+                    max-width: 80%;
+                    margin: 0 auto;
+                    font-size: 16px;
+                    margin-bottom: 28px;
+                    color: $font-subcolor;
+                }
+            }
+            .contents-left {
+                width: 100%;
+                a {
+                    display: inline-block;
+                    position: relative;
+                    width: 256px;
+                    img {
+                        width: 256px;
+                        object-fit: cover;
+                        vertical-align: bottom;
+                        margin-bottom: 20px;
+                    }
+                }
+            }
+            .contents-right {
+                max-width: 80%;
+                margin: 0 auto;
+                h3 {
+                    display: none;
+                }
+                h4 {
+                    font-size: 14px;
+                    color: $font-subcolor;
+                    margin-bottom: 8px;
+                }
+                p {
+                    font-size: 12px;
+                    color: $font-color;
+                }
+            }
+        }
+    }
+}
+
+@media screen and (min-width: $iphone5se-width+1px) and (max-width: $iphone678p-width) {
+    .background-color {
+        .contents-entire {
+            max-width: 100%;
+            display: block;
+            text-align: center;
+            padding-top: 80px;
+            padding-bottom: 80px;
+            .iphone-title {
+                display: inline;
+                h3 {
+                    max-width: 80%;
+                    margin: 0 auto;
+                    font-size: 16px;
+                    margin-bottom: 28px;
+                    color: $font-subcolor;
+                }
+            }
+            .contents-left {
+                width: 100%;
+                a {
+                    display: inline-block;
+                    position: relative;
+                    width: 256px;
+                    img {
+                        width: 256px;
+                        object-fit: cover;
+                        vertical-align: bottom;
+                        margin-bottom: 20px;
+                    }
+                }
+            }
+            .contents-right {
+                max-width: 80%;
+                margin: 0 auto;
+                h3 {
+                    display: none;
+                }
+                h4 {
+                    font-size: 14px;
+                    color: $font-subcolor;
+                    margin-bottom: 8px;
+                }
+                p {
+                    font-size: 12px;
+                    color: $font-color;
+                }
+            }
+        }
+    } 
+}
+
+@media screen and (min-width: $iphone678p-width+1px) and (max-width: $threshold-width+700px) {
+    .background-color {
+        .contents-entire {
+            max-width: 100%;
+            display: block;
+            text-align: center;
+            padding-top: 100px;
+            padding-bottom: 100px;
+            .iphone-title {
+                display: inline;
+                h3 {
+                    max-width: 80%;
+                    margin: 0 auto;
+                    font-size: 20px;
+                    margin-bottom: 28px;
+                    color: $font-subcolor;
+                }
+            }
+            .contents-left {
+                width: 100%;
+                a {
+                    display: inline-block;
+                    position: relative;
+                    width: 400px;
+                    img {
+                        width: 400px;
+                        object-fit: cover;
+                        vertical-align: bottom;
+                        margin-bottom: 20px;
+                    }
+                }
+            }
+            .contents-right {
+                max-width: 80%;
+                margin: 0 auto;
+                h3 {
+                    display: none;
+                }
+                h4 {
+                    font-size: 16px;
+                    color: $font-subcolor;
+                    margin-bottom: 8px;
+                }
+                p {
+                    font-size: 14px;
+                    color: $font-color;
+                }
+            }
+        }
+    }  
+}
+
+@media screen and (min-width: $threshold-width+1px) and (max-width: $ipadpro-width) {
+    .background-color {
+        .contents-entire {
+            max-width: 100%;
+            display: block;
+            text-align: center;
+            padding-top: 120px;
+            padding-bottom: 120px;
+            .iphone-title {
+                display: inline;
+                h3 {
+                    max-width: 80%;
+                    margin: 0 auto;
+                    font-size: 20px;
+                    margin-bottom: 40px;
+                    color: $font-subcolor;
+                }
+            }
+            .contents-left {
+                width: 100%;
+                a {
+                    display: inline-block;
+                    position: relative;
+                    width: 520px;
+                    img {
+                        width: 520px;
+                        object-fit: cover;
+                        vertical-align: bottom;
+                        margin-bottom: 40px;
+                    }
+                }
+            }
+            .contents-right {
+                max-width: 80%;
+                margin: 0 auto;
+                margin-top: 40px;
+                h3 {
+                    display: none;
+                }
+                h4 {
+                    font-size: 20px;
+                    color: $font-subcolor;
+                    margin-bottom: 8px;
+                }
+                p {
+                    font-size: 16px;
+                    color: $font-color;
+                    margin-bottom: 40px;
+                }
+            }
+        }
+    }   
 }
