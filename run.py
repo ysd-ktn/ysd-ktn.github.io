@@ -28,7 +28,7 @@ def design():
         contents_list = json.load(contents_json_file)
     return render_template('design.html', contents_list=contents_list)
 
-@app.route('/contents/<contents_id>.html')
+@app.route('/designpages/<contents_id>.html')
 def contents_30days(contents_id):
     contents_json_path = os.path.join(app.static_folder, 'json/contents.json')
     with open(contents_json_path) as contents_json_file:
