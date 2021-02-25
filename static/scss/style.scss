@@ -1381,6 +1381,7 @@ $pc-article-img-height: 250px;
 }
 
 /* -------------------- design --------------------*/
+$pc_contents_img_width_height: 250px;
 
 .design{
     background-image: url("../images/HP_thumbnail_design.png");
@@ -1406,29 +1407,38 @@ $pc-article-img-height: 250px;
         background-color: $background-color;
     
         .contents-block {
+            display: inline-block;
+            max-width: 1100px;
+            text-align: center;
             margin-top: 180px;
             h2 {
                 margin-bottom: 60px;
                 color: $font-subcolor;
             }
     
-            display: inline-block;
-            max-width: 1060px;
-            text-align: center;
             .contents-table {
                 width: 100%;
     
                 a {
+                    padding-right: 25px;
+                    padding-left: 25px;
+                    padding-top: 30px;
+                    padding-bottom: 30px;
+                    border: 1px solid;
+                    border-color: #bcbcbc;
                     position: relative;
-                    margin: 30px;
+                    margin-top: 30px;
+                    margin-bottom: 30px;
+                    margin-left: 25px;
+                    margin-right: 25px;
                     display: inline-block;
                     text-decoration: none;
 
                     .contents-img{
                         background-color: #000;
                         img {
-                            width: $pc-article-img-width;
-                            height: $pc-article-img-height;
+                            width: $pc_contents_img_width_height;
+                            height: $pc_contents_img_width_height;
                             object-fit: cover;
                             vertical-align: bottom;
         
@@ -1452,97 +1462,6 @@ $pc-article-img-height: 250px;
                     }
                     
                 }
-
-                @media screen and (min-width: 0px) and (max-width: $iphone5se-width) {
-                    a{
-                        margin-top: 0px;
-                        margin-bottom: 20px;
-                        margin-left: 0px;
-                        margin-right: 0px;
-                        .contents-img{
-                            background-color: none;
-                            img{
-                                width: 100px;
-                                height: 100px;
-                            }
-                        } 
-                        .contents-name{
-                            margin-top: 8px;
-                            p{
-                                font-size: 12px;
-                            }
-                        }
-                    }  
-                }
-
-                @media screen and (min-width: $iphone5se-width+1px) and (max-width: $iphone678p-width) {
-                    a{
-                        margin-top: 0px;
-                        margin-bottom: 24px;
-                        margin-left: 0px;
-                        margin-right: 0px;
-                        .contents-img{
-                            background-color: none;
-                            img{
-                                width: 116px;
-                                height: 116px;
-                            }
-                        }
-                        .contents-name{
-                            margin-top: 8px;
-                            p{
-                                font-size: 12px;
-                            }
-                        }
-                    } 
-                }
-
-                @media screen and (min-width: $iphone678p-width+1px) and (max-width: $threshold-width) {
-                    max-width: 520px;
-                    a{
-                        margin-top: 0px;
-                        margin-bottom: 24px;
-                        margin-left: 4px;
-                        margin-right: 4px;
-                        .contents-img{
-                            background-color: none;
-                            img{
-                                width: 140px;
-                                height: 140px;
-                            }
-                        }
-                        .contents-name{
-                            margin-top: 8px;
-                            p{
-                                font-size: 16px;
-                            }
-                        }
-                    }
-                }
-
-                @media screen and (min-width: $threshold-width+1px) and (max-width: $ipadpro-width) {
-                    max-width: 760px;
-                    a{
-                        margin-top: 0px;
-                        margin-bottom: 24px;
-                        margin-left: 4px;
-                        margin-right: 4px;
-                        .contents-img{
-                            background-color: none;
-                            img{
-                                width: 180px;
-                                height: 180px;
-                            }
-                        }
-                        .contents-name{
-                            margin-top: 8px;
-                            p{
-                                font-size: 16px;
-                            }
-                        }
-                    } 
-                } 
-    
             }
         }
     }
@@ -1559,6 +1478,49 @@ $pc-article-img-height: 250px;
                     font-size: 20px;
                     margin-bottom: 28px;
                 }
+
+                .contents-table {
+                    a {
+                        padding: 15px;
+                        border: 1px solid;
+                        border-color: #bcbcbc;
+                        position: relative;
+                        margin-top: 0px;
+                        margin-bottom: 30px;
+                        margin-left: 0px;
+                        margin-right: 0px;
+                        display: flex;
+                        text-decoration: none;
+
+                        .contents-img{
+                            background-color: #000;
+                            width: 100px;
+                            margin-right: auto;
+                            margin-left: auto;
+                            img {
+                                width: 100px;
+                                height: 100px;
+                                object-fit: cover;
+                                vertical-align: bottom;
+            
+                                &:hover {
+                                    opacity: 0.6;
+                                }
+            
+                            }
+                        }
+
+                        .contents-name{
+                            margin-top: auto;
+                            margin-bottom: auto;
+                            margin-left: 15px;
+
+                            p{
+                                font-size: 12px;
+                            }
+                        }
+                    }
+                }
             }
         }
     }   
@@ -1566,49 +1528,184 @@ $pc-article-img-height: 250px;
 
 @media screen and (min-width: $iphone5se-width+1px) and (max-width: $iphone678p-width){
     .contents-comp{
-        padding-bottom: 80px;
+        padding-bottom: 60px;
         .contents-layer{
             .contents-block{
-                margin-top: 100px;
+                margin-top: 60px;
         
                 h2{
-                    font-size: 24px;
-                    margin-bottom: 32px;
+                    font-size: 20px;
+                    margin-bottom: 28px;
+                }
+
+                .contents-table {
+                    a {
+                        padding: 20px;
+                        border: 1px solid;
+                        border-color: #bcbcbc;
+                        position: relative;
+                        margin-top: 0px;
+                        margin-bottom: 30px;
+                        margin-left: 0px;
+                        margin-right: 0px;
+                        display: flex;
+                        text-decoration: none;
+
+                        .contents-img{
+                            background-color: #000;
+                            width: 130px;
+                            margin-right: auto;
+                            margin-left: auto;
+                            img {
+                                width: 130px;
+                                height: 130px;
+                                object-fit: cover;
+                                vertical-align: bottom;
+            
+                                &:hover {
+                                    opacity: 0.6;
+                                }
+            
+                            }
+                        }
+
+                        .contents-name{
+                            margin-top: auto;
+                            margin-bottom: auto;
+                            margin-left: 20px;
+
+                            p{
+                                font-size: 12px;
+                            }
+                        }
+                    }
                 }
             }
         }
-    }  
+    }   
 }
 
 @media screen and (min-width: $iphone678p-width+1px) and (max-width: $threshold-width){
     .contents-comp{
-        padding-bottom: 100px;
+        padding-bottom: 60px;
         .contents-layer{
             .contents-block{
-                margin-top: 120px;
+                margin-top: 60px;
         
                 h2{
-                    font-size: 24px;
-                    margin-bottom: 40px;
+                    font-size: 20px;
+                    margin-bottom: 28px;
+                }
+
+                .contents-table {
+                    a {
+                        padding: 25px;
+                        border: 1px solid;
+                        border-color: #bcbcbc;
+                        position: relative;
+                        margin-top: 0px;
+                        margin-bottom: 30px;
+                        margin-left: 0px;
+                        margin-right: 0px;
+                        display: flex;
+                        text-decoration: none;
+
+                        .contents-img{
+                            background-color: #000;
+                            width: 150px;
+                            margin-right: auto;
+                            margin-left: auto;
+                            img {
+                                width: 150px;
+                                height: 150px;
+                                object-fit: cover;
+                                vertical-align: bottom;
+            
+                                &:hover {
+                                    opacity: 0.6;
+                                }
+            
+                            }
+                        }
+
+                        .contents-name{
+                            margin-top: auto;
+                            margin-bottom: auto;
+                            margin-left: 30px;
+                            margin-right: 5px;
+
+                            p{
+                                font-size: 14px;
+                            }
+                        }
+                    }
                 }
             }
         }
-    } 
+    }   
 }
 
 @media screen and (min-width: $threshold-width+1px) and (max-width: $ipadpro-width){
     .contents-comp{
-        padding-bottom: 120px;
+        padding-bottom: 60px;
         .contents-layer{
             .contents-block{
-                margin-top: 140px;
+                width: 100%;
+                margin-top: 60px;
         
                 h2{
-                    margin-bottom: 40px;
+                    font-size: 20px;
+                    margin-bottom: 28px;
+                }
+
+                .contents-table {
+                    width: 100%;
+                    a {
+                        width: 25%;
+                        padding-top: 20px;
+                        padding-bottom: 20px;
+                        padding-right: 0px;
+                        padding-left: 0px;
+                        border: 1px solid;
+                        border-color: #bcbcbc;
+                        position: relative;
+                        margin-top: 0px;
+                        margin-bottom: 25px;
+                        margin-left: 10px;
+                        margin-right: 10px;
+                        text-decoration: none;
+
+                        .contents-img{
+                            background-color: #000;
+                            width: 140px;
+                            margin-right: auto;
+                            margin-left: auto;
+                            img {
+                                width: 140px;
+                                height: 140px;
+                                object-fit: cover;
+                                vertical-align: bottom;
+            
+                                &:hover {
+                                    opacity: 0.6;
+                                }
+            
+                            }
+                        }
+
+                        .contents-name{
+                            margin-top: 20px;
+                            margin-bottom: 0px;
+
+                            p{
+                                font-size: 16px;
+                            }
+                        }
+                    }
                 }
             }
         }
-    }
+    }   
 }
 
 /* -------------------- design個別ページ --------------------*/
@@ -1895,7 +1992,7 @@ $pc_project_img_width_height: 250px;
             }
     
             display: inline-block;
-            max-width: 1060px;
+            max-width: 1100px;
             text-align: center;
             .project-table {
                 width: 100%;
@@ -2021,7 +2118,7 @@ $pc_project_img_width_height: 250px;
 
                 .project-table {
                     a {
-                        padding: 25px;
+                        padding: 20px;
                         border: 1px solid;
                         border-color: #bcbcbc;
                         position: relative;
@@ -2053,10 +2150,10 @@ $pc_project_img_width_height: 250px;
                         .project-name{
                             margin-top: auto;
                             margin-bottom: auto;
-                            margin-left: 25px;
+                            margin-left: 20px;
 
                             p{
-                                font-size: 14px;
+                                font-size: 12px;
                             }
                         }
                     }
@@ -2142,7 +2239,7 @@ $pc_project_img_width_height: 250px;
                 .project-table {
                     width: 100%;
                     a {
-                        width: 30%;
+                        width: 25%;
                         padding-top: 20px;
                         padding-bottom: 20px;
                         padding-right: 0px;
@@ -2151,7 +2248,7 @@ $pc_project_img_width_height: 250px;
                         border-color: #bcbcbc;
                         position: relative;
                         margin-top: 0px;
-                        margin-bottom: 0px;
+                        margin-bottom: 25px;
                         margin-left: 10px;
                         margin-right: 10px;
                         text-decoration: none;

@@ -973,18 +973,27 @@ hr {
     text-align: center;
     background-color: #efefef; }
     .contents-comp .contents-layer .contents-block {
-      margin-top: 180px;
       display: inline-block;
-      max-width: 1060px;
-      text-align: center; }
+      max-width: 1100px;
+      text-align: center;
+      margin-top: 180px; }
       .contents-comp .contents-layer .contents-block h2 {
         margin-bottom: 60px;
         color: #505050; }
       .contents-comp .contents-layer .contents-block .contents-table {
         width: 100%; }
         .contents-comp .contents-layer .contents-block .contents-table a {
+          padding-right: 25px;
+          padding-left: 25px;
+          padding-top: 30px;
+          padding-bottom: 30px;
+          border: 1px solid;
+          border-color: #bcbcbc;
           position: relative;
-          margin: 30px;
+          margin-top: 30px;
+          margin-bottom: 30px;
+          margin-left: 25px;
+          margin-right: 25px;
           display: inline-block;
           text-decoration: none; }
           .contents-comp .contents-layer .contents-block .contents-table a .contents-img {
@@ -1002,70 +1011,6 @@ hr {
               color: #707070; }
               .contents-comp .contents-layer .contents-block .contents-table a .contents-name p:hover {
                 color: #000; }
-        @media screen and (min-width: 0px) and (max-width: 320px) {
-          .contents-comp .contents-layer .contents-block .contents-table a {
-            margin-top: 0px;
-            margin-bottom: 20px;
-            margin-left: 0px;
-            margin-right: 0px; }
-            .contents-comp .contents-layer .contents-block .contents-table a .contents-img {
-              background-color: none; }
-              .contents-comp .contents-layer .contents-block .contents-table a .contents-img img {
-                width: 100px;
-                height: 100px; }
-            .contents-comp .contents-layer .contents-block .contents-table a .contents-name {
-              margin-top: 8px; }
-              .contents-comp .contents-layer .contents-block .contents-table a .contents-name p {
-                font-size: 12px; } }
-        @media screen and (min-width: 321px) and (max-width: 414px) {
-          .contents-comp .contents-layer .contents-block .contents-table a {
-            margin-top: 0px;
-            margin-bottom: 24px;
-            margin-left: 0px;
-            margin-right: 0px; }
-            .contents-comp .contents-layer .contents-block .contents-table a .contents-img {
-              background-color: none; }
-              .contents-comp .contents-layer .contents-block .contents-table a .contents-img img {
-                width: 116px;
-                height: 116px; }
-            .contents-comp .contents-layer .contents-block .contents-table a .contents-name {
-              margin-top: 8px; }
-              .contents-comp .contents-layer .contents-block .contents-table a .contents-name p {
-                font-size: 12px; } }
-        @media screen and (min-width: 415px) and (max-width: 560px) {
-          .contents-comp .contents-layer .contents-block .contents-table {
-            max-width: 520px; }
-            .contents-comp .contents-layer .contents-block .contents-table a {
-              margin-top: 0px;
-              margin-bottom: 24px;
-              margin-left: 4px;
-              margin-right: 4px; }
-              .contents-comp .contents-layer .contents-block .contents-table a .contents-img {
-                background-color: none; }
-                .contents-comp .contents-layer .contents-block .contents-table a .contents-img img {
-                  width: 140px;
-                  height: 140px; }
-              .contents-comp .contents-layer .contents-block .contents-table a .contents-name {
-                margin-top: 8px; }
-                .contents-comp .contents-layer .contents-block .contents-table a .contents-name p {
-                  font-size: 16px; } }
-        @media screen and (min-width: 561px) and (max-width: 1024px) {
-          .contents-comp .contents-layer .contents-block .contents-table {
-            max-width: 760px; }
-            .contents-comp .contents-layer .contents-block .contents-table a {
-              margin-top: 0px;
-              margin-bottom: 24px;
-              margin-left: 4px;
-              margin-right: 4px; }
-              .contents-comp .contents-layer .contents-block .contents-table a .contents-img {
-                background-color: none; }
-                .contents-comp .contents-layer .contents-block .contents-table a .contents-img img {
-                  width: 180px;
-                  height: 180px; }
-              .contents-comp .contents-layer .contents-block .contents-table a .contents-name {
-                margin-top: 8px; }
-                .contents-comp .contents-layer .contents-block .contents-table a .contents-name p {
-                  font-size: 16px; } }
 
 @media screen and (min-width: 0px) and (max-width: 320px) {
   .contents-comp {
@@ -1074,30 +1019,153 @@ hr {
       margin-top: 60px; }
       .contents-comp .contents-layer .contents-block h2 {
         font-size: 20px;
-        margin-bottom: 28px; } }
+        margin-bottom: 28px; }
+      .contents-comp .contents-layer .contents-block .contents-table a {
+        padding: 15px;
+        border: 1px solid;
+        border-color: #bcbcbc;
+        position: relative;
+        margin-top: 0px;
+        margin-bottom: 30px;
+        margin-left: 0px;
+        margin-right: 0px;
+        display: flex;
+        text-decoration: none; }
+        .contents-comp .contents-layer .contents-block .contents-table a .contents-img {
+          background-color: #000;
+          width: 100px;
+          margin-right: auto;
+          margin-left: auto; }
+          .contents-comp .contents-layer .contents-block .contents-table a .contents-img img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            vertical-align: bottom; }
+            .contents-comp .contents-layer .contents-block .contents-table a .contents-img img:hover {
+              opacity: 0.6; }
+        .contents-comp .contents-layer .contents-block .contents-table a .contents-name {
+          margin-top: auto;
+          margin-bottom: auto;
+          margin-left: 15px; }
+          .contents-comp .contents-layer .contents-block .contents-table a .contents-name p {
+            font-size: 12px; } }
 @media screen and (min-width: 321px) and (max-width: 414px) {
   .contents-comp {
-    padding-bottom: 80px; }
+    padding-bottom: 60px; }
     .contents-comp .contents-layer .contents-block {
-      margin-top: 100px; }
+      margin-top: 60px; }
       .contents-comp .contents-layer .contents-block h2 {
-        font-size: 24px;
-        margin-bottom: 32px; } }
+        font-size: 20px;
+        margin-bottom: 28px; }
+      .contents-comp .contents-layer .contents-block .contents-table a {
+        padding: 20px;
+        border: 1px solid;
+        border-color: #bcbcbc;
+        position: relative;
+        margin-top: 0px;
+        margin-bottom: 30px;
+        margin-left: 0px;
+        margin-right: 0px;
+        display: flex;
+        text-decoration: none; }
+        .contents-comp .contents-layer .contents-block .contents-table a .contents-img {
+          background-color: #000;
+          width: 130px;
+          margin-right: auto;
+          margin-left: auto; }
+          .contents-comp .contents-layer .contents-block .contents-table a .contents-img img {
+            width: 130px;
+            height: 130px;
+            object-fit: cover;
+            vertical-align: bottom; }
+            .contents-comp .contents-layer .contents-block .contents-table a .contents-img img:hover {
+              opacity: 0.6; }
+        .contents-comp .contents-layer .contents-block .contents-table a .contents-name {
+          margin-top: auto;
+          margin-bottom: auto;
+          margin-left: 20px; }
+          .contents-comp .contents-layer .contents-block .contents-table a .contents-name p {
+            font-size: 12px; } }
 @media screen and (min-width: 415px) and (max-width: 560px) {
   .contents-comp {
-    padding-bottom: 100px; }
+    padding-bottom: 60px; }
     .contents-comp .contents-layer .contents-block {
-      margin-top: 120px; }
+      margin-top: 60px; }
       .contents-comp .contents-layer .contents-block h2 {
-        font-size: 24px;
-        margin-bottom: 40px; } }
+        font-size: 20px;
+        margin-bottom: 28px; }
+      .contents-comp .contents-layer .contents-block .contents-table a {
+        padding: 25px;
+        border: 1px solid;
+        border-color: #bcbcbc;
+        position: relative;
+        margin-top: 0px;
+        margin-bottom: 30px;
+        margin-left: 0px;
+        margin-right: 0px;
+        display: flex;
+        text-decoration: none; }
+        .contents-comp .contents-layer .contents-block .contents-table a .contents-img {
+          background-color: #000;
+          width: 150px;
+          margin-right: auto;
+          margin-left: auto; }
+          .contents-comp .contents-layer .contents-block .contents-table a .contents-img img {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            vertical-align: bottom; }
+            .contents-comp .contents-layer .contents-block .contents-table a .contents-img img:hover {
+              opacity: 0.6; }
+        .contents-comp .contents-layer .contents-block .contents-table a .contents-name {
+          margin-top: auto;
+          margin-bottom: auto;
+          margin-left: 30px;
+          margin-right: 5px; }
+          .contents-comp .contents-layer .contents-block .contents-table a .contents-name p {
+            font-size: 14px; } }
 @media screen and (min-width: 561px) and (max-width: 1024px) {
   .contents-comp {
-    padding-bottom: 120px; }
+    padding-bottom: 60px; }
     .contents-comp .contents-layer .contents-block {
-      margin-top: 140px; }
+      width: 100%;
+      margin-top: 60px; }
       .contents-comp .contents-layer .contents-block h2 {
-        margin-bottom: 40px; } }
+        font-size: 20px;
+        margin-bottom: 28px; }
+      .contents-comp .contents-layer .contents-block .contents-table {
+        width: 100%; }
+        .contents-comp .contents-layer .contents-block .contents-table a {
+          width: 25%;
+          padding-top: 20px;
+          padding-bottom: 20px;
+          padding-right: 0px;
+          padding-left: 0px;
+          border: 1px solid;
+          border-color: #bcbcbc;
+          position: relative;
+          margin-top: 0px;
+          margin-bottom: 25px;
+          margin-left: 10px;
+          margin-right: 10px;
+          text-decoration: none; }
+          .contents-comp .contents-layer .contents-block .contents-table a .contents-img {
+            background-color: #000;
+            width: 140px;
+            margin-right: auto;
+            margin-left: auto; }
+            .contents-comp .contents-layer .contents-block .contents-table a .contents-img img {
+              width: 140px;
+              height: 140px;
+              object-fit: cover;
+              vertical-align: bottom; }
+              .contents-comp .contents-layer .contents-block .contents-table a .contents-img img:hover {
+                opacity: 0.6; }
+          .contents-comp .contents-layer .contents-block .contents-table a .contents-name {
+            margin-top: 20px;
+            margin-bottom: 0px; }
+            .contents-comp .contents-layer .contents-block .contents-table a .contents-name p {
+              font-size: 16px; } }
 /* -------------------- design個別ページ --------------------*/
 .background-color {
   background-color: #efefef; }
@@ -1306,7 +1374,7 @@ hr {
     .project-comp .project-layer .project-block {
       margin-top: 180px;
       display: inline-block;
-      max-width: 1060px;
+      max-width: 1100px;
       text-align: center; }
       .project-comp .project-layer .project-block h2 {
         margin-bottom: 60px;
@@ -1389,7 +1457,7 @@ hr {
         font-size: 20px;
         margin-bottom: 28px; }
       .project-comp .project-layer .project-block .project-table a {
-        padding: 25px;
+        padding: 20px;
         border: 1px solid;
         border-color: #bcbcbc;
         position: relative;
@@ -1414,9 +1482,9 @@ hr {
         .project-comp .project-layer .project-block .project-table a .project-name {
           margin-top: auto;
           margin-bottom: auto;
-          margin-left: 25px; }
+          margin-left: 20px; }
           .project-comp .project-layer .project-block .project-table a .project-name p {
-            font-size: 14px; } }
+            font-size: 12px; } }
 @media screen and (min-width: 415px) and (max-width: 560px) {
   .project-comp {
     padding-bottom: 60px; }
@@ -1467,7 +1535,7 @@ hr {
       .project-comp .project-layer .project-block .project-table {
         width: 100%; }
         .project-comp .project-layer .project-block .project-table a {
-          width: 30%;
+          width: 25%;
           padding-top: 20px;
           padding-bottom: 20px;
           padding-right: 0px;
@@ -1476,7 +1544,7 @@ hr {
           border-color: #bcbcbc;
           position: relative;
           margin-top: 0px;
-          margin-bottom: 0px;
+          margin-bottom: 25px;
           margin-left: 10px;
           margin-right: 10px;
           text-decoration: none; }
