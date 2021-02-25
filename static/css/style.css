@@ -21,7 +21,8 @@ html {
 
 body {
   font-size: 1.8rem;
-  overflow: auto; }
+  overflow: auto;
+  background-color: #efefef; }
 
 @media screen and (min-width: 0px) and (max-width: 320px) {
   h1 {
@@ -570,7 +571,7 @@ hr {
         height: 180px;
         background-color: #000; }
 
-@media screen and (min-width: 0px) and (max-width: 560px) {
+@media screen and (min-width: 0px) and (max-width: 320px) {
   .works {
     width: 100%; }
     .works h2 {
@@ -835,16 +836,16 @@ hr {
           display: inline-block;
           background-color: #000; }
           .article-comp .article-layer .article-block .article-table a img {
-            width: 260px;
-            height: 260px;
+            width: 250px;
+            height: 250px;
             object-fit: cover;
             vertical-align: bottom; }
             .article-comp .article-layer .article-block .article-table a img:hover {
               opacity: 0.6; }
           .article-comp .article-layer .article-block .article-table a .illustration-name {
             background-color: black;
-            width: 260px;
-            height: 260px;
+            width: 250px;
+            height: 250px;
             position: absolute;
             top: 50%;
             left: 50%;
@@ -989,8 +990,8 @@ hr {
           .contents-comp .contents-layer .contents-block .contents-table a .contents-img {
             background-color: #000; }
             .contents-comp .contents-layer .contents-block .contents-table a .contents-img img {
-              width: 260px;
-              height: 260px;
+              width: 250px;
+              height: 250px;
               object-fit: cover;
               vertical-align: bottom; }
               .contents-comp .contents-layer .contents-block .contents-table a .contents-img img:hover {
@@ -1278,6 +1279,405 @@ hr {
         color: #505050;
         margin-bottom: 8px; }
       .background-color .contents-entire .contents-right p {
+        font-size: 16px;
+        color: #707070;
+        margin-bottom: 40px; } }
+/* -------------------- develop --------------------*/
+.develop {
+  background-image: url("../images/HP_thumbnail_develop.jpg");
+  background-repeat: no-repeat;
+  background-size: 100% auto;
+  background-attachment: fixed; }
+  @media screen and (min-width: 0px) and (max-width: 560px) {
+    .develop {
+      background-position: 0px 40px;
+      background-attachment: scroll; } }
+  @media screen and (min-width: 561px) and (max-width: 1024px) {
+    .develop {
+      background-attachment: scroll; } }
+
+.project-comp {
+  padding-bottom: 180px;
+  background-color: #efefef; }
+  .project-comp .project-layer {
+    width: 100%;
+    text-align: center;
+    background-color: #efefef; }
+    .project-comp .project-layer .project-block {
+      margin-top: 180px;
+      display: inline-block;
+      max-width: 1060px;
+      text-align: center; }
+      .project-comp .project-layer .project-block h2 {
+        margin-bottom: 60px;
+        color: #505050; }
+      .project-comp .project-layer .project-block .project-table {
+        width: 100%; }
+        .project-comp .project-layer .project-block .project-table a {
+          padding-right: 25px;
+          padding-left: 25px;
+          padding-top: 30px;
+          padding-bottom: 30px;
+          border: 1px solid;
+          border-color: #bcbcbc;
+          position: relative;
+          margin-top: 30px;
+          margin-bottom: 30px;
+          margin-left: 25px;
+          margin-right: 25px;
+          display: inline-block;
+          text-decoration: none; }
+          .project-comp .project-layer .project-block .project-table a .project-img {
+            background-color: #000; }
+            .project-comp .project-layer .project-block .project-table a .project-img img {
+              width: 250px;
+              height: 250px;
+              object-fit: cover;
+              vertical-align: bottom; }
+              .project-comp .project-layer .project-block .project-table a .project-img img:hover {
+                opacity: 0.6; }
+          .project-comp .project-layer .project-block .project-table a .project-name {
+            margin-top: 28px; }
+            .project-comp .project-layer .project-block .project-table a .project-name p {
+              color: #707070; }
+              .project-comp .project-layer .project-block .project-table a .project-name p:hover {
+                color: #000; }
+
+@media screen and (min-width: 0px) and (max-width: 320px) {
+  .project-comp {
+    padding-bottom: 60px; }
+    .project-comp .project-layer .project-block {
+      margin-top: 60px; }
+      .project-comp .project-layer .project-block h2 {
+        font-size: 20px;
+        margin-bottom: 28px; }
+      .project-comp .project-layer .project-block .project-table a {
+        padding: 15px;
+        border: 1px solid;
+        border-color: #bcbcbc;
+        position: relative;
+        margin-top: 0px;
+        margin-bottom: 30px;
+        margin-left: 0px;
+        margin-right: 0px;
+        display: flex;
+        text-decoration: none; }
+        .project-comp .project-layer .project-block .project-table a .project-img {
+          background-color: #000;
+          width: 100px;
+          margin-right: auto;
+          margin-left: auto; }
+          .project-comp .project-layer .project-block .project-table a .project-img img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            vertical-align: bottom; }
+            .project-comp .project-layer .project-block .project-table a .project-img img:hover {
+              opacity: 0.6; }
+        .project-comp .project-layer .project-block .project-table a .project-name {
+          margin-top: auto;
+          margin-bottom: auto;
+          margin-left: 15px; }
+          .project-comp .project-layer .project-block .project-table a .project-name p {
+            font-size: 12px; } }
+@media screen and (min-width: 321px) and (max-width: 414px) {
+  .project-comp {
+    padding-bottom: 60px; }
+    .project-comp .project-layer .project-block {
+      margin-top: 60px; }
+      .project-comp .project-layer .project-block h2 {
+        font-size: 20px;
+        margin-bottom: 28px; }
+      .project-comp .project-layer .project-block .project-table a {
+        padding: 25px;
+        border: 1px solid;
+        border-color: #bcbcbc;
+        position: relative;
+        margin-top: 0px;
+        margin-bottom: 30px;
+        margin-left: 0px;
+        margin-right: 0px;
+        display: flex;
+        text-decoration: none; }
+        .project-comp .project-layer .project-block .project-table a .project-img {
+          background-color: #000;
+          width: 130px;
+          margin-right: auto;
+          margin-left: auto; }
+          .project-comp .project-layer .project-block .project-table a .project-img img {
+            width: 130px;
+            height: 130px;
+            object-fit: cover;
+            vertical-align: bottom; }
+            .project-comp .project-layer .project-block .project-table a .project-img img:hover {
+              opacity: 0.6; }
+        .project-comp .project-layer .project-block .project-table a .project-name {
+          margin-top: auto;
+          margin-bottom: auto;
+          margin-left: 25px; }
+          .project-comp .project-layer .project-block .project-table a .project-name p {
+            font-size: 14px; } }
+@media screen and (min-width: 415px) and (max-width: 560px) {
+  .project-comp {
+    padding-bottom: 60px; }
+    .project-comp .project-layer .project-block {
+      margin-top: 60px; }
+      .project-comp .project-layer .project-block h2 {
+        font-size: 20px;
+        margin-bottom: 28px; }
+      .project-comp .project-layer .project-block .project-table a {
+        padding: 25px;
+        border: 1px solid;
+        border-color: #bcbcbc;
+        position: relative;
+        margin-top: 0px;
+        margin-bottom: 30px;
+        margin-left: 0px;
+        margin-right: 0px;
+        display: flex;
+        text-decoration: none; }
+        .project-comp .project-layer .project-block .project-table a .project-img {
+          background-color: #000;
+          width: 150px;
+          margin-right: auto;
+          margin-left: auto; }
+          .project-comp .project-layer .project-block .project-table a .project-img img {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            vertical-align: bottom; }
+            .project-comp .project-layer .project-block .project-table a .project-img img:hover {
+              opacity: 0.6; }
+        .project-comp .project-layer .project-block .project-table a .project-name {
+          margin-top: auto;
+          margin-bottom: auto;
+          margin-left: 30px;
+          margin-right: 5px; }
+          .project-comp .project-layer .project-block .project-table a .project-name p {
+            font-size: 14px; } }
+@media screen and (min-width: 561px) and (max-width: 1024px) {
+  .project-comp {
+    padding-bottom: 60px; }
+    .project-comp .project-layer .project-block {
+      width: 100%;
+      margin-top: 60px; }
+      .project-comp .project-layer .project-block h2 {
+        font-size: 20px;
+        margin-bottom: 28px; }
+      .project-comp .project-layer .project-block .project-table {
+        width: 100%; }
+        .project-comp .project-layer .project-block .project-table a {
+          width: 30%;
+          padding-top: 20px;
+          padding-bottom: 20px;
+          padding-right: 0px;
+          padding-left: 0px;
+          border: 1px solid;
+          border-color: #bcbcbc;
+          position: relative;
+          margin-top: 0px;
+          margin-bottom: 0px;
+          margin-left: 10px;
+          margin-right: 10px;
+          text-decoration: none; }
+          .project-comp .project-layer .project-block .project-table a .project-img {
+            background-color: #000;
+            width: 140px;
+            margin-right: auto;
+            margin-left: auto; }
+            .project-comp .project-layer .project-block .project-table a .project-img img {
+              width: 140px;
+              height: 140px;
+              object-fit: cover;
+              vertical-align: bottom; }
+              .project-comp .project-layer .project-block .project-table a .project-img img:hover {
+                opacity: 0.6; }
+          .project-comp .project-layer .project-block .project-table a .project-name {
+            margin-top: 20px;
+            margin-bottom: 0px; }
+            .project-comp .project-layer .project-block .project-table a .project-name p {
+              font-size: 16px; } }
+/* -------------------- develop個別ページ --------------------*/
+.background-color {
+  background-color: #efefef; }
+  .background-color .project-entire {
+    max-width: 70%;
+    margin: 0 auto;
+    padding-top: 180px;
+    padding-bottom: 180px;
+    display: flex; }
+    .background-color .project-entire .iphone-title {
+      display: none; }
+    .background-color .project-entire .project-left {
+      width: 600px; }
+      .background-color .project-entire .project-left img {
+        width: 600px;
+        margin-bottom: 60px; }
+    .background-color .project-entire .project-right {
+      margin-left: 100px; }
+      .background-color .project-entire .project-right h3 {
+        font-size: 24px;
+        color: #505050;
+        margin-bottom: 16px; }
+      .background-color .project-entire .project-right h4 {
+        font-size: 20px;
+        color: #505050;
+        margin-bottom: 8px; }
+      .background-color .project-entire .project-right p {
+        font-size: 16px;
+        color: #707070; }
+
+@media screen and (min-width: 0px) and (max-width: 320px) {
+  .background-color .project-entire {
+    max-width: 100%;
+    display: block;
+    text-align: center;
+    padding-top: 68px;
+    padding-bottom: 60px; }
+    .background-color .project-entire .iphone-title {
+      display: inline; }
+      .background-color .project-entire .iphone-title h3 {
+        max-width: 80%;
+        margin: 0 auto;
+        font-size: 16px;
+        margin-bottom: 28px;
+        color: #505050; }
+    .background-color .project-entire .project-left {
+      width: 100%; }
+      .background-color .project-entire .project-left a {
+        display: inline-block;
+        position: relative;
+        width: 256px; }
+        .background-color .project-entire .project-left a img {
+          width: 256px;
+          object-fit: cover;
+          vertical-align: bottom;
+          margin-bottom: 20px; }
+    .background-color .project-entire .project-right {
+      max-width: 80%;
+      margin: 0 auto; }
+      .background-color .project-entire .project-right h3 {
+        display: none; }
+      .background-color .project-entire .project-right h4 {
+        font-size: 14px;
+        color: #505050;
+        margin-bottom: 8px; }
+      .background-color .project-entire .project-right p {
+        font-size: 12px;
+        color: #707070; } }
+@media screen and (min-width: 321px) and (max-width: 414px) {
+  .background-color .project-entire {
+    max-width: 100%;
+    display: block;
+    text-align: center;
+    padding-top: 80px;
+    padding-bottom: 80px; }
+    .background-color .project-entire .iphone-title {
+      display: inline; }
+      .background-color .project-entire .iphone-title h3 {
+        max-width: 80%;
+        margin: 0 auto;
+        font-size: 16px;
+        margin-bottom: 28px;
+        color: #505050; }
+    .background-color .project-entire .project-left {
+      width: 100%; }
+      .background-color .project-entire .project-left a {
+        display: inline-block;
+        position: relative;
+        width: 256px; }
+        .background-color .project-entire .project-left a img {
+          width: 256px;
+          object-fit: cover;
+          vertical-align: bottom;
+          margin-bottom: 20px; }
+    .background-color .project-entire .project-right {
+      max-width: 80%;
+      margin: 0 auto; }
+      .background-color .project-entire .project-right h3 {
+        display: none; }
+      .background-color .project-entire .project-right h4 {
+        font-size: 14px;
+        color: #505050;
+        margin-bottom: 8px; }
+      .background-color .project-entire .project-right p {
+        font-size: 12px;
+        color: #707070; } }
+@media screen and (min-width: 415px) and (max-width: 1260px) {
+  .background-color .project-entire {
+    max-width: 100%;
+    display: block;
+    text-align: center;
+    padding-top: 100px;
+    padding-bottom: 100px; }
+    .background-color .project-entire .iphone-title {
+      display: inline; }
+      .background-color .project-entire .iphone-title h3 {
+        max-width: 80%;
+        margin: 0 auto;
+        font-size: 20px;
+        margin-bottom: 28px;
+        color: #505050; }
+    .background-color .project-entire .project-left {
+      width: 100%; }
+      .background-color .project-entire .project-left a {
+        display: inline-block;
+        position: relative;
+        width: 400px; }
+        .background-color .project-entire .project-left a img {
+          width: 400px;
+          object-fit: cover;
+          vertical-align: bottom;
+          margin-bottom: 20px; }
+    .background-color .project-entire .project-right {
+      max-width: 80%;
+      margin: 0 auto; }
+      .background-color .project-entire .project-right h3 {
+        display: none; }
+      .background-color .project-entire .project-right h4 {
+        font-size: 16px;
+        color: #505050;
+        margin-bottom: 8px; }
+      .background-color .project-entire .project-right p {
+        font-size: 14px;
+        color: #707070; } }
+@media screen and (min-width: 561px) and (max-width: 1024px) {
+  .background-color .project-entire {
+    max-width: 100%;
+    display: block;
+    text-align: center;
+    padding-top: 120px;
+    padding-bottom: 120px; }
+    .background-color .project-entire .iphone-title {
+      display: inline; }
+      .background-color .project-entire .iphone-title h3 {
+        max-width: 80%;
+        margin: 0 auto;
+        font-size: 20px;
+        margin-bottom: 40px;
+        color: #505050; }
+    .background-color .project-entire .project-left {
+      width: 100%; }
+      .background-color .project-entire .project-left a {
+        display: inline-block;
+        position: relative;
+        width: 520px; }
+        .background-color .project-entire .project-left a img {
+          width: 520px;
+          object-fit: cover;
+          vertical-align: bottom;
+          margin-bottom: 40px; }
+    .background-color .project-entire .project-right {
+      max-width: 80%;
+      margin: 0 auto;
+      margin-top: 40px; }
+      .background-color .project-entire .project-right h3 {
+        display: none; }
+      .background-color .project-entire .project-right h4 {
+        font-size: 20px;
+        color: #505050;
+        margin-bottom: 8px; }
+      .background-color .project-entire .project-right p {
         font-size: 16px;
         color: #707070;
         margin-bottom: 40px; } }

@@ -36,5 +36,20 @@ def contents_30days(contents_id):
     contents = contents_list["30days_UI_Challenge"][int(contents_id)]
     return render_template('/designpages/contents.html', contents=contents)
 
+@app.route('/develop.html')
+def develop():
+    project_json_path = os.path.join(app.static_folder, 'json/project.json')
+    with open(project_json_path) as project_json_file:
+        project_list = json.load(project_json_file)
+    return render_template('develop.html', project_list=project_list)
+
+@app.route('/developpages/<project_id>.html')
+def project_web(project_id):
+    project_json_path = os.path.join(app.static_folder, 'json/project.json')
+    with open(project_json_path) as project_json_file:
+        project_list = json.load(project_json_file)
+    project = project_list["WEBサイト"][int(project_id)]
+    return render_template('/developpages/project.html', project=project)
+
 if __name__ == '__main__':
     app.run(debug=True)

@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="thumbnail develop">
+</div>
+
+<div class="project-comp">
+    <div class="project-layer">
+        <div class="project-block">
+            <h2>
+                WEBサイト
+            </h2>
+            <div class="project-table">
+                {% for project in project_list['WEBサイト'] %}
+                    <a href="{{ url_for('project_web', project_id=loop.index0) }}">
+                        <div class="project-img">
+                            <img src="{{ url_for('static', filename='images/project/'+project.filename) }}">
+                        </div>
+                        <div class="project-name">
+                            <p>{{ project.name }}</p>
+                        </div>
+                    </a>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

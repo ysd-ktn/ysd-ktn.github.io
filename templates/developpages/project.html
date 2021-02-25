@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="background-color">
+    <div class="project-entire">
+        <div class="iphone-title">
+            <h3>{{ project.title }}</h3>
+        </div>
+        <div class="project-left">
+            {% for img  in project['img'] %}
+            <a href="{{ url_for('static', filename='images/project/'+img) }}" data-lightbox="project-contents" data-title="">
+                <img src="{{ url_for('static', filename='images/project/'+img) }}">
+            </a>
+            {% endfor %}
+        </div>
+        <div class="project-right">
+            <h3>{{ project.title }}</h3>
+            <br>
+            <h4>作品概要</h4>
+            <p>{{ project.summary }}</p>
+            <br>
+            <p>作品リンク</p><p><a href="{{ project.link }}" target="_blank" rel=”noopener” rel=”noreferrer”>{{ project.link }}</a></p>
+            <br>
+            <h4>工夫点</h4>
+            <p>{{ project.ingenious1 }}</p>
+            <p>{{ project.ingenious2 }}</p>
+            <p>{{ project.ingenious3 }}</p>
+            <p>{{ project.ingenious4 }}</p>
+            <p>{{ project.ingenious5 }}</p>
+            <br>
+            <h4>使用スキル, ツール</h4>
+            <p>{{ project.hosting }}</p>
+            <p>{{ project.frame }}</p>
+            <p>{{ project.other }}</p>
+            <p>{{ project.skill }}</p>
+            <br>
+            <h4>ソースコード</h4>
+            <p><a href="{{ project.github }}" target="_blank" rel=”noopener” rel=”noreferrer”>{{ project.github }}</a></p>
+            <br>
+            <h4>モックアップ</h4>
+            <p><a href="{{ project.mockup }}" target="_blank" rel=”noopener” rel=”noreferrer”>{{ project.mockup }}</a></p>
+            <br>
+            <h4>制作日</h4>
+            <p>{{ project.date }}</p>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
