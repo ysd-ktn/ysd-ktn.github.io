@@ -1585,6 +1585,8 @@ hr {
     .background-color .project-entire .project-left {
       width: 600px; }
       .background-color .project-entire .project-left img {
+        border: 1px solid;
+        border-color: #bcbcbc;
         width: 600px;
         margin-bottom: 60px; }
     .background-color .project-entire .project-right {
