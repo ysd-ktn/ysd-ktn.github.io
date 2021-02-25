@@ -10,4 +10,5 @@ python "${base}/freeze.py"
 
 mv $build/*.html $base
 mv $build/designpages/*.html $base/designpages
+mv $build/developpages/*.html $base/developpages
 rm -rf $build
