@@ -137,7 +137,10 @@ body {
     margin-left: 100px;
     height: 31.94px; }
     .navbar-wrapper .navbar-logo img {
+      opacity: 0.8;
       width: 32px; }
+      .navbar-wrapper .navbar-logo img:hover {
+        opacity: 1; }
   .navbar-wrapper .navbar-list {
     margin: 0 0 0 auto; }
     .navbar-wrapper .navbar-list .navbar-item {
@@ -713,7 +716,10 @@ hr {
       margin-top: auto;
       margin-bottom: auto; }
       .footer-wrapper .footer-left .footer-logo img {
+        opacity: 0.7;
         width: 40px; }
+        .footer-wrapper .footer-left .footer-logo img:hover {
+          opacity: 1; }
     .footer-wrapper .footer-left p {
       line-height: 60px;
       margin-left: 40px;
