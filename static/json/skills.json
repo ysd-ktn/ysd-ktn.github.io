@@ -1,12 +1,12 @@
 {
     "skills":[
-        {"name": "Adobe XD", "filename": "xd.png", "star": "star3.png", "text": "デザインだけでなく、プロトタイプの作成まで問題なく行うことができます。"},
-        {"name": "Figma", "filename": "figma.png", "star": "star3.png", "text": "自分のホームページのモックアップを作成しました。基本操作は問題なく行えます。"},
-        {"name": "Adobe Photoshop", "filename": "photoshop.png", "star": "star2.png", "text": "写真やアイコン加工に頻繁に使用します。そのため基本的な操作は理解できています。"},
-        {"name": "Adobe Illustrator", "filename": "illustrator.png", "star": "star2.png", "text": "アイコンやイラストの制作に使用しています。基本的な操作は理解できています。"},
+        {"name": "Figma", "filename": "figma.png", "star": "star5.png", "text": "デザイン作成の際に使用する頻度が最も高いツールです。デザインだけでなくアニメーション、プロトタイプの作成まで行うことができます。"},
+        {"name": "Adobe XD", "filename": "xd.png", "star": "star4.png", "text": "デザインだけでなく、プロトタイプの作成まで問題なく行うことができます。"},
+        {"name": "Adobe Photoshop", "filename": "photoshop.png", "star": "star3.png", "text": "写真やアイコン加工に頻繁に使用します。そのため基本的な操作は理解できています。"},
+        {"name": "Adobe Illustrator", "filename": "illustrator.png", "star": "star3.png", "text": "アイコンやイラストの制作に使用しており、基本的な操作は理解できています。リファレンスを見ながら使用することが多いです。"},
         {"name": "HTML&CSS", "filename": "html&css.png", "star": "star4.png", "text": "レスポンシブ対応したサイトを制作できます。"},
         {"name": "Adobe Indesign", "filename": "indesign.png", "star": "star4.png", "text": "フリーペーパーの制作で使用したことがあります。十分に使用できます。"},
-        {"name": "Adobe Premiere Pro", "filename": "premierepro.png", "star": "star3.png", "text": "youtubeに投稿している動画の編集に使用しています。"},
+        {"name": "Adobe Premiere Pro", "filename": "premierepro.png", "star": "star3.png", "text": "youtubeに投稿している動画の編集に使用しています。字幕をつけたりシェイプを作成したりなどの簡単な編集を行うことができます。"},
         {"name": "Adobe After Effects", "filename": "aftereffects.png", "star": "star2.png", "text": "単純なモーショングラフィックスを何度か制作した経験があります。"}
     ]
 }
