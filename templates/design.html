@@ -8,11 +8,30 @@
     <div class="contents-layer">
         <div class="contents-block">
             <h2>
+                Internship
+            </h2>
+            <div class="contents-table">
+                {% for contents in contents_list['Internship'] %}
+                    <a href="{{ url_for('internship', contents_id=loop.index0) }}">
+                        <div class="contents-img">
+                            <img src="{{ url_for('static', filename='images/contents/'+contents.filename) }}">
+                        </div>
+                        <div class="contents-name">
+                            <p>{{ contents.name }}</p>
+                        </div>
+                    </a>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <div class="contents-layer">
+        <div class="contents-block">
+            <h2>
                 30days UI Challenge
             </h2>
             <div class="contents-table">
                 {% for contents in contents_list['30days_UI_Challenge'] %}
-                    <a href="{{ url_for('contents_30days', contents_id=loop.index0) }}">
+                    <a href="{{ url_for('uichallenge', contents_id=loop.index0) }}">
                         <div class="contents-img">
                             <img src="{{ url_for('static', filename='images/contents/'+contents.filename) }}">
                         </div>

@@ -28,8 +28,16 @@ def design():
         contents_list = json.load(contents_json_file)
     return render_template('design.html', contents_list=contents_list)
 
-@app.route('/designpages/<contents_id>.html')
-def contents_30days(contents_id):
+@app.route('/internship/<contents_id>.html')
+def internship(contents_id):
+    contents_json_path = os.path.join(app.static_folder, 'json/contents.json')
+    with open(contents_json_path) as contents_json_file:
+        contents_list = json.load(contents_json_file)
+    contents = contents_list["Internship"][int(contents_id)]
+    return render_template('/designpages/contents.html', contents=contents)
+
+@app.route('/uichallenge/<contents_id>.html')
+def uichallenge(contents_id):
     contents_json_path = os.path.join(app.static_folder, 'json/contents.json')
     with open(contents_json_path) as contents_json_file:
         contents_list = json.load(contents_json_file)
