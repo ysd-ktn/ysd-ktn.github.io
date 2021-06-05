@@ -1,6 +1,6 @@
 {
     "Internship":[
-        {"name": "UIDA18期 パズルゲームアプリ", "filename": "uida.png", "img": ["uida1.jpg", "uida2.jpg", "uida3.jpg", "uida4.jpg", "uida5.jpg", "uida6.jpg"], "title": "謎解き×パズルゲーム「Escape51」", "summary": "サイバーエージェントUI DESIGN ACADEMY18期の課題で制作したパズルゲームアプリです。アイデア賞をいただきました。企画、設計、UIデザインの制作を行いました。", "link": "https://youtu.be/lHkmA8CYSDY", "skill": "illustrator, Figma", "date": "2021/05/21〜2021/05/23"}
+        {"name": "UIDA18期", "filename": "uida.png", "img": ["uida1.jpg", "uida2.jpg", "uida3.jpg", "uida4.jpg", "uida5.jpg", "uida6.jpg"], "title": "謎解き×パズルゲーム「Escape51」", "summary": "サイバーエージェントUI DESIGN ACADEMY18期の課題で制作したパズルゲームアプリです。アイデア賞をいただきました。企画、設計、UIデザインの制作を行いました。", "link": "https://youtu.be/lHkmA8CYSDY", "skill": "illustrator, Figma", "date": "2021/05/21〜2021/05/23"}
     ], 
     "30days_UI_Challenge":[
         {"name": "#1 profile", "filename": "day1.png", "img": ["day1_1.png", "day1_2.png"], "title": "整理と発表を同時にできる作品投稿アプリ", "summary": "ニューモフィズムを用いることで、スタイリッシュ且つ作品を際立たせるためのシンプルさを表現。作品へのアクセスを容易にするため、全体検索の際だけでなくプロフィール内でのタグ検索を可能にした。", "skill": "photoshop, xd", "date": "2020/08/03"},
