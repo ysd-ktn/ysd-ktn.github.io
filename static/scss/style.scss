@@ -585,6 +585,97 @@ hr{
     }   
 }
 
+/* -------------------- career -------------------- */
+.career{
+    margin-bottom: 200px;
+    .career-table{
+        max-width: 1060px;
+        margin: 0 auto;
+        .career-contents{
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+
+            .left-contents{
+                width: 45%;
+
+                .education {
+                    .title{
+                        hr{
+                            margin-left: 0px;
+                            margin-right: 0px;
+                            background-color:  #1C7D9E;
+                        }
+                        display: flex;
+                        h4{
+                            display: inline-block;
+                            border: 2px solid #1C7D9E;
+                            color: #505050;
+                            padding: 10px;
+                        }
+                    }
+                    margin-top: 10%;
+                    margin-left: 10%;
+                    text-align: left;
+
+                    .individual-contents{
+                        margin-left: 10%;
+                        margin-top: 20px;
+
+                        p{
+                            color: #707070;
+                            font-size: 18px;
+                        }
+                        h1{
+                            color: #707070;
+                            font-size: 18px;
+                        }
+                    }
+                }
+            }
+            .right-contents{
+                width: 45%;
+
+                .work-experiences{
+                    .title{
+                        hr{
+                            width: 100px;
+                            margin-left: 0px;
+                            margin-right: 0px;
+                            background-color: #F1A640;
+                        }
+                        display: flex;
+                        h4{
+                            display: inline-block;
+                            border: 2px solid #F1A640;
+                            color: #505050;
+                            padding: 10px;
+                        }
+                    }
+                    text-align: left;
+                    margin-top: 72%;
+                    .detail-contents{
+                        margin-left: 25%;
+                        .individual-contents{
+                            margin-left: 10%;
+                            margin-top: 20px;
+    
+                            p{
+                                color: #707070;
+                                font-size: 18px;
+                            }
+                            h1{
+                                color: #707070;
+                                font-size: 18px;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
 /* -------------------- skills -------------------- */
 $pc_skills_img_width_height: 60px;
 

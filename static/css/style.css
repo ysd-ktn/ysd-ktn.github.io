@@ -422,6 +422,71 @@ hr {
           font-size: 24px; }
         .about .about-contents .about-texts .texts-contents p {
           font-size: 16px; } }
+/* -------------------- career -------------------- */
+.career {
+  margin-bottom: 200px; }
+  .career .career-table {
+    max-width: 1060px;
+    margin: 0 auto; }
+    .career .career-table .career-contents {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center; }
+      .career .career-table .career-contents .left-contents {
+        width: 45%; }
+        .career .career-table .career-contents .left-contents .education {
+          margin-top: 10%;
+          margin-left: 10%;
+          text-align: left; }
+          .career .career-table .career-contents .left-contents .education .title {
+            display: flex; }
+            .career .career-table .career-contents .left-contents .education .title hr {
+              margin-left: 0px;
+              margin-right: 0px;
+              background-color: #1C7D9E; }
+            .career .career-table .career-contents .left-contents .education .title h4 {
+              display: inline-block;
+              border: 2px solid #1C7D9E;
+              color: #505050;
+              padding: 10px; }
+          .career .career-table .career-contents .left-contents .education .individual-contents {
+            margin-left: 10%;
+            margin-top: 20px; }
+            .career .career-table .career-contents .left-contents .education .individual-contents p {
+              color: #707070;
+              font-size: 18px; }
+            .career .career-table .career-contents .left-contents .education .individual-contents h1 {
+              color: #707070;
+              font-size: 18px; }
+      .career .career-table .career-contents .right-contents {
+        width: 45%; }
+        .career .career-table .career-contents .right-contents .work-experiences {
+          text-align: left;
+          margin-top: 72%; }
+          .career .career-table .career-contents .right-contents .work-experiences .title {
+            display: flex; }
+            .career .career-table .career-contents .right-contents .work-experiences .title hr {
+              width: 100px;
+              margin-left: 0px;
+              margin-right: 0px;
+              background-color: #F1A640; }
+            .career .career-table .career-contents .right-contents .work-experiences .title h4 {
+              display: inline-block;
+              border: 2px solid #F1A640;
+              color: #505050;
+              padding: 10px; }
+          .career .career-table .career-contents .right-contents .work-experiences .detail-contents {
+            margin-left: 25%; }
+            .career .career-table .career-contents .right-contents .work-experiences .detail-contents .individual-contents {
+              margin-left: 10%;
+              margin-top: 20px; }
+              .career .career-table .career-contents .right-contents .work-experiences .detail-contents .individual-contents p {
+                color: #707070;
+                font-size: 18px; }
+              .career .career-table .career-contents .right-contents .work-experiences .detail-contents .individual-contents h1 {
+                color: #707070;
+                font-size: 18px; }
+
 /* -------------------- skills -------------------- */
 .skills {
   margin-bottom: 200px; }
