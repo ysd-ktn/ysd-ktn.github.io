@@ -3,6 +3,9 @@ import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import Hero from '../components/Hero.astro';
 import About from '../components/About.astro';
+import Writing from '../components/Writing.astro';
+import Contact from '../components/Contact.astro';
+import Footer from '../components/Footer.astro';
 ---
 
 <Layout title="YOSHIDA KOTONE — UI Designer">
@@ -10,8 +13,11 @@ import About from '../components/About.astro';
   <main>
     <Hero />
     <About />
-    {/*
-      Phase 4 残: Writing / Contact / Footer / Cursor
-    */}
+    <Writing />
+    <Contact />
   </main>
+  <Footer />
+  {/*
+    Phase 4 残: Cursor
+  */}
 </Layout>

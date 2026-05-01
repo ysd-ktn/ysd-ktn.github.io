@@ -1,0 +1,94 @@
+---
+// Footer — 画面下固定ステータスバー (cyber HUD 風)
+//
+// モックアップ `_mockups/option-1-cyber-v2-writing-grid.html` の .status-bar を分解。
+// 表示要素 (左→右):
+//   ● ONLINE · BUILD MMDD.YYYY    ← ● は 1.4s で blink
+//   CURSOR · XXXX,XXXX            ← mousemove で更新
+//   UTC HH:MM:SS                  ← 1s ごとに更新
+//   VIEWPORT · W×H                ← 1s tick + resize で更新
+//
+// 注意: 装飾的な HUD なので aria-hidden="true" にしてスクリーンリーダから除外。
+// 各 id は "status-" prefix を付けて Phase 4-5 (Cursor.astro) との衝突を回避。
+
+interface Props {
+  /** "BUILD MMDD.YYYY" の表示。 省略時はビルド時の日付から自動生成 */
+  buildDate?: string;
+}
+
+function formatBuildDate(d = new Date()): string {
+  const mm = String(d.getMonth() + 1).padStart(2, '0');
+  const dd = String(d.getDate()).padStart(2, '0');
+  const yyyy = String(d.getFullYear());
+  return `${mm}${dd}.${yyyy}`;
+}
+
+const { buildDate = formatBuildDate() } = Astro.props;
+---
+
+<footer class="status-bar" aria-hidden="true">
+  <span><span class="blink">●</span> ONLINE · BUILD {buildDate}</span>
+  <span id="status-coords">CURSOR · 0000,0000</span>
+  <span id="status-utc">UTC --:--:--</span>
+  <span>VIEWPORT · <span id="status-vw">0</span>×<span id="status-vh">0</span></span>
+</footer>
+
+<script>
+  // CURSOR 座標 — mousemove で 4桁ゼロ埋め
+  const coordsEl = document.getElementById('status-coords');
+  if (coordsEl) {
+    document.addEventListener(
+      'mousemove',
+      (e) => {
+        const x = String(e.clientX).padStart(4, '0');
+        const y = String(e.clientY).padStart(4, '0');
+        coordsEl.textContent = `CURSOR · ${x},${y}`;
+      },
+      { passive: true }
+    );
+  }
+
+  // UTC 時刻 + viewport — 1秒ごとの tick で更新
+  const utcEl = document.getElementById('status-utc');
+  const vwEl = document.getElementById('status-vw');
+  const vhEl = document.getElementById('status-vh');
+  function tick() {
+    if (utcEl) {
+      utcEl.textContent = 'UTC ' + new Date().toISOString().substring(11, 19);
+    }
+    if (vwEl) vwEl.textContent = String(window.innerWidth);
+    if (vhEl) vhEl.textContent = String(window.innerHeight);
+  }
+  tick();
+  setInterval(tick, 1000);
+  // 1秒待たず resize 即時反映
+  window.addEventListener('resize', tick, { passive: true });
+</script>
+
+<style>
+  .status-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--bg);
+    border-top: 1px solid var(--line);
+    padding: 8px 32px;
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--dim);
+    letter-spacing: 0.1em;
+    z-index: 50;
+  }
+  .status-bar .blink {
+    color: var(--accent);
+    animation: blink 1.4s steps(2) infinite;
+  }
+  @keyframes blink {
+    50% {
+      opacity: 0;
+    }
+  }
+</style>

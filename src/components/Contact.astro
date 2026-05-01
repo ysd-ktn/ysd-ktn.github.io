@@ -1,0 +1,157 @@
+---
+// Contact — key/value リスト (EMAIL / X / INSTAGRAM / GITHUB)
+//
+// モックアップ `_mockups/option-1-cyber-v2-writing-grid.html` の section#contact を分解。
+// 各行は 3 カラムグリッド: [ LABEL ] / 値 (リンク) / → COPY or → EXTERNAL
+//
+// action 種別:
+//   - 'copy'     : クリックでクリップボードへ value をコピー (主に mailto 行)
+//   - 'external' : 外部リンク (target="_blank")。ext は装飾のみ
+// 省略時は href が "mailto:" で始まれば copy、それ以外は external として扱う。
+
+interface ContactEntry {
+  /** "[ EMAIL ]" / "[ X ]" のラベル (角括弧は CSS で付ける、ここは文字だけ) */
+  label: string;
+  /** 表示文字列 (例: "hello@example.com" / "@ysd_ktn") */
+  value: string;
+  /** リンク先 (mailto: / https://) */
+  href: string;
+  /** ext の挙動。省略時は href から自動判定 */
+  action?: 'copy' | 'external';
+}
+
+interface Props {
+  /** セクション番号 (例: "03") */
+  index?: string;
+  /** sec-head の meta 行 */
+  meta?: string[];
+  /** 連絡先エントリ */
+  entries?: ContactEntry[];
+}
+
+const {
+  index = '03',
+  meta = ['CONTACT', 'OPEN CHANNEL'],
+  entries = [
+    { label: 'EMAIL', value: 'hello@example.com', href: 'mailto:hello@example.com' },
+    { label: 'X', value: '@ysd_ktn', href: 'https://x.com/ysd_ktn' },
+    { label: 'INSTAGRAM', value: '@ysd.ktn', href: 'https://instagram.com/ysd.ktn' },
+    { label: 'GITHUB', value: 'github.com/ysd-ktn', href: 'https://github.com/ysd-ktn' },
+  ],
+} = Astro.props;
+
+/** href から ext 種別を自動判定 */
+function resolveAction(entry: ContactEntry): 'copy' | 'external' {
+  if (entry.action) return entry.action;
+  return entry.href.startsWith('mailto:') ? 'copy' : 'external';
+}
+---
+
+<section id="contact">
+  <div class="sec-head">
+    <div class="num">[ {index} ]</div>
+    <div class="meta">
+      {meta.map((m) => <span>{m}</span>)}
+    </div>
+  </div>
+
+  {
+    entries.map((entry) => {
+      const action = resolveAction(entry);
+      const isExternal = action === 'external';
+      return (
+        <div class="contact-row">
+          <span class="label">[ {entry.label} ]</span>
+          <a
+            href={entry.href}
+            target={isExternal ? '_blank' : undefined}
+            rel={isExternal ? 'noopener' : undefined}
+          >
+            {entry.value}
+          </a>
+          {action === 'copy' ? (
+            <button type="button" class="ext copy-btn" data-copy={entry.value}>
+              → COPY
+            </button>
+          ) : (
+            <span class="ext">→ EXTERNAL</span>
+          )}
+        </div>
+      );
+    })
+  }
+</section>
+
+<script>
+  // → COPY ボタンのクリップボード書き込み + 一瞬 "→ COPIED ✓" にラベル切替
+  document.querySelectorAll<HTMLButtonElement>('button.copy-btn').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const text = btn.dataset.copy ?? '';
+      if (!text) return;
+      try {
+        await navigator.clipboard.writeText(text);
+        const original = btn.textContent;
+        btn.textContent = '→ COPIED ✓';
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.textContent = original;
+          btn.classList.remove('copied');
+        }, 1500);
+      } catch {
+        // クリップボード API が拒否された場合は静かに諦める (HTTPS 必須等)
+      }
+    });
+  });
+</script>
+
+<style>
+  /* 各 row: ラベル(90px) / 値(1fr) / ext(1fr) の3カラムグリッド */
+  .contact-row {
+    display: grid;
+    grid-template-columns: 90px 1fr 1fr;
+    gap: 32px;
+    padding: 18px 0;
+    border-bottom: 1px dashed var(--line);
+    align-items: center;
+  }
+
+  .contact-row .label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--dim);
+    letter-spacing: 0.1em;
+  }
+
+  /* 値 (a タグ): 大きめの Barlow、 a:hover の accent はグローバルから継承 */
+  .contact-row a {
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 600;
+  }
+
+  /* ext: → COPY / → EXTERNAL を右寄せで配置 */
+  .contact-row .ext {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--dim);
+    justify-self: end;
+    letter-spacing: 0.1em;
+  }
+
+  /* button.ext は span.ext と見た目を完全一致させる (button のデフォルトを潰す) */
+  .contact-row button.ext {
+    appearance: none;
+    background: none;
+    border: 0;
+    padding: 0;
+    font: inherit;
+    cursor: pointer;
+  }
+  .contact-row button.ext:hover {
+    color: var(--accent);
+  }
+  /* COPIED 中はアクセント色に固定 */
+  .contact-row button.ext.copied {
+    color: var(--accent);
+  }
+</style>

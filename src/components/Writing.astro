@@ -1,0 +1,262 @@
+---
+// Writing — note 記事の3カードグリッド + 「VIEW ALL ARTICLES · +N MORE」CTA
+//
+// モックアップ `_mockups/option-1-cyber-v2-writing-grid.html` の section#writing を分解。
+// データは props で受け取る設計。Phase 5 で src/content/writing.json に外出しする。
+//
+// Article: meta-row ([ idx ] + date + ♡ likes) / 16:9 サムネ / タイトル / 概要 / NOTE → READ
+// CTA:     `VIEW ALL ARTICLES · +N MORE → NOTE PROFILE` (note プロフィールへの外部リンク)
+
+interface Article {
+  /** カード左上の [ idx ] 表示。省略時は配列順から "01", "02"... を自動生成 */
+  idx?: string;
+  /** 投稿日 (例: "2025.10") */
+  date: string;
+  /** いいね数。省略すると likes 表示自体を非表示にする */
+  likes?: number;
+  /** 16:9 サムネ placeholder ラベル。省略時は "⊕ THUMB_NN.PNG · 16:9" を自動生成 */
+  thumbLabel?: string;
+  /** 記事タイトル */
+  title: string;
+  /** 概要 */
+  excerpt: string;
+  /** 記事 URL */
+  url: string;
+  /** カードフッタ左の plat 表示。省略時 "NOTE" */
+  platform?: string;
+}
+
+interface Props {
+  /** セクション番号 (例: "02") */
+  index?: string;
+  /** sec-head の meta 行 */
+  meta?: string[];
+  /** 表示する記事 (3件想定) */
+  articles?: Article[];
+  /** 全記事数 (`+N MORE` の N = totalCount - articles.length) */
+  totalCount?: number;
+  /** CTA のリンク先 (note プロフィール URL) */
+  noteProfileUrl?: string;
+}
+
+const {
+  index = '02',
+  meta = ['WRITING', 'FEATURED · 3 OF 15', 'SELECTED'],
+  articles = [
+    {
+      date: '2025.10',
+      likes: 312,
+      title: 'デザインシステムを5年運用して学んだこと',
+      excerpt:
+        '運用フェーズで見えた、ガバナンスと拡張性のバランス。コンポーネント命名規則の失敗談と、組織サイズに合わせたチューニングの考え方。',
+      url: '#',
+    },
+    {
+      date: '2025.07',
+      likes: 187,
+      title: 'UIリサーチ手法のメモ — インタビュー設計について',
+      excerpt:
+        '少人数でもインサイトを引き出せるインタビュー設計の手順を、実際に使ってる質問テンプレ込みで整理した。',
+      url: '#',
+    },
+    {
+      date: '2024.12',
+      likes: 245,
+      title: 'ブランドアイデンティティ設計のプロセス',
+      excerpt:
+        '小規模スタートアップ向けに、限られた予算と時間でブランドを立ち上げる時のチェックリストと優先順位の付け方。',
+      url: '#',
+    },
+  ],
+  totalCount = 15,
+  noteProfileUrl = 'https://note.com/ysd_ktn',
+} = Astro.props;
+
+const moreCount = Math.max(0, totalCount - articles.length);
+---
+
+<section id="writing">
+  <div class="sec-head">
+    <div class="num">[ {index} ]</div>
+    <div class="meta">
+      {meta.map((m) => <span>{m}</span>)}
+    </div>
+  </div>
+
+  <div class="writing-grid">
+    {
+      articles.map((a, i) => {
+        const idx = a.idx ?? String(i + 1).padStart(2, '0');
+        const thumbLabel = a.thumbLabel ?? `⊕ THUMB_${idx}.PNG · 16:9`;
+        return (
+          <a href={a.url} class="writing-card" target="_blank" rel="noopener">
+            <div class="meta-row">
+              <div class="meta-left">
+                <span class="idx">[ {idx} ]</span>
+                <span>{a.date}</span>
+              </div>
+              {a.likes != null && (
+                <span class="likes"><span class="heart">♡</span>{a.likes}</span>
+              )}
+            </div>
+            <div class="thumb">{thumbLabel}</div>
+            <div class="article-title">{a.title}</div>
+            <div class="article-excerpt">{a.excerpt}</div>
+            <div class="ext">
+              <span>{a.platform ?? 'NOTE'}</span>
+              <span>→ READ <span class="arrow">↗</span></span>
+            </div>
+          </a>
+        );
+      })
+    }
+  </div>
+
+  <a href={noteProfileUrl} class="writing-more" target="_blank" rel="noopener">
+    <span>VIEW ALL ARTICLES · <span class="count">+{moreCount}</span> MORE</span>
+    <span class="cta">→ NOTE PROFILE <span class="arrow">↗</span></span>
+  </a>
+</section>
+
+<style>
+  /* ===== 3カードグリッド ===== */
+  .writing-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+  }
+
+  /* カード本体 (a タグ): bg を 1px gap の上に重ねて区切り線を演出 */
+  .writing-card {
+    background: var(--bg);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    transition: background 0.15s;
+    text-decoration: none;
+    color: inherit;
+  }
+  .writing-card:hover {
+    background: var(--bg-alt);
+  }
+
+  /* meta-row: [ idx ] + 日付 / ♡ likes */
+  .writing-card .meta-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--dim);
+    letter-spacing: 0.1em;
+    margin-bottom: 12px;
+  }
+  .writing-card .meta-row .meta-left {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+  .writing-card .meta-row .idx,
+  .writing-card .meta-row .likes {
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .writing-card .meta-row .likes .heart {
+    margin-right: 3px;
+    font-size: 11px;
+  }
+
+  /* 16:9 サムネ placeholder */
+  .writing-card .thumb {
+    aspect-ratio: 16 / 9;
+    border: 1px dashed var(--line);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--dim);
+    letter-spacing: 0.05em;
+    filter: grayscale(0.85);
+    transition: border-color 0.15s, color 0.15s;
+    margin-bottom: 16px;
+  }
+  .writing-card:hover .thumb {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  /* タイトル */
+  .writing-card .article-title {
+    font-family: var(--font-display);
+    font-size: 17px;
+    font-weight: 700;
+    line-height: 1.25;
+    margin-bottom: 8px;
+    color: var(--fg);
+    transition: color 0.15s;
+  }
+  .writing-card:hover .article-title {
+    color: var(--accent);
+  }
+
+  /* 概要 (flex:1 でカード高さを揃え、ext を底に押し付ける) */
+  .writing-card .article-excerpt {
+    font-size: 12px;
+    color: var(--dim);
+    line-height: 1.6;
+    flex: 1;
+  }
+
+  /* カード底の ext (NOTE / → READ ↗) */
+  .writing-card .ext {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--dim);
+    letter-spacing: 0.1em;
+    margin-top: 16px;
+    padding-top: 12px;
+    border-top: 1px dashed var(--line);
+    display: flex;
+    justify-content: space-between;
+  }
+  .writing-card .ext .arrow {
+    color: var(--accent);
+  }
+
+  /* ===== VIEW ALL ARTICLES CTA ===== */
+  .writing-more {
+    margin-top: 24px;
+    padding: 18px 24px;
+    border: 1px solid var(--line);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    color: var(--fg);
+    text-decoration: none;
+    transition: border-color 0.15s, color 0.15s, background 0.15s;
+  }
+  .writing-more:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--bg-alt);
+  }
+  .writing-more .count {
+    color: var(--accent);
+    font-weight: 700;
+    margin-right: 4px;
+  }
+  .writing-more .cta {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+  }
+  .writing-more .cta .arrow {
+    color: var(--accent);
+  }
+</style>
