@@ -12,11 +12,12 @@
  *   - リンクの基本スタイル
  *   - <main> の共通レイアウト
  *   - <section> / .sec-head の共通枠 (各セクションコンポーネントが上書きする想定)
+ *   - cursor: none (Cursor.astro が SVG カーソルを描画するため、 OS カーソルを隠す)
+ *     → タッチデバイスでは OS カーソルがそもそも無いので @media (hover: hover) に閉じる
  *
  * このファイルに置かないもの:
  *   - 各コンポーネント固有のスタイル (Header, Hero, About, ... )
  *     → 該当 .astro ファイル内の <style> でスコープして書く
- *   - cursor: none → Phase 4 (Cursor.astro 実装時) に追加
  * ============================================================ */
 
 /* ============================================================
@@ -55,6 +56,15 @@ body {
   font-family: var(--font-display), var(--font-jp), sans-serif;
   font-size: 14px;
   line-height: 1.5;
+}
+
+/* カスタムカーソル — Cursor.astro が SVG を描画するので OS カーソルは隠す。
+   hover 不可デバイス (タッチ) では Cursor.astro 自体も非表示なので、ここで隠さない。 */
+@media (hover: hover) {
+  html,
+  body {
+    cursor: none;
+  }
 }
 
 /* スキャンライン (極薄横ストライプ) */

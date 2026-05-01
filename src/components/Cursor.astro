@@ -1,0 +1,190 @@
+---
+// Cursor — Figma 風 SVG カーソル + アノテーションチップ + 座標表示
+//
+// モックアップ `_mockups/option-1-cyber-v2-writing-grid.html` の
+//   .cursor / .cur-meta / .cur-chip / .cur-coord
+// を分解。
+//
+// 表示要素:
+//   - 矢印 SVG (▲ Figma の選択ツール風)、 塗り = アクセント色 + bg outline
+//   - チップ: hover 中の対象に応じて文言切替 (優先順位は下記)
+//   - 座標 (XXXX, YYYY、 4桁ゼロ埋め、 アクセント色)
+//
+// チップ文言の優先順位:
+//   1. data-cursor-chip="..." 属性があればその値 (最優先・各要素が自己宣言)
+//   2. .work クラス  → "OPEN PROJECT"   ※ 将来 WORKS 復活時の予約
+//   3. <a>           → "OPEN LINK"      ※ リンクの汎用デフォルト
+//   4. <button>      → null (チップ非表示)
+//      → 一律 "CLICK" 等の無情報ワードを表示するより、 必要なボタンに
+//        data-cursor-chip で個別宣言させた方が Figma 風の "何が起こるか"
+//        を伝える意図に合うため
+//
+// 設計上の意図: Cursor.astro が他コンポーネントの class 名を知らずに済むよう、
+// COPY / FILTER 等の特殊ケースは markup 側で data-cursor-chip 宣言する形にした。
+//
+// 実装メモ:
+//   - body の `cursor: none` は global.css 側で `@media (hover: hover)` で有効化済
+//   - タッチデバイス (`hover: none`) ではコンポーネント自体を `display: none`
+//     して描画コストごと省く
+//   - mousemove は `passive: true` で 60fps 追従、 transform で更新
+//   - hover 対象判定は document-level の event delegation で `closest()` 検出
+//     → 子要素を経由する mouseover/mouseout の連鎖を吸収できる
+//   - z-index 200: scanline オーバーレイ (100) より前、 status-bar (50) より前
+//   - aria-hidden="true" でスクリーンリーダから除外 (装飾要素)
+//
+// id 衝突回避: Footer.astro が `status-` prefix を使っているのに合わせ、
+// こちらは prefix なしの `cursor` / `cursor-meta` / `cursor-chip` / `cursor-coord` を使用。
+---
+
+<div class="cursor" id="cursor" aria-hidden="true">
+  <svg viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0 0 L0 11 L3 8 L5 12.5 L7 11.5 L5 7 L9 7 Z"></path>
+  </svg>
+</div>
+<div class="cur-meta" id="cursor-meta" aria-hidden="true">
+  <span class="cur-chip" id="cursor-chip">SELECT</span>
+  <span class="cur-coord" id="cursor-coord">0000, 0000</span>
+</div>
+
+<script>
+  const cur = document.getElementById('cursor');
+  const meta = document.getElementById('cursor-meta');
+  const chip = document.getElementById('cursor-chip');
+  const coord = document.getElementById('cursor-coord');
+
+  if (cur && meta && chip && coord) {
+    // mousemove で SVG / チップ / 座標を追従
+    document.addEventListener(
+      'mousemove',
+      (e) => {
+        const x = e.clientX;
+        const y = e.clientY;
+        cur.style.transform = `translate(${x - 1}px, ${y - 1}px)`;
+        meta.style.transform = `translate(${x + 16}px, ${y + 14}px)`;
+        coord.textContent =
+          String(x).padStart(4, '0') + ', ' + String(y).padStart(4, '0');
+      },
+      { passive: true }
+    );
+
+    // hover 対象に応じてチップ文言を変更 — event delegation で
+    // a / button / .work / [data-cursor-chip] を closest() 検出
+    const SELECTOR = 'a, button, .work, [data-cursor-chip]';
+    let activeTarget: Element | null = null;
+
+    /**
+     * チップ文言を解決する。 null を返した場合はチップ非表示。
+     * 優先順位:
+     *   1. data-cursor-chip 属性 (markup 側の自己宣言)
+     *   2. .work             → "OPEN PROJECT"
+     *   3. <a>               → "OPEN LINK"
+     *   4. <button>          → null (非表示)
+     */
+    function chipFor(el: Element): string | null {
+      const explicit = el.getAttribute('data-cursor-chip');
+      if (explicit) return explicit;
+      if (el.classList.contains('work')) return 'OPEN PROJECT';
+      if (el.tagName === 'A') return 'OPEN LINK';
+      // <button> など、 自己宣言なしの要素はチップを出さない
+      return null;
+    }
+
+    document.addEventListener('mouseover', (e) => {
+      const target = e.target as Element | null;
+      const t = target?.closest?.(SELECTOR) ?? null;
+      if (t && t !== activeTarget) {
+        activeTarget = t;
+        const text = chipFor(t);
+        if (text !== null) {
+          chip.textContent = text;
+          chip.classList.add('show');
+        } else {
+          // 対象は検出したが表示すべき文言なし → チップは隠す
+          chip.classList.remove('show');
+        }
+      }
+    });
+
+    document.addEventListener('mouseout', (e) => {
+      const target = e.target as Element | null;
+      const t = target?.closest?.(SELECTOR) ?? null;
+      if (t && t === activeTarget) {
+        // 子要素経由の mouseout は無視 (relatedTarget が同じ対象に含まれる場合)
+        const related = e.relatedTarget as Element | null;
+        const relatedMatch = related?.closest?.(SELECTOR) ?? null;
+        if (relatedMatch !== activeTarget) {
+          activeTarget = null;
+          chip.classList.remove('show');
+        }
+      }
+    });
+  }
+</script>
+
+<style>
+  /* タッチデバイス (hover 不可) では完全に非表示 */
+  @media (hover: none) {
+    .cursor,
+    .cur-meta {
+      display: none;
+    }
+  }
+
+  .cursor {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 14px;
+    height: 14px;
+    pointer-events: none;
+    z-index: 200;
+    transform: translate(-1px, -1px);
+    transition: transform 0.05s linear;
+  }
+  .cursor svg {
+    display: block;
+    width: 14px;
+    height: 14px;
+  }
+  .cursor svg path {
+    fill: var(--accent);
+    stroke: var(--bg);
+    stroke-width: 1;
+  }
+
+  .cur-meta {
+    position: fixed;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    z-index: 200;
+    transform: translate(16px, 14px);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .cur-chip {
+    background: var(--accent);
+    color: var(--bg);
+    padding: 3px 8px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    opacity: 0;
+    transition: opacity 0.12s;
+    align-self: flex-start;
+  }
+  .cur-chip.show {
+    opacity: 1;
+  }
+
+  .cur-coord {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    color: var(--accent);
+    letter-spacing: 0.05em;
+  }
+</style>

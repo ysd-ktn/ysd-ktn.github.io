@@ -70,7 +70,12 @@ function resolveAction(entry: ContactEntry): 'copy' | 'external' {
             {entry.value}
           </a>
           {action === 'copy' ? (
-            <button type="button" class="ext copy-btn" data-copy={entry.value}>
+            <button
+              type="button"
+              class="ext copy-btn"
+              data-copy={entry.value}
+              data-cursor-chip="COPY"
+            >
               → COPY
             </button>
           ) : (
