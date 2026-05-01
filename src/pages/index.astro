@@ -1,15 +1,17 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Hero from '../components/Hero.astro';
+import About from '../components/About.astro';
 ---
 
-<Layout title="YOSHIDA KOTONE — Portfolio (WIP)">
+<Layout title="YOSHIDA KOTONE — UI Designer">
+  <Header />
   <main>
-    <p style="font-family: ui-monospace, monospace; padding: 24px;">
-      [ 00 / INDEX ] · ysd-ktn.github.io · Astro scaffold OK
-    </p>
-    <p style="font-family: ui-monospace, monospace; padding: 0 24px; color: #6b6b6b;">
-      Phase 2 完了。次セッションで DESIGN_SPEC.md のグローバル CSS と Header / Hero
-      コンポーネントの移植に着手します。
-    </p>
+    <Hero />
+    <About />
+    {/*
+      Phase 4 残: Writing / Contact / Footer / Cursor
+    */}
   </main>
 </Layout>

@@ -1,5 +1,8 @@
 ---
-// 最小レイアウト。次セッションで DESIGN_SPEC のグローバル CSS を移植する。
+// ベースレイアウト
+// グローバル CSS は global.css に集約。フォントは Google Fonts から取得。
+import '../styles/global.css';
+
 interface Props {
   title?: string;
   description?: string;
@@ -19,6 +22,13 @@ const {
     <meta name="description" content={description} />
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Noto+Sans+JP:wght@400;700;900&display=swap"
+      rel="stylesheet"
+    />
   </head>
   <body>
     <slot />

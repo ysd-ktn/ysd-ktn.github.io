@@ -398,9 +398,13 @@ draft: false
 
 ## 新セッションへのバトン
 
+> **進捗管理は `PROGRESS.md` に分離した (2026.05.01〜)**
+> このファイル (DESIGN_SPEC.md) は静的な設計仕様、PROGRESS.md は動的な進捗管理。
+> 新セッションでは `PROGRESS.md` → `DESIGN_SPEC.md` → モックHTML の順で参照する。
+
 新しいセッションを開始するときは、以下を最初に伝える:
 
-> ポートフォリオサイト ysd-ktn.github.io を Astro で実装したい。設計と仕様は `DESIGN_SPEC.md` と `_mockups/option-1-cyber-v2-writing-grid.html` 参照。
+> ポートフォリオサイト ysd-ktn.github.io を Astro で実装中。`PROGRESS.md` で現在のフェーズを確認し、設計仕様は `DESIGN_SPEC.md` と `_mockups/option-1-cyber-v2-writing-grid.html` 参照。
 
 その後の進め方の推奨順:
 

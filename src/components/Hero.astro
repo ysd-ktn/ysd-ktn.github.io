@@ -1,0 +1,91 @@
+---
+// Hero — 名前 + 役職 + 座標
+//
+// props で profile 情報を差し替えられる設計。将来 src/content/profile.json を
+// Content Collections 化したらそこから流し込む想定。今はモック値をデフォルトに。
+//
+// 名前は firstName / lastName で分割。Barlow 800、巨大に表示。
+// アクセント色のピリオドは lastName の末尾につける。
+
+interface Props {
+  /** セクションインデックス表記 (例: "00 / INDEX") */
+  index?: string;
+  /** 緯度 */
+  lat?: number;
+  /** 経度 */
+  lng?: number;
+  /** 最終更新 (例: "2026.04.26") */
+  lastUpdate?: string;
+  /** 名前1行目 */
+  firstName?: string;
+  /** 名前2行目 */
+  lastName?: string;
+  /** 役職・状況の1行 */
+  role?: string;
+}
+
+const {
+  index = '00 / INDEX',
+  lat = 34.6937,
+  lng = 135.5023,
+  lastUpdate = '2026.04.26',
+  firstName = 'YOSHIDA',
+  lastName = 'KOTONE',
+  role = 'UI DESIGNER · BASED IN OSAKA, JP · OPEN FOR PROJECTS — 2026 Q3',
+} = Astro.props;
+---
+
+<section class="hero" id="index">
+  <div class="index">
+    [ {index} ] · {lat}°N · {lng}°E · LAST UPDATE {lastUpdate}
+  </div>
+  <h1>
+    {firstName}<br />{lastName}<span class="accent">.</span>
+  </h1>
+  <div class="role">{role}</div>
+</section>
+
+<style>
+  /* section の共通枠 (border-top + padding) は global.css 側にあるが、
+     hero は最初のセクションなので border-top: 0 が効く。padding は上書き。 */
+  .hero {
+    padding: 60px 0 100px;
+  }
+
+  .hero .index {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--dim);
+    margin-bottom: 32px;
+    letter-spacing: 0.1em;
+  }
+
+  .hero h1 {
+    font-family: var(--font-display);
+    font-size: clamp(56px, 10vw, 168px);
+    font-weight: 800;
+    line-height: 0.9;
+    letter-spacing: -0.03em;
+    margin-bottom: 16px;
+  }
+
+  .hero h1 .accent {
+    color: var(--accent);
+  }
+
+  .hero .role {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--dim);
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    margin-top: 24px;
+    letter-spacing: 0.05em;
+  }
+
+  .hero .role::before {
+    content: '>';
+    color: var(--accent);
+  }
+</style>

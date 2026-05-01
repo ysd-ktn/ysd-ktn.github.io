@@ -1,0 +1,142 @@
+/* ============================================================
+ * global.css — Phase 3
+ * モックアップ `_mockups/option-1-cyber-v2-writing-grid.html` から
+ * 全コンポーネント共通のグローバル CSS を移植したもの。
+ *
+ * このファイルに置くもの:
+ *   - CSS 変数 (色 / フォント)
+ *   - リセット
+ *   - html, body の基本設定
+ *   - body::before / body::after (scanline + vignette オーバーレイ)
+ *   - .mono ユーティリティ
+ *   - リンクの基本スタイル
+ *   - <main> の共通レイアウト
+ *   - <section> / .sec-head の共通枠 (各セクションコンポーネントが上書きする想定)
+ *
+ * このファイルに置かないもの:
+ *   - 各コンポーネント固有のスタイル (Header, Hero, About, ... )
+ *     → 該当 .astro ファイル内の <style> でスコープして書く
+ *   - cursor: none → Phase 4 (Cursor.astro 実装時) に追加
+ * ============================================================ */
+
+/* ============================================================
+ * ACCENT SWAP — change --accent value below
+ *   --accent: #00f0bd;  bright blue-green / teal (current)
+ *   --accent: #00e5ff;  bright cyan
+ *   --accent: #009cae;  muted petrol teal
+ *   --accent: #fae04a;  caution yellow
+ *   --accent: #ff5500;  industrial orange
+ *   --accent: #ffffff;  strict monochrome (white)
+ * ============================================================ */
+:root {
+  --bg: #0a0a0c;
+  --bg-alt: #14141a;
+  --fg: #e8e6e0;
+  --dim: #6b6b6b;
+  --line: #2a2a2e;
+  --accent: #00f0bd;
+  --warn: #ff4747;
+
+  --font-display: 'Barlow', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --font-jp: 'Noto Sans JP', sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-display), var(--font-jp), sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* スキャンライン (極薄横ストライプ) */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 100;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent 0,
+    transparent 3px,
+    rgba(255, 255, 255, 0.012) 3px,
+    rgba(255, 255, 255, 0.012) 4px
+  );
+}
+
+/* ビネット (画面端を暗く落とす) */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 99;
+  background: radial-gradient(
+    ellipse at center,
+    transparent 65%,
+    rgba(0, 0, 0, 0.4) 100%
+  );
+}
+
+/* ユーティリティ */
+.mono {
+  font-family: var(--font-mono);
+}
+
+a {
+  color: var(--fg);
+  text-decoration: none;
+}
+a:hover {
+  color: var(--accent);
+}
+
+/* main コンテナ — Footer の status-bar 分の bottom padding 込み */
+main {
+  padding: 80px 32px 80px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* ============================================================
+ * セクション共通枠
+ * 各セクションコンポーネント (Hero / About / Writing / Contact)
+ * は必要に応じてこの上から padding 等を上書きする。
+ * ============================================================ */
+section {
+  border-top: 1px dashed var(--line);
+  padding: 56px 0;
+  position: relative;
+}
+section:first-of-type {
+  border-top: 0;
+}
+
+/* セクションヘッダ ([ 01 ] ABOUT — PROFILE + TIMELINE — v.2026 のような) */
+.sec-head {
+  display: grid;
+  grid-template-columns: 80px 1fr;
+  gap: 32px;
+  margin-bottom: 32px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--dim);
+  letter-spacing: 0.1em;
+}
+.sec-head .num {
+  color: var(--accent);
+  font-weight: 700;
+}
+.sec-head .meta {
+  display: flex;
+  gap: 24px;
+}
