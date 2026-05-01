@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WORKS / 01 — 銀行アプリ リデザイン · Yoshida Kotone</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  /* ============================================
+   * ACCENT SWAP — change --accent value below
+   * --accent: #00f0bd;  bright blue-green / teal (current)
+   * --accent: #00e5ff;  bright cyan
+   * --accent: #009cae;  muted petrol teal
+   * --accent: #fae04a;  caution yellow
+   * --accent: #ff5500;  industrial orange
+   * --accent: #ffffff;  strict monochrome (white)
+   * ============================================ */
+  :root {
+    --bg: #0a0a0c;
+    --bg-alt: #14141a;
+    --fg: #e8e6e0;
+    --dim: #6b6b6b;
+    --line: #2a2a2e;
+    --accent: #00f0bd;
+    --warn: #ff4747;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); color: var(--fg); font-family: 'Barlow', 'Noto Sans JP', sans-serif; font-size: 14px; line-height: 1.5; cursor: none; }
+  .mono { font-family: 'JetBrains Mono', monospace; }
+  body::before {
+    content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 100;
+    background: repeating-linear-gradient(0deg, transparent 0, transparent 3px, rgba(255,255,255,0.012) 3px, rgba(255,255,255,0.012) 4px);
+  }
+  body::after {
+    content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 99;
+    background: radial-gradient(ellipse at center, transparent 65%, rgba(0,0,0,0.4) 100%);
+  }
+  a { color: var(--fg); text-decoration: none; }
+  a:hover { color: var(--accent); }
+
+  /* === Cursor: UI design tool style ============================
+   * Selection arrow (Figma-like) + annotation chip + small coords
+   * =============================================================*/
+  .cursor { position: fixed; top: 0; left: 0; width: 14px; height: 14px; pointer-events: none; z-index: 200; transform: translate(-1px, -1px); transition: transform 0.05s linear; }
+  .cursor svg { display: block; width: 14px; height: 14px; }
+  .cursor svg path { fill: var(--accent); stroke: var(--bg); stroke-width: 1; }
+  .cur-meta { position: fixed; pointer-events: none; z-index: 200; transform: translate(16px, 14px); display: flex; flex-direction: column; gap: 2px; }
+  .cur-chip { background: var(--accent); color: var(--bg); padding: 3px 8px; font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; opacity: 0; transition: opacity 0.12s; align-self: flex-start; }
+  .cur-chip.show { opacity: 1; }
+  .cur-coord { font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--accent); letter-spacing: 0.05em; }
+
+  /* Header — pill (stadium), top-center anchored, expands both ways on hover */
+  header { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 50; height: 44px; width: 180px; border: 1px solid var(--accent); border-radius: 9999px; background: var(--bg); overflow: hidden; display: flex; align-items: center; font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.08em; white-space: nowrap; transition: width 0.55s cubic-bezier(0.7,0,0.3,1); }
+  header .logo { font-weight: 700; color: var(--accent); padding: 0 18px; height: 100%; display: flex; align-items: center; flex-shrink: 0; border-right: 1px dashed transparent; transition: border-color 0.4s; }
+  header nav, header .lang { max-width: 0; opacity: 0; overflow: hidden; display: flex; align-items: center; height: 100%; transition: max-width 0.55s cubic-bezier(0.7,0,0.3,1), opacity 0.25s ease 0.12s, padding 0.5s cubic-bezier(0.7,0,0.3,1), border-color 0.4s; }
+  header nav { padding: 0; }
+  header nav a { padding: 0 14px; display: flex; gap: 6px; border-left: 1px dashed var(--line); align-items: center; height: 100%; }
+  header nav a:first-child { border-left: 0; }
+  header nav .num { color: var(--dim); }
+  header .lang { padding: 0; border-left: 1px dashed transparent; }
+  header .toggle { color: var(--accent); flex-shrink: 0; margin-left: auto; padding: 0 18px; font-size: 14px; line-height: 1; transition: transform 0.4s cubic-bezier(0.7,0,0.3,1); }
+  header:hover { width: 720px; }
+  header:hover .logo { border-right-color: var(--line); }
+  header:hover nav { max-width: 420px; opacity: 1; }
+  header:hover .lang { max-width: 100px; opacity: 1; padding: 0 16px; border-left-color: var(--line); }
+  header:hover .toggle { transform: rotate(45deg); }
+
+  main { padding: 80px 32px 60px; max-width: 1400px; margin: 0 auto; }
+
+  /* Section common */
+  section { border-top: 1px dashed var(--line); padding: 56px 0; position: relative; }
+  section:first-of-type { border-top: 0; }
+  .sec-head { display: grid; grid-template-columns: 80px 1fr; gap: 32px; margin-bottom: 32px; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--dim); letter-spacing: 0.1em; }
+  .sec-head .num { color: var(--accent); font-weight: 700; }
+  .sec-head .meta { display: flex; gap: 24px; }
+
+  /* === Hero — simple ============================== */
+  .hero { padding: 60px 0 100px; }
+  .hero .index { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--dim); margin-bottom: 32px; letter-spacing: 0.1em; }
+  .hero h1 { font-family: 'Barlow', sans-serif; font-size: clamp(56px, 10vw, 168px); font-weight: 800; line-height: 0.9; letter-spacing: -0.03em; margin-bottom: 16px; }
+  .hero h1 .accent { color: var(--accent); }
+  .hero .role { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--dim); display: flex; gap: 16px; align-items: center; margin-top: 24px; letter-spacing: 0.05em; }
+  .hero .role::before { content: '>'; color: var(--accent); }
+
+  /* Marquee */
+  /* About spec + sub-head + timeline */
+  .spec { display: grid; grid-template-columns: 200px 1fr; gap: 0; }
+  .spec dt { padding: 14px 0; border-bottom: 1px dashed var(--line); color: var(--dim); font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.08em; }
+  .spec dd { padding: 14px 0; border-bottom: 1px dashed var(--line); font-size: 15px; }
+  .spec dt::before { content: '['; color: var(--accent); margin-right: 4px; }
+  .spec dt::after { content: ']'; color: var(--accent); margin-left: 4px; }
+  .sub-head { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--accent); letter-spacing: 0.12em; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid var(--accent); }
+  .spec + .sub-head, .timeline + .sub-head { margin-top: 56px; }
+  .timeline { width: 100%; border-collapse: collapse; }
+  .timeline tr { border-bottom: 1px dashed var(--line); }
+  .timeline td { padding: 14px 0; vertical-align: top; }
+  .timeline .date { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--dim); letter-spacing: 0.05em; width: 240px; }
+  .timeline .date::before { content: '['; color: var(--accent); margin-right: 4px; }
+  .timeline .date::after { content: ']'; color: var(--accent); margin-left: 4px; }
+  .timeline .title { font-size: 15px; }
+  .timeline .title strong { font-weight: 600; }
+  .timeline .now { color: var(--accent); }
+
+  /* Works */
+  .filters { display: flex; gap: 8px; margin-bottom: 32px; flex-wrap: wrap; }
+  .filters button { background: transparent; color: var(--fg); border: 1px solid var(--line); padding: 8px 14px; font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.08em; cursor: none; }
+  .filters button.active, .filters button:hover { border-color: var(--accent); color: var(--accent); }
+  .works-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); }
+  .work { background: var(--bg); padding: 20px; aspect-ratio: 4/3; display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden; transition: background 0.15s; }
+  .work:hover { background: var(--bg-alt); }
+  .work:hover .work-thumb { border-color: var(--accent); color: var(--accent); }
+  .work-meta { display: flex; justify-content: space-between; font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--dim); letter-spacing: 0.1em; }
+  .work-meta .idx { color: var(--accent); font-weight: 700; }
+  .work-thumb { flex: 1; margin: 16px 0; border: 1px dashed var(--line); display: flex; align-items: center; justify-content: center; color: var(--dim); font-family: 'JetBrains Mono', monospace; font-size: 10px; position: relative; transition: all 0.15s; }
+  .work-thumb::before, .work-thumb::after { content: '⊕'; position: absolute; color: var(--dim); }
+  .work-thumb::before { top: 6px; left: 6px; } .work-thumb::after { bottom: 6px; right: 6px; }
+  .work-title { font-family: 'Barlow', sans-serif; font-size: 17px; font-weight: 700; letter-spacing: -0.005em; line-height: 1.15; }
+  .work-cat { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--dim); letter-spacing: 0.1em; margin-top: 4px; }
+
+  /* Contact */
+  .contact-row { display: grid; grid-template-columns: 90px 1fr 1fr; gap: 32px; padding: 18px 0; border-bottom: 1px dashed var(--line); align-items: center; }
+  .contact-row .label { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--dim); letter-spacing: 0.1em; }
+  .contact-row a { font-family: 'Barlow', sans-serif; font-size: 22px; font-weight: 600; }
+  .contact-row .ext { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--dim); justify-self: end; letter-spacing: 0.1em; }
+
+  /* Footer status bar */
+  .status-bar { position: fixed; bottom: 0; left: 0; right: 0; background: var(--bg); border-top: 1px solid var(--line); padding: 8px 32px; display: flex; justify-content: space-between; font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--dim); letter-spacing: 0.1em; z-index: 50; }
+  .status-bar .blink { color: var(--accent); animation: blink 1.4s steps(2) infinite; }
+  @keyframes blink { 50% { opacity: 0; } }
+  main { padding-bottom: 80px; }
+
+  /* ============ Detail page only ============ */
+  .detail-top { padding: 60px 0 40px; }
+  .breadcrumb { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--dim); letter-spacing: 0.1em; margin-bottom: 32px; }
+  .breadcrumb a { color: var(--accent); }
+  .breadcrumb .sep { margin: 0 8px; color: var(--line); }
+  .detail-top h1 { font-family: 'Barlow', sans-serif; font-size: clamp(48px, 8vw, 120px); font-weight: 800; line-height: 0.9; letter-spacing: -0.03em; margin-bottom: 16px; }
+  .detail-top h1 .accent { color: var(--accent); }
+  .project-meta { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--dim); letter-spacing: 0.08em; margin-top: 16px; margin-bottom: 48px; display: flex; gap: 20px; flex-wrap: wrap; }
+  .project-meta .accent { color: var(--accent); }
+  .hero-image { aspect-ratio: 16/9; border: 1px dashed var(--line); display: flex; align-items: center; justify-content: center; color: var(--dim); font-family: 'JetBrains Mono', monospace; font-size: 13px; position: relative; }
+  .hero-image::before, .hero-image::after { content: '⊕'; position: absolute; color: var(--dim); }
+  .hero-image::before { top: 12px; left: 12px; }
+  .hero-image::after { bottom: 12px; right: 12px; }
+
+  .detail-section { border-top: 1px dashed var(--line); padding: 56px 0; }
+
+  .prose { max-width: 760px; }
+  .prose p { font-size: 15px; line-height: 1.85; margin-bottom: 16px; color: var(--fg); }
+  .prose strong { color: var(--accent); font-weight: 600; }
+
+  .brutalist-list { list-style: none; padding: 0; margin: 24px 0; max-width: 760px; border-top: 1px solid var(--line); }
+  .brutalist-list li { padding: 12px 0 12px 28px; border-bottom: 1px dashed var(--line); position: relative; font-size: 14px; line-height: 1.6; }
+  .brutalist-list li::before { content: '⊕'; position: absolute; left: 0; top: 12px; color: var(--accent); }
+  .brutalist-list li .num { color: var(--accent); font-family: 'JetBrains Mono', monospace; }
+
+  .process-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
+  .process-item { padding: 20px; border: 1px solid var(--line); display: flex; flex-direction: column; }
+  .process-num { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--accent); letter-spacing: 0.1em; margin-bottom: 12px; }
+  .process-thumb { aspect-ratio: 4/3; border: 1px dashed var(--line); display: flex; align-items: center; justify-content: center; color: var(--dim); font-family: 'JetBrains Mono', monospace; font-size: 11px; margin-bottom: 16px; }
+  .process-title { font-family: 'Barlow', sans-serif; font-size: 18px; font-weight: 700; margin-bottom: 6px; line-height: 1.2; }
+  .process-desc { font-size: 13px; color: var(--dim); line-height: 1.6; }
+
+  .solution-stack { display: flex; flex-direction: column; gap: 24px; }
+  .big-image { aspect-ratio: 16/10; border: 1px dashed var(--line); display: flex; align-items: center; justify-content: center; color: var(--dim); font-family: 'JetBrains Mono', monospace; font-size: 13px; position: relative; }
+  .big-image::before, .big-image::after { content: '⊕'; position: absolute; color: var(--dim); }
+  .big-image::before { top: 12px; left: 12px; }
+  .big-image::after { bottom: 12px; right: 12px; }
+  .image-row { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .image-row .big-image { aspect-ratio: 4/5; }
+
+  .metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); margin-bottom: 32px; }
+  .metric { background: var(--bg); padding: 28px 24px; }
+  .metric-value { font-family: 'Barlow', sans-serif; font-size: clamp(36px, 5vw, 56px); font-weight: 800; color: var(--accent); line-height: 1; letter-spacing: -0.02em; margin-bottom: 12px; }
+  .metric-label { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+  .metric-detail { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--dim); letter-spacing: 0.05em; line-height: 1.5; }
+
+  .detail-nav { border-top: 1px solid var(--accent); margin-top: 56px; padding: 40px 0 32px; display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--line); border-left: 1px solid var(--line); border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .nav-card { padding: 24px; background: var(--bg); display: flex; flex-direction: column; gap: 8px; transition: background 0.15s; }
+  .nav-card:hover { background: var(--bg-alt); }
+  .nav-card.next { text-align: right; }
+  .nav-label { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--accent); letter-spacing: 0.1em; margin-bottom: 8px; }
+  .nav-title { font-family: 'Barlow', sans-serif; font-size: 22px; font-weight: 700; line-height: 1.15; }
+  .nav-cat { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--dim); letter-spacing: 0.1em; }
+</style>
+</head>
+<body>
+<div class="cursor" id="cursor">
+  <svg viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0 0 L0 11 L3 8 L5 12.5 L7 11.5 L5 7 L9 7 Z"/>
+  </svg>
+</div>
+<div class="cur-meta" id="curMeta">
+  <span class="cur-chip" id="curChip">SELECT</span>
+  <span class="cur-coord" id="curCoord">0,0</span>
+</div>
+
+<header>
+  <span class="logo">YSD-KTN / v3.0.0</span>
+  <nav>
+    <a href="#index"><span class="num">00</span> INDEX</a>
+    <a href="#about"><span class="num">01</span> ABOUT</a>
+    <a href="#works"><span class="num">02</span> WORKS</a>
+    <a href="#contact"><span class="num">03</span> CONTACT</a>
+  </nav>
+  <span class="lang">EN / JP</span>
+  <span class="toggle">+</span>
+</header>
+
+<main>
+  <section class="detail-top">
+    <div class="breadcrumb"><a href="option-1-cyber-v2.html">← INDEX</a><span class="sep">/</span>02 WORKS<span class="sep">/</span>01<span class="sep">·</span>銀行アプリ リデザイン</div>
+    <h1>銀行アプリ<br>リデザイン<span class="accent">.</span></h1>
+    <div class="project-meta">
+      <span><span class="accent">▶</span> UI / PRODUCT</span>
+      <span><span class="accent">▶</span> 2026</span>
+      <span><span class="accent">▶</span> STARTUP A</span>
+      <span><span class="accent">▶</span> 6 MONTHS</span>
+    </div>
+    <div class="hero-image">⊕ HERO_IMAGE_01.PNG · 1600×900</div>
+  </section>
+
+  <section class="detail-section">
+    <div class="sec-head">
+      <div class="num">[ 00 ]</div>
+      <div class="meta"><span>PROJECT META</span><span>SPEC SHEET</span></div>
+    </div>
+    <dl class="spec">
+      <dt>CLIENT</dt><dd>STARTUP A — Banking Inc.</dd>
+      <dt>ROLE</dt><dd>Lead UI Designer · 単独デザイナー</dd>
+      <dt>TEAM</dt><dd>1 PM · 3 Engineers · 1 Designer (me)</dd>
+      <dt>PERIOD</dt><dd>2026.01 — 2026.06 (6 months)</dd>
+      <dt>SCOPE</dt><dd>iOSアプリ + Webダッシュボード · 80+ 画面</dd>
+      <dt>TOOLS</dt><dd>Figma · Principle · Notion · Linear</dd>
+    </dl>
+  </section>
+
+  <section class="detail-section">
+    <div class="sec-head">
+      <div class="num">[ 01 ]</div>
+      <div class="meta"><span>OVERVIEW</span></div>
+    </div>
+    <div class="prose">
+      <p>STARTUP A は若年層向けのデジタルバンキングサービス。リデザインは、競合との差別化と既存ユーザーの離脱抑制を目的にスタートしました。</p>
+      <p>アプリ全体の<strong>情報設計を見直し</strong>、利用ログを元に動線を再構築。ブランドアイデンティティとも整合性を取りながら、UIキットを一新しました。</p>
+    </div>
+  </section>
+
+  <section class="detail-section">
+    <div class="sec-head">
+      <div class="num">[ 02 ]</div>
+      <div class="meta"><span>PROBLEM</span></div>
+    </div>
+    <div class="prose">
+      <p>リデザイン前のアプリは機能拡張を重ねた結果、入金・送金など基本動作の達成率が業界平均を下回っていました。リサーチで見えた具体的な課題：</p>
+    </div>
+    <ul class="brutalist-list">
+      <li><span class="num">01</span> · 送金完了までの平均タップ数 <strong>9</strong>（業界平均 5）</li>
+      <li><span class="num">02</span> · 主要画面の見つけやすさスコア <strong>2.4 / 5</strong></li>
+      <li><span class="num">03</span> · インタビュー頻出語：「どこに何があるか分からない」</li>
+      <li><span class="num">04</span> · 機能ごとに UI トーンが揃っていない</li>
+    </ul>
+  </section>
+
+  <section class="detail-section">
+    <div class="sec-head">
+      <div class="num">[ 03 ]</div>
+      <div class="meta"><span>PROCESS</span><span>4 STEPS</span></div>
+    </div>
+    <div class="process-grid">
+      <div class="process-item">
+        <div class="process-num">[ 03.1 / RESEARCH ]</div>
+        <div class="process-thumb">⊕ INTERVIEWS.PNG</div>
+        <div class="process-title">User research</div>
+        <div class="process-desc">既存ユーザー 12名にインタビュー、利用ログを定量分析して問題箇所を特定</div>
+      </div>
+      <div class="process-item">
+        <div class="process-num">[ 03.2 / IA ]</div>
+        <div class="process-thumb">⊕ IA_MAP.PNG</div>
+        <div class="process-title">Information architecture</div>
+        <div class="process-desc">画面マップを再設計、主要動線を3つに集約してナビゲーションを再構築</div>
+      </div>
+      <div class="process-item">
+        <div class="process-num">[ 03.3 / WIRES ]</div>
+        <div class="process-thumb">⊕ WIREFRAMES.PNG</div>
+        <div class="process-title">Wireframes</div>
+        <div class="process-desc">主要画面 30+ をワイヤーフレームで検証、エンジニアと早期に擦り合わせ</div>
+      </div>
+      <div class="process-item">
+        <div class="process-num">[ 03.4 / SYSTEM ]</div>
+        <div class="process-thumb">⊕ DESIGN_SYSTEM.PNG</div>
+        <div class="process-title">Design system</div>
+        <div class="process-desc">コンポーネント 80+ を含むデザインシステムを構築、Figma Variables で管理</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="detail-section">
+    <div class="sec-head">
+      <div class="num">[ 04 ]</div>
+      <div class="meta"><span>SOLUTION</span><span>FINAL DESIGN</span></div>
+    </div>
+    <div class="solution-stack">
+      <div class="big-image">⊕ FINAL_HOME.PNG · 1600×1000</div>
+      <div class="big-image">⊕ FINAL_TRANSFER.PNG · 1600×1000</div>
+      <div class="image-row">
+        <div class="big-image">⊕ FINAL_DETAIL_01.PNG</div>
+        <div class="big-image">⊕ FINAL_DETAIL_02.PNG</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="detail-section">
+    <div class="sec-head">
+      <div class="num">[ 05 ]</div>
+      <div class="meta"><span>OUTCOME</span><span>RESULTS · 3 MONTHS POST-RELEASE</span></div>
+    </div>
+    <div class="metrics">
+      <div class="metric">
+        <div class="metric-value">−44%</div>
+        <div class="metric-label">送金タップ数</div>
+        <div class="metric-detail">9 → 5<br>業界平均達成</div>
+      </div>
+      <div class="metric">
+        <div class="metric-value">+1.6</div>
+        <div class="metric-label">見つけやすさスコア</div>
+        <div class="metric-detail">2.4 → 4.0 / 5<br>定量調査</div>
+      </div>
+      <div class="metric">
+        <div class="metric-value">−23%</div>
+        <div class="metric-label">月次解約率</div>
+        <div class="metric-detail">リリース後3ヶ月計測</div>
+      </div>
+    </div>
+    <div class="prose">
+      <p>主要KPIが大幅に改善。社内のデザインシステム運用も定着し、後続の機能追加スピードも向上しました。</p>
+    </div>
+  </section>
+
+  <section class="detail-nav">
+    <a href="#" class="nav-card prev">
+      <div class="nav-label">← PREVIOUS PROJECT</div>
+      <div class="nav-title">季刊誌「INDEX」</div>
+      <div class="nav-cat">GRAPHIC · 2024</div>
+    </a>
+    <a href="#" class="nav-card next">
+      <div class="nav-label">NEXT PROJECT →</div>
+      <div class="nav-title">Cafe Brand Identity</div>
+      <div class="nav-cat">BRANDING · 2025</div>
+    </a>
+  </section>
+</main>
+
+<div class="status-bar">
+  <span><span class="blink">●</span> ONLINE · BUILD 0426.2026</span>
+  <span id="coords">CURSOR · 0000,0000</span>
+  <span id="utc">UTC --:--:--</span>
+  <span>VIEWPORT · <span id="vw">0</span>×<span id="vh">0</span></span>
+</div>
+
+<script>
+  const cur = document.getElementById('cursor');
+  const meta = document.getElementById('curMeta');
+  const chip = document.getElementById('curChip');
+  const coord = document.getElementById('curCoord');
+  const coords = document.getElementById('coords');
+  document.addEventListener('mousemove', (e) => {
+    cur.style.transform = `translate(${e.clientX - 1}px, ${e.clientY - 1}px)`;
+    meta.style.transform = `translate(${e.clientX + 16}px, ${e.clientY + 14}px)`;
+    coord.textContent = `${String(e.clientX).padStart(4, '0')}, ${String(e.clientY).padStart(4, '0')}`;
+    coords.textContent = `CURSOR · ${String(e.clientX).padStart(4, '0')},${String(e.clientY).padStart(4, '0')}`;
+  });
+  document.querySelectorAll('a, button, .work').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      chip.classList.add('show');
+      chip.textContent = el.classList.contains('work') ? 'OPEN PROJECT' : el.tagName === 'BUTTON' ? 'FILTER' : 'OPEN LINK';
+    });
+    el.addEventListener('mouseleave', () => { chip.classList.remove('show'); });
+  });
+  function tick() {
+    const now = new Date();
+    document.getElementById('utc').textContent = 'UTC ' + now.toISOString().substring(11, 19);
+    document.getElementById('vw').textContent = window.innerWidth;
+    document.getElementById('vh').textContent = window.innerHeight;
+  }
+  setInterval(tick, 1000); tick();
+</script>
+</body>
+</html>

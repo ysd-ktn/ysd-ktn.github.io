@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portfolio Mockups · Index</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'JetBrains Mono', monospace; background: #1a1a1a; color: #e8e6e0; min-height: 100vh; padding: 40px; }
+  h1 { font-family: 'Space Grotesk', sans-serif; font-size: 48px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 8px; }
+  .lede { color: #888; font-size: 13px; letter-spacing: 0.1em; margin-bottom: 48px; }
+  .section-title { font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 500; letter-spacing: 0.1em; color: #888; margin: 32px 0 16px; text-transform: uppercase; }
+
+  .final-card { display: block; max-width: 720px; padding: 32px; border: 1px solid #00f0bd; text-decoration: none; color: inherit; transition: background 0.2s; position: relative; margin-bottom: 8px; }
+  .final-card::before { content: '★ FINAL'; position: absolute; top: -10px; left: 16px; background: #00f0bd; color: #0a0a0c; padding: 2px 8px; font-size: 10px; font-weight: 700; letter-spacing: 0.1em; }
+  .final-card:hover { background: #14141a; }
+  .final-card .num { font-size: 11px; letter-spacing: 0.15em; color: #888; margin-bottom: 12px; }
+  .final-card h2 { font-family: 'Space Grotesk', sans-serif; font-size: 28px; font-weight: 700; letter-spacing: -0.01em; line-height: 1.1; margin-bottom: 12px; }
+  .final-card .desc { font-size: 13px; line-height: 1.7; color: #b8b6b0; margin-bottom: 20px; }
+  .final-card .swatch { display: flex; height: 32px; border: 1px solid #333; margin-bottom: 16px; }
+  .final-card .swatch span { flex: 1; }
+  .final-card .swatch .a { background: #0a0a0c; }
+  .final-card .swatch .b { background: #e8e6e0; }
+  .final-card .swatch .c { background: #00f0bd; }
+  .final-card .meta { display: flex; gap: 16px; font-size: 11px; letter-spacing: 0.1em; color: #888; padding-top: 12px; border-top: 1px solid #333; }
+  .final-card .meta .arrow { margin-left: auto; color: #00f0bd; }
+
+  .archive-list { max-width: 720px; border: 1px solid #2a2a2e; border-collapse: collapse; }
+  .archive-row { display: grid; grid-template-columns: 60px 1fr 100px; gap: 16px; padding: 14px 20px; border-bottom: 1px dashed #2a2a2e; align-items: center; text-decoration: none; color: inherit; transition: background 0.15s; }
+  .archive-row:last-child { border-bottom: 0; }
+  .archive-row:hover { background: #141417; color: #00f0bd; }
+  .archive-row .idx { color: #00f0bd; font-size: 11px; letter-spacing: 0.1em; font-weight: 700; }
+  .archive-row .label { font-size: 13px; }
+  .archive-row .label .ext { color: #666; font-size: 11px; margin-left: 6px; }
+  .archive-row .arrow { font-size: 11px; color: #888; text-align: right; letter-spacing: 0.1em; }
+
+  .footer { margin-top: 48px; font-size: 11px; color: #666; letter-spacing: 0.1em; }
+  .footer .accent { color: #00f0bd; }
+</style>
+</head>
+<body>
+  <h1>Portfolio mockups</h1>
+  <div class="lede">DESIGN PHASE COMPLETE · 2026.04.27</div>
+
+  <div class="section-title">▼ Final adopted version</div>
+  <a href="option-1-cyber-v2-writing-grid.html" class="final-card">
+    <div class="num">[ option-1-cyber-v2-writing-grid.html ]</div>
+    <h2>Brutalist · Dark · Aqua · Grid</h2>
+    <div class="desc">最終採用案。Barlow（DIN系サンセリフ）+ Noto Sans JP、青緑#00F0BD、フローティングピル型ヘッダー（中央/ホバー拡張）、Figma風カーソル。WRITING は3カラムカードグリッド + いいね数 + MORE → noteプロフィール導線。About には PROFILE + TIMELINE（展覧会含む）。</div>
+    <div class="swatch"><span class="a"></span><span class="b"></span><span class="c"></span></div>
+    <div class="meta"><span>BARLOW</span><span>AQUA</span><span>FLOAT-NAV</span><span>WRITING-GRID</span><span class="arrow">→</span></div>
+  </a>
+
+  <div class="section-title">▼ Archive — 検討履歴 / 将来用</div>
+  <div class="archive-list">
+    <a href="_archive/option-1-cyber.html" class="archive-row">
+      <span class="idx">[ V1 ]</span>
+      <span class="label">option-1-cyber.html<span class="ext">最初の3案のうちの BYLD寄せ案 (撤去)</span></span>
+      <span class="arrow">→ OPEN</span>
+    </a>
+    <a href="_archive/option-2-editorial.html" class="archive-row">
+      <span class="idx">[ ALT ]</span>
+      <span class="label">option-2-editorial.html<span class="ext">FRONT FLIP寄せ案 (不採用)</span></span>
+      <span class="arrow">→ OPEN</span>
+    </a>
+    <a href="_archive/option-3-hybrid.html" class="archive-row">
+      <span class="idx">[ ALT ]</span>
+      <span class="label">option-3-hybrid.html<span class="ext">折衷・明るい技術ドキュメント (不採用)</span></span>
+      <span class="arrow">→ OPEN</span>
+    </a>
+    <a href="_archive/option-1-cyber-v2-detail.html" class="archive-row">
+      <span class="idx">[ FUT ]</span>
+      <span class="label">option-1-cyber-v2-detail.html<span class="ext">Works詳細ページ (将来WORKS復活時のテンプレート)</span></span>
+      <span class="arrow">→ OPEN</span>
+    </a>
+  </div>
+
+  <div class="footer">DESIGN_SPEC.md は <span class="accent">../DESIGN_SPEC.md</span> 参照 · 実装フェーズへ移行</div>
+</body>
+</html>

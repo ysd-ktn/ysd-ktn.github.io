@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OPTION 01 v2 / WRITING GRID · Yoshida Kotone</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  /* ============================================
+   * ACCENT SWAP — change --accent value below
+   * --accent: #00f0bd;  bright blue-green / teal (current)
+   * --accent: #00e5ff;  bright cyan
+   * --accent: #009cae;  muted petrol teal
+   * --accent: #fae04a;  caution yellow
+   * --accent: #ff5500;  industrial orange
+   * --accent: #ffffff;  strict monochrome (white)
+   * ============================================ */
+  :root {
+    --bg: #0a0a0c;
+    --bg-alt: #14141a;
+    --fg: #e8e6e0;
+    --dim: #6b6b6b;
+    --line: #2a2a2e;
+    --accent: #00f0bd;
+    --warn: #ff4747;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); color: var(--fg); font-family: 'Barlow', 'Noto Sans JP', sans-serif; font-size: 14px; line-height: 1.5; cursor: none; }
+  .mono { font-family: 'JetBrains Mono', monospace; }
+  body::before {
+    content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 100;
+    background: repeating-linear-gradient(0deg, transparent 0, transparent 3px, rgba(255,255,255,0.012) 3px, rgba(255,255,255,0.012) 4px);
+  }
+  body::after {
+    content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 99;
+    background: radial-gradient(ellipse at center, transparent 65%, rgba(0,0,0,0.4) 100%);
+  }
+  a { color: var(--fg); text-decoration: none; }
+  a:hover { color: var(--accent); }
+
+  /* === Cursor: UI design tool style ============================
+   * Selection arrow (Figma-like) + annotation chip + small coords
+   * =============================================================*/
+  .cursor { position: fixed; top: 0; left: 0; width: 14px; height: 14px; pointer-events: none; z-index: 200; transform: translate(-1px, -1px); transition: transform 0.05s linear; }
+  .cursor svg { display: block; width: 14px; height: 14px; }
+  .cursor svg path { fill: var(--accent); stroke: var(--bg); stroke-width: 1; }
+  .cur-meta { position: fixed; pointer-events: none; z-index: 200; transform: translate(16px, 14px); display: flex; flex-direction: column; gap: 2px; }
+  .cur-chip { background: var(--accent); color: var(--bg); padding: 3px 8px; font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; opacity: 0; transition: opacity 0.12s; align-self: flex-start; }
+  .cur-chip.show { opacity: 1; }
+  .cur-coord { font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--accent); letter-spacing: 0.05em; }
+
+  /* Header — pill (stadium), top-center anchored, expands both ways on hover */
+  header { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 50; height: 44px; width: 180px; border: 1px solid var(--accent); border-radius: 9999px; background: var(--bg); overflow: hidden; display: flex; align-items: center; font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.08em; white-space: nowrap; transition: width 0.55s cubic-bezier(0.7,0,0.3,1); }
+  header .logo { font-weight: 700; color: var(--accent); padding: 0 18px; height: 100%; display: flex; align-items: center; flex-shrink: 0; border-right: 1px dashed transparent; transition: border-color 0.4s; }
+  header nav, header .lang { max-width: 0; opacity: 0; overflow: hidden; display: flex; align-items: center; height: 100%; transition: max-width 0.55s cubic-bezier(0.7,0,0.3,1), opacity 0.25s ease 0.12s, padding 0.5s cubic-bezier(0.7,0,0.3,1), border-color 0.4s; }
+  header nav { padding: 0; }
+  header nav a { padding: 0 14px; display: flex; gap: 6px; border-left: 1px dashed var(--line); align-items: center; height: 100%; }
+  header nav a:first-child { border-left: 0; }
+  header nav .num { color: var(--dim); }
+  header .lang { padding: 0; border-left: 1px dashed transparent; }
+  header .toggle { color: var(--accent); flex-shrink: 0; margin-left: auto; padding: 0 18px; font-size: 14px; line-height: 1; transition: transform 0.4s cubic-bezier(0.7,0,0.3,1); }
+  header:hover { width: 720px; }
+  header:hover .logo { border-right-color: var(--line); }
+  header:hover nav { max-width: 420px; opacity: 1; }
+  header:hover .lang { max-width: 100px; opacity: 1; padding: 0 16px; border-left-color: var(--line); }
+  header:hover .toggle { transform: rotate(45deg); }
+
+  main { padding: 80px 32px 60px; max-width: 1400px; margin: 0 auto; }
+
+  /* Section common */
+  section { border-top: 1px dashed var(--line); padding: 56px 0; position: relative; }
+  section:first-of-type { border-top: 0; }
+  .sec-head { display: grid; grid-template-columns: 80px 1fr; gap: 32px; margin-bottom: 32px; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--dim); letter-spacing: 0.1em; }
+  .sec-head .num { color: var(--accent); font-weight: 700; }
+  .sec-head .meta { display: flex; gap: 24px; }
+
+  /* === Hero — simple ============================== */
+  .hero { padding: 60px 0 100px; }
+  .hero .index { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--dim); margin-bottom: 32px; letter-spacing: 0.1em; }
+  .hero h1 { font-family: 'Barlow', sans-serif; font-size: clamp(56px, 10vw, 168px); font-weight: 800; line-height: 0.9; letter-spacing: -0.03em; margin-bottom: 16px; }
+  .hero h1 .accent { color: var(--accent); }
+  .hero .role { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--dim); display: flex; gap: 16px; align-items: center; margin-top: 24px; letter-spacing: 0.05em; }
+  .hero .role::before { content: '>'; color: var(--accent); }
+
+  /* Marquee */
+  /* About spec + sub-head + timeline */
+  .spec { display: grid; grid-template-columns: 200px 1fr; gap: 0; }
+  .spec dt { padding: 14px 0; border-bottom: 1px dashed var(--line); color: var(--dim); font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.08em; }
+  .spec dd { padding: 14px 0; border-bottom: 1px dashed var(--line); font-size: 15px; }
+  .spec dt::before { content: '['; color: var(--accent); margin-right: 4px; }
+  .spec dt::after { content: ']'; color: var(--accent); margin-left: 4px; }
+  .sub-head { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--accent); letter-spacing: 0.12em; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid var(--accent); }
+  .spec + .sub-head, .timeline + .sub-head { margin-top: 56px; }
+  .timeline { width: 100%; border-collapse: collapse; }
+  .timeline tr { border-bottom: 1px dashed var(--line); }
+  .timeline td { padding: 14px 0; vertical-align: top; }
+  .timeline .date { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--dim); letter-spacing: 0.05em; width: 240px; }
+  .timeline .date::before { content: '['; color: var(--accent); margin-right: 4px; }
+  .timeline .date::after { content: ']'; color: var(--accent); margin-left: 4px; }
+  .timeline .title { font-size: 15px; }
+  .timeline .title strong { font-weight: 600; }
+  .timeline .now { color: var(--accent); }
+  .timeline .tag { display: inline-block; background: var(--accent); color: var(--bg); font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 700; letter-spacing: 0.1em; padding: 2px 8px; margin-right: 12px; vertical-align: middle; }
+
+  /* Writing list */
+  .writing-list { width: 100%; border-collapse: collapse; border-top: 1px solid var(--line); }
+  .writing-list tr { border-bottom: 1px dashed var(--line); transition: background 0.15s; }
+  .writing-list tr:hover { background: var(--bg-alt); }
+  .writing-list td { padding: 20px 0; vertical-align: top; }
+  .writing-list .date { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--dim); width: 110px; padding-right: 20px; letter-spacing: 0.05em; }
+  .writing-list .date::before { content: '['; color: var(--accent); margin-right: 4px; }
+  .writing-list .date::after { content: ']'; color: var(--accent); margin-left: 4px; }
+  .writing-list .thumb-cell { width: 96px; padding-right: 20px; vertical-align: top; }
+  .writing-list .thumb { width: 96px; height: 54px; border: 1px dashed var(--line); display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--dim); letter-spacing: 0.05em; filter: grayscale(0.85); transition: border-color 0.15s, color 0.15s; }
+  .writing-list tr:hover .thumb { border-color: var(--accent); color: var(--accent); }
+  .writing-list .article-title { font-family: 'Barlow', sans-serif; font-size: 19px; font-weight: 600; color: var(--fg); display: block; margin-bottom: 6px; line-height: 1.3; }
+  .writing-list .article-excerpt { font-size: 13px; color: var(--dim); line-height: 1.65; max-width: 600px; }
+  .writing-list .ext { width: 100px; text-align: right; padding-left: 20px; vertical-align: middle; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--dim); letter-spacing: 0.1em; white-space: nowrap; }
+  .writing-list .ext .arrow { color: var(--accent); margin-left: 4px; }
+  .writing-list tr:hover .article-title, .writing-list tr:hover .ext { color: var(--accent); }
+
+  /* Writing grid (3-col card variant) */
+  .writing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); }
+  .writing-card { background: var(--bg); padding: 20px; display: flex; flex-direction: column; transition: background 0.15s; cursor: none; text-decoration: none; color: inherit; }
+  .writing-card:hover { background: var(--bg-alt); }
+  .writing-card:hover .article-title { color: var(--accent); }
+  .writing-card:hover .thumb { border-color: var(--accent); color: var(--accent); }
+  .writing-card .meta-row { display: flex; justify-content: space-between; align-items: center; font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--dim); letter-spacing: 0.1em; margin-bottom: 12px; }
+  .writing-card .meta-row .meta-left { display: flex; gap: 12px; align-items: center; }
+  .writing-card .meta-row .idx { color: var(--accent); font-weight: 700; }
+  .writing-card .meta-row .likes { color: var(--accent); font-weight: 700; }
+  .writing-card .meta-row .likes .heart { margin-right: 3px; font-size: 11px; }
+  .writing-card .thumb { aspect-ratio: 16/9; border: 1px dashed var(--line); display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--dim); letter-spacing: 0.05em; filter: grayscale(0.85); transition: border-color 0.15s, color 0.15s; margin-bottom: 16px; }
+  .writing-card .article-title { font-family: 'Barlow', sans-serif; font-size: 17px; font-weight: 700; line-height: 1.25; margin-bottom: 8px; color: var(--fg); transition: color 0.15s; }
+  .writing-card .article-excerpt { font-size: 12px; color: var(--dim); line-height: 1.6; flex: 1; }
+  .writing-card .ext { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--dim); letter-spacing: 0.1em; margin-top: 16px; padding-top: 12px; border-top: 1px dashed var(--line); display: flex; justify-content: space-between; }
+  .writing-card .ext .arrow { color: var(--accent); }
+
+  /* Writing MORE / view all CTA */
+  .writing-more { margin-top: 24px; padding: 18px 24px; border: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 0.08em; color: var(--fg); cursor: none; text-decoration: none; transition: border-color 0.15s, color 0.15s, background 0.15s; }
+  .writing-more:hover { border-color: var(--accent); color: var(--accent); background: var(--bg-alt); }
+  .writing-more .count { color: var(--accent); font-weight: 700; margin-right: 4px; }
+  .writing-more .cta { display: flex; gap: 4px; align-items: center; }
+  .writing-more .cta .arrow { color: var(--accent); }
+
+  /* Works */
+  .filters { display: flex; gap: 8px; margin-bottom: 32px; flex-wrap: wrap; }
+  .filters button { background: transparent; color: var(--fg); border: 1px solid var(--line); padding: 8px 14px; font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.08em; cursor: none; }
+  .filters button.active, .filters button:hover { border-color: var(--accent); color: var(--accent); }
+  .works-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); }
+  .work { background: var(--bg); padding: 20px; aspect-ratio: 4/3; display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden; transition: background 0.15s; }
+  .work:hover { background: var(--bg-alt); }
+  .work:hover .work-thumb { border-color: var(--accent); color: var(--accent); }
+  .work-meta { display: flex; justify-content: space-between; font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--dim); letter-spacing: 0.1em; }
+  .work-meta .idx { color: var(--accent); font-weight: 700; }
+  .work-thumb { flex: 1; margin: 16px 0; border: 1px dashed var(--line); display: flex; align-items: center; justify-content: center; color: var(--dim); font-family: 'JetBrains Mono', monospace; font-size: 10px; position: relative; transition: all 0.15s; }
+  .work-thumb::before, .work-thumb::after { content: '⊕'; position: absolute; color: var(--dim); }
+  .work-thumb::before { top: 6px; left: 6px; } .work-thumb::after { bottom: 6px; right: 6px; }
+  .work-title { font-family: 'Barlow', sans-serif; font-size: 17px; font-weight: 700; letter-spacing: -0.005em; line-height: 1.15; }
+  .work-cat { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--dim); letter-spacing: 0.1em; margin-top: 4px; }
+
+  /* Contact */
+  .contact-row { display: grid; grid-template-columns: 90px 1fr 1fr; gap: 32px; padding: 18px 0; border-bottom: 1px dashed var(--line); align-items: center; }
+  .contact-row .label { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--dim); letter-spacing: 0.1em; }
+  .contact-row a { font-family: 'Barlow', sans-serif; font-size: 22px; font-weight: 600; }
+  .contact-row .ext { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--dim); justify-self: end; letter-spacing: 0.1em; }
+
+  /* Footer status bar */
+  .status-bar { position: fixed; bottom: 0; left: 0; right: 0; background: var(--bg); border-top: 1px solid var(--line); padding: 8px 32px; display: flex; justify-content: space-between; font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--dim); letter-spacing: 0.1em; z-index: 50; }
+  .status-bar .blink { color: var(--accent); animation: blink 1.4s steps(2) infinite; }
+  @keyframes blink { 50% { opacity: 0; } }
+  main { padding-bottom: 80px; }
+</style>
+</head>
+<body>
+<div class="cursor" id="cursor">
+  <svg viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0 0 L0 11 L3 8 L5 12.5 L7 11.5 L5 7 L9 7 Z"/>
+  </svg>
+</div>
+<div class="cur-meta" id="curMeta">
+  <span class="cur-chip" id="curChip">SELECT</span>
+  <span class="cur-coord" id="curCoord">0,0</span>
+</div>
+
+<header>
+  <span class="logo">YSD-KTN / v3.0.0</span>
+  <nav>
+    <a href="#index"><span class="num">00</span> INDEX</a>
+    <a href="#about"><span class="num">01</span> ABOUT</a>
+    <a href="#writing"><span class="num">02</span> WRITING</a>
+    <a href="#contact"><span class="num">03</span> CONTACT</a>
+  </nav>
+  <span class="lang">EN / JP</span>
+  <span class="toggle">+</span>
+</header>
+
+<main>
+  <section class="hero" id="index">
+    <div class="index">[ 00 / INDEX ] · 34.6937°N · 135.5023°E · LAST UPDATE 2026.04.26</div>
+    <h1>YOSHIDA<br>KOTONE<span class="accent">.</span></h1>
+    <div class="role">UI DESIGNER · BASED IN OSAKA, JP · OPEN FOR PROJECTS — 2026 Q3</div>
+  </section>
+
+  <section id="about">
+    <div class="sec-head">
+      <div class="num">[ 01 ]</div>
+      <div class="meta"><span>ABOUT</span><span>PROFILE + TIMELINE</span><span>v.2026</span></div>
+    </div>
+
+    <div class="sub-head">[ 01.1 / PROFILE ]</div>
+    <dl class="spec">
+      <dt>NAME</dt><dd>YOSHIDA KOTONE / 吉田琴音</dd>
+      <dt>ROLE</dt><dd>UI Designer, occasional illustrator</dd>
+      <dt>LOCATION</dt><dd>大阪府 / Osaka, Japan (UTC+9)</dd>
+      <dt>FOCUS</dt><dd>プロダクトUI · デザインシステム · ブランドアイデンティティ · エディトリアル</dd>
+      <dt>TOOLS</dt><dd>Figma · After Effects · Cinema 4D · HTML/CSS · Git</dd>
+      <dt>WRITING</dt><dd>デザインシステムやプロセスについて時々書いてます。デザインミートアップで登壇することも。</dd>
+      <dt>STATUS</dt><dd><span style="color: var(--accent);">●</span> OPEN FOR PROJECTS · 2026.Q3</dd>
+    </dl>
+
+    <div class="sub-head">[ 01.2 / TIMELINE ]</div>
+    <table class="timeline">
+      <tr><td class="date">2024.10</td><td class="title"><span class="tag">EXHIBITION</span><strong>「TYPE WALK」展</strong> 主催 — 大阪</td></tr>
+      <tr><td class="date">2024.04 — <span class="now">PRESENT</span></td><td class="title"><strong>株式会社ACME</strong> — UI Designer</td></tr>
+      <tr><td class="date">2021.04 — 2024.03</td><td class="title"><strong>BYLD Inc.</strong> — Junior Designer</td></tr>
+      <tr><td class="date">2017.04 — 2021.03</td><td class="title"><strong>京都芸術大学</strong> — 美術学部 デザイン学科</td></tr>
+      <tr><td class="date">2014.04 — 2017.03</td><td class="title"><strong>大阪府立XX高等学校</strong></td></tr>
+    </table>
+  </section>
+
+  <section id="writing">
+    <div class="sec-head">
+      <div class="num">[ 02 ]</div>
+      <div class="meta"><span>WRITING</span><span>FEATURED · 3 OF 15</span><span>SELECTED</span></div>
+    </div>
+    <div class="writing-grid">
+      <a href="#" class="writing-card">
+        <div class="meta-row">
+          <div class="meta-left"><span class="idx">[ 01 ]</span><span>2025.10</span></div>
+          <span class="likes"><span class="heart">♡</span>312</span>
+        </div>
+        <div class="thumb">⊕ THUMB_01.PNG · 16:9</div>
+        <div class="article-title">デザインシステムを5年運用して学んだこと</div>
+        <div class="article-excerpt">運用フェーズで見えた、ガバナンスと拡張性のバランス。コンポーネント命名規則の失敗談と、組織サイズに合わせたチューニングの考え方。</div>
+        <div class="ext"><span>NOTE</span><span>→ READ <span class="arrow">↗</span></span></div>
+      </a>
+      <a href="#" class="writing-card">
+        <div class="meta-row">
+          <div class="meta-left"><span class="idx">[ 02 ]</span><span>2025.07</span></div>
+          <span class="likes"><span class="heart">♡</span>187</span>
+        </div>
+        <div class="thumb">⊕ THUMB_02.PNG · 16:9</div>
+        <div class="article-title">UIリサーチ手法のメモ — インタビュー設計について</div>
+        <div class="article-excerpt">少人数でもインサイトを引き出せるインタビュー設計の手順を、実際に使ってる質問テンプレ込みで整理した。</div>
+        <div class="ext"><span>NOTE</span><span>→ READ <span class="arrow">↗</span></span></div>
+      </a>
+      <a href="#" class="writing-card">
+        <div class="meta-row">
+          <div class="meta-left"><span class="idx">[ 03 ]</span><span>2024.12</span></div>
+          <span class="likes"><span class="heart">♡</span>245</span>
+        </div>
+        <div class="thumb">⊕ THUMB_03.PNG · 16:9</div>
+        <div class="article-title">ブランドアイデンティティ設計のプロセス</div>
+        <div class="article-excerpt">小規模スタートアップ向けに、限られた予算と時間でブランドを立ち上げる時のチェックリストと優先順位の付け方。</div>
+        <div class="ext"><span>NOTE</span><span>→ READ <span class="arrow">↗</span></span></div>
+      </a>
+    </div>
+    <a href="https://note.com/ysd_ktn" class="writing-more" target="_blank" rel="noopener">
+      <span>VIEW ALL ARTICLES · <span class="count">+12</span> MORE</span>
+      <span class="cta">→ NOTE PROFILE <span class="arrow">↗</span></span>
+    </a>
+  </section>
+
+  <section id="contact">
+    <div class="sec-head">
+      <div class="num">[ 03 ]</div>
+      <div class="meta"><span>CONTACT</span><span>OPEN CHANNEL</span></div>
+    </div>
+    <div class="contact-row"><span class="label">[ EMAIL ]</span><a href="mailto:hello@example.com">hello@example.com</a><span class="ext">→ COPY</span></div>
+    <div class="contact-row"><span class="label">[ X ]</span><a href="#">@ysd_ktn</a><span class="ext">→ EXTERNAL</span></div>
+    <div class="contact-row"><span class="label">[ INSTAGRAM ]</span><a href="#">@ysd.ktn</a><span class="ext">→ EXTERNAL</span></div>
+    <div class="contact-row"><span class="label">[ GITHUB ]</span><a href="#">github.com/ysd-ktn</a><span class="ext">→ EXTERNAL</span></div>
+  </section>
+</main>
+
+<div class="status-bar">
+  <span><span class="blink">●</span> ONLINE · BUILD 0426.2026</span>
+  <span id="coords">CURSOR · 0000,0000</span>
+  <span id="utc">UTC --:--:--</span>
+  <span>VIEWPORT · <span id="vw">0</span>×<span id="vh">0</span></span>
+</div>
+
+<script>
+  const cur = document.getElementById('cursor');
+  const meta = document.getElementById('curMeta');
+  const chip = document.getElementById('curChip');
+  const coord = document.getElementById('curCoord');
+  const coords = document.getElementById('coords');
+  document.addEventListener('mousemove', (e) => {
+    cur.style.transform = `translate(${e.clientX - 1}px, ${e.clientY - 1}px)`;
+    meta.style.transform = `translate(${e.clientX + 16}px, ${e.clientY + 14}px)`;
+    coord.textContent = `${String(e.clientX).padStart(4, '0')}, ${String(e.clientY).padStart(4, '0')}`;
+    coords.textContent = `CURSOR · ${String(e.clientX).padStart(4, '0')},${String(e.clientY).padStart(4, '0')}`;
+  });
+  document.querySelectorAll('a, button, .work').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      chip.classList.add('show');
+      chip.textContent = el.classList.contains('work') ? 'OPEN PROJECT' : el.tagName === 'BUTTON' ? 'FILTER' : 'OPEN LINK';
+    });
+    el.addEventListener('mouseleave', () => { chip.classList.remove('show'); });
+  });
+  function tick() {
+    const now = new Date();
+    document.getElementById('utc').textContent = 'UTC ' + now.toISOString().substring(11, 19);
+    document.getElementById('vw').textContent = window.innerWidth;
+    document.getElementById('vh').textContent = window.innerHeight;
+  }
+  setInterval(tick, 1000); tick();
+</script>
+</body>
+</html>

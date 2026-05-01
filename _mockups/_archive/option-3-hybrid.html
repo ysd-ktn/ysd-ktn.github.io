@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OPTION 03 / HYBRID · Yoshida Kotone</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;500;700&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #efebe0;
+    --grid: #e3ddd0;
+    --fg: #18181a;
+    --dim: #7e776a;
+    --line: #c8c1b0;
+    --accent: #ff0080;
+    --accent-dim: #ffb3d9;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); color: var(--fg); font-family: 'JetBrains Mono', monospace; font-size: 13px; line-height: 1.55; cursor: none; }
+
+  /* Engineering grid background */
+  body::before {
+    content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0; opacity: 0.6;
+    background-image:
+      linear-gradient(var(--grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+  /* Corner registration marks */
+  .reg-mark { position: fixed; width: 24px; height: 24px; z-index: 5; pointer-events: none; }
+  .reg-mark::before, .reg-mark::after { content: ''; position: absolute; background: var(--fg); }
+  .reg-mark::before { width: 24px; height: 1px; top: 50%; }
+  .reg-mark::after { height: 24px; width: 1px; left: 50%; }
+  .reg-tl { top: 16px; left: 16px; } .reg-tr { top: 16px; right: 16px; }
+  .reg-bl { bottom: 40px; left: 16px; } .reg-br { bottom: 40px; right: 16px; }
+
+  a { color: var(--fg); text-decoration: none; }
+  a:hover { color: var(--accent); }
+
+  /* Custom cursor */
+  .cursor { position: fixed; top: 0; left: 0; width: 24px; height: 24px; pointer-events: none; z-index: 200; transform: translate(-50%, -50%); }
+  .cursor::before, .cursor::after { content: ''; position: absolute; background: var(--accent); }
+  .cursor::before { width: 24px; height: 1px; top: 50%; }
+  .cursor::after { width: 1px; height: 24px; left: 50%; }
+  .cursor-tag { position: fixed; pointer-events: none; z-index: 200; padding: 4px 8px; background: var(--accent); color: var(--bg); font-size: 10px; letter-spacing: 0.1em; transform: translate(20px, 20px); white-space: nowrap; opacity: 0; transition: opacity 0.15s; }
+  .cursor-tag.show { opacity: 1; }
+
+  /* Header */
+  header { position: fixed; top: 0; left: 0; right: 0; z-index: 50; padding: 16px 56px; display: flex; justify-content: space-between; align-items: center; background: var(--bg); border-bottom: 1px solid var(--fg); font-size: 11px; letter-spacing: 0.1em; }
+  header .logo { font-weight: 700; }
+  header nav { display: flex; gap: 28px; }
+  header nav a { display: flex; gap: 4px; }
+  header nav .num { color: var(--accent); }
+
+  main { padding: 80px 56px 80px; max-width: 1500px; margin: 0 auto; position: relative; z-index: 2; }
+
+  /* Document title block */
+  .doc-block { border: 1px solid var(--fg); margin-top: 24px; }
+  .doc-row { display: grid; grid-template-columns: 180px 1fr; border-bottom: 1px solid var(--fg); }
+  .doc-row:last-child { border-bottom: 0; }
+  .doc-row .k { padding: 10px 16px; border-right: 1px solid var(--fg); background: var(--grid); font-size: 11px; letter-spacing: 0.1em; color: var(--dim); display: flex; align-items: center; }
+  .doc-row .v { padding: 10px 16px; font-size: 13px; }
+
+  /* Hero */
+  .hero { padding: 40px 0 80px; }
+  .hero .doc-meta { font-size: 11px; color: var(--dim); letter-spacing: 0.15em; display: flex; gap: 32px; margin-bottom: 32px; }
+  .hero .doc-meta .lbl { background: var(--accent); color: var(--bg); padding: 2px 8px; }
+  .hero h1 { font-family: 'Space Grotesk', sans-serif; font-size: clamp(64px, 12vw, 180px); font-weight: 700; line-height: 0.85; letter-spacing: -0.04em; margin-top: 16px; }
+  .hero h1 .small { font-family: 'Noto Sans JP', sans-serif; font-size: 0.18em; font-weight: 400; vertical-align: super; color: var(--dim); margin-left: 8px; letter-spacing: 0; }
+  .hero .role-line { margin-top: 32px; padding: 16px 0; border-top: 1px dashed var(--fg); border-bottom: 1px dashed var(--fg); display: flex; gap: 32px; font-size: 12px; letter-spacing: 0.1em; }
+  .hero .role-line .accent { color: var(--accent); }
+
+  /* Section */
+  section { margin-top: 80px; padding-top: 32px; border-top: 1px solid var(--fg); position: relative; }
+  .sec-head { display: flex; justify-content: space-between; margin-bottom: 32px; font-size: 11px; letter-spacing: 0.15em; }
+  .sec-head .id { color: var(--accent); font-weight: 700; }
+  .sec-head .meta { color: var(--dim); display: flex; gap: 16px; }
+  .sec-title { font-family: 'Space Grotesk', sans-serif; font-size: clamp(32px, 5vw, 64px); font-weight: 700; letter-spacing: -0.02em; line-height: 1; margin-bottom: 40px; }
+  .sec-title .acc { color: var(--accent); }
+
+  /* About */
+  .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+  .about-bio { padding: 0; }
+  .about-bio .lead { font-family: 'Space Grotesk', sans-serif; font-size: 24px; line-height: 1.4; font-weight: 500; margin-bottom: 24px; }
+  .about-bio .lead .acc { color: var(--accent); }
+  .about-bio p { font-size: 14px; line-height: 1.7; max-width: 480px; margin-bottom: 12px; }
+
+  /* Works */
+  .filters { display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; }
+  .filters button { background: var(--bg); color: var(--fg); border: 1px solid var(--fg); padding: 6px 12px; font-family: inherit; font-size: 11px; letter-spacing: 0.1em; cursor: none; }
+  .filters button.active { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+  .filters button:hover { background: var(--fg); color: var(--bg); }
+  .works-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0; border: 1px solid var(--fg); }
+  .work { padding: 24px; border-right: 1px solid var(--fg); border-bottom: 1px solid var(--fg); position: relative; background: var(--bg); transition: background 0.15s; min-height: 280px; display: flex; flex-direction: column; }
+  .work:nth-child(2n) { border-right: 0; }
+  .work:nth-last-child(-n+2) { border-bottom: 0; }
+  .work:hover { background: var(--accent-dim); }
+  .work .head { display: flex; justify-content: space-between; font-size: 11px; letter-spacing: 0.1em; color: var(--dim); margin-bottom: 16px; }
+  .work .head .idx { color: var(--accent); font-weight: 700; }
+  .work .thumb { flex: 1; border: 1px dashed var(--fg); margin-bottom: 16px; display: flex; align-items: center; justify-content: center; color: var(--dim); font-size: 11px; position: relative; min-height: 140px; }
+  .work .thumb::before { content: ''; position: absolute; top: 0; left: 0; width: 12px; height: 1px; background: var(--accent); }
+  .work .thumb::after { content: ''; position: absolute; top: 0; left: 0; width: 1px; height: 12px; background: var(--accent); }
+  .work .title { font-family: 'Space Grotesk', sans-serif; font-size: 22px; font-weight: 700; letter-spacing: -0.01em; line-height: 1.1; }
+  .work .cat { font-size: 11px; letter-spacing: 0.1em; color: var(--dim); margin-top: 6px; }
+
+  /* Contact */
+  .contact-block { border: 1px solid var(--fg); padding: 40px; background: var(--bg); }
+  .contact-row { display: grid; grid-template-columns: 120px 1fr 100px; gap: 24px; padding: 14px 0; border-bottom: 1px dashed var(--fg); align-items: baseline; }
+  .contact-row:last-child { border-bottom: 0; }
+  .contact-row .k { font-size: 11px; color: var(--dim); letter-spacing: 0.1em; }
+  .contact-row .v { font-family: 'Space Grotesk', sans-serif; font-size: 24px; font-weight: 500; }
+  .contact-row .ext { font-size: 11px; color: var(--dim); justify-self: end; letter-spacing: 0.1em; }
+
+  /* Status bar */
+  .status-bar { position: fixed; bottom: 0; left: 0; right: 0; background: var(--fg); color: var(--bg); padding: 6px 56px; display: flex; justify-content: space-between; font-size: 10px; letter-spacing: 0.1em; z-index: 50; }
+  .status-bar .accent { color: var(--accent); }
+  main { padding-bottom: 60px; }
+</style>
+</head>
+<body>
+<div class="reg-mark reg-tl"></div>
+<div class="reg-mark reg-tr"></div>
+<div class="reg-mark reg-bl"></div>
+<div class="reg-mark reg-br"></div>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-tag" id="cursor-tag">VIEW</div>
+
+<header>
+  <div class="logo">YSD-KTN.PORTFOLIO ⊕ DOC v3.0</div>
+  <nav>
+    <a href="#index"><span class="num">00</span>INDEX</a>
+    <a href="#about"><span class="num">01</span>ABOUT</a>
+    <a href="#works"><span class="num">02</span>WORKS</a>
+    <a href="#contact"><span class="num">03</span>CONTACT</a>
+  </nav>
+  <div>EN — JP</div>
+</header>
+
+<main>
+  <section class="hero" id="index">
+    <div class="doc-meta">
+      <span class="lbl">DOCUMENT</span>
+      <span>FILE: PORTFOLIO_2026.HTML</span>
+      <span>REV: 03.00</span>
+      <span>34.6937°N 135.5023°E</span>
+    </div>
+    <h1>Yoshida<br>Kotone<span class="small">/ 吉田琴音</span></h1>
+    <div class="role-line">
+      <span class="accent">▶ ROLE</span><span>UI DESIGNER</span>
+      <span class="accent">▶ LOC</span><span>OSAKA, JAPAN (UTC+9)</span>
+      <span class="accent">▶ STATUS</span><span>ACCEPTING PROJECTS · 2026 Q3</span>
+    </div>
+  </section>
+
+  <section id="about">
+    <div class="sec-head">
+      <span><span class="id">[ 01 ]</span> ABOUT — DESIGNER PROFILE</span>
+      <span class="meta"><span>SHEET 1 / 1</span><span>SCALE 1:1</span></span>
+    </div>
+    <h2 class="sec-title">Designing<br>with <span class="acc">intent</span>.</h2>
+    <div class="about-grid">
+      <div class="about-bio">
+        <div class="lead">A designer interested in how <span class="acc">structure</span> shapes feeling — building products, brands and editorial work.</div>
+        <p>Currently freelance, working with startups and studios on product UI, brand systems and the occasional poster. Five years in, still curious about everything.</p>
+        <p>Outside of design: ceramics, long walks, second-hand bookshops.</p>
+      </div>
+      <div class="doc-block">
+        <div class="doc-row"><div class="k">NAME</div><div class="v">Yoshida Kotone / 吉田琴音</div></div>
+        <div class="doc-row"><div class="k">ROLE</div><div class="v">UI Designer</div></div>
+        <div class="doc-row"><div class="k">LOCATION</div><div class="v">Osaka, Japan</div></div>
+        <div class="doc-row"><div class="k">FOCUS</div><div class="v">Product UI · Branding · Editorial</div></div>
+        <div class="doc-row"><div class="k">TOOLS</div><div class="v">Figma · After Effects · C4D · HTML/CSS</div></div>
+        <div class="doc-row"><div class="k">EXPERIENCE</div><div class="v">5 years · 30+ shipped projects</div></div>
+        <div class="doc-row"><div class="k">STATUS</div><div class="v" style="color: var(--accent);">● OPEN · 2026 Q3</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="works">
+    <div class="sec-head">
+      <span><span class="id">[ 02 ]</span> WORKS — SELECTED PROJECTS</span>
+      <span class="meta"><span>12 ENTRIES</span><span>SORT: NEWEST</span></span>
+    </div>
+    <h2 class="sec-title">Selected<br><span class="acc">works</span>.</h2>
+    <div class="filters">
+      <button class="active">[ ALL · 12 ]</button>
+      <button>[ UI / PRODUCT · 5 ]</button>
+      <button>[ BRANDING · 3 ]</button>
+      <button>[ GRAPHIC · 3 ]</button>
+      <button>[ EXPERIMENT · 1 ]</button>
+    </div>
+    <div class="works-grid">
+      <div class="work">
+        <div class="head"><span class="idx">[ 01 ]</span><span>2026 · STARTUP A</span></div>
+        <div class="thumb">⊕ THUMBNAIL_01.PNG</div>
+        <div class="title">Banking App Redesign</div>
+        <div class="cat">UI / PRODUCT</div>
+      </div>
+      <div class="work">
+        <div class="head"><span class="idx">[ 02 ]</span><span>2025 · CLIENT</span></div>
+        <div class="thumb">⊕ THUMBNAIL_02.PNG</div>
+        <div class="title">Cafe Brand Identity</div>
+        <div class="cat">BRANDING</div>
+      </div>
+      <div class="work">
+        <div class="head"><span class="idx">[ 03 ]</span><span>2025 · SELF</span></div>
+        <div class="thumb">⊕ THUMBNAIL_03.PNG</div>
+        <div class="title">Music Festival Poster</div>
+        <div class="cat">GRAPHIC</div>
+      </div>
+      <div class="work">
+        <div class="head"><span class="idx">[ 04 ]</span><span>2025 · STARTUP B</span></div>
+        <div class="thumb">⊕ THUMBNAIL_04.PNG</div>
+        <div class="title">SaaS Dashboard</div>
+        <div class="cat">UI / PRODUCT</div>
+      </div>
+      <div class="work">
+        <div class="head"><span class="idx">[ 05 ]</span><span>2024 · SELF</span></div>
+        <div class="thumb">⊕ THUMBNAIL_05.PNG</div>
+        <div class="title">Generative Type Study</div>
+        <div class="cat">EXPERIMENT</div>
+      </div>
+      <div class="work">
+        <div class="head"><span class="idx">[ 06 ]</span><span>2024 · MAGAZINE C</span></div>
+        <div class="thumb">⊕ THUMBNAIL_06.PNG</div>
+        <div class="title">Editorial Magazine</div>
+        <div class="cat">GRAPHIC</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact">
+    <div class="sec-head">
+      <span><span class="id">[ 03 ]</span> CONTACT — OPEN CHANNELS</span>
+      <span class="meta"><span>4 ENDPOINTS</span></span>
+    </div>
+    <h2 class="sec-title">Let's<br><span class="acc">work</span>.</h2>
+    <div class="contact-block">
+      <div class="contact-row"><span class="k">[ EMAIL ]</span><a href="mailto:hello@example.com" class="v">hello@example.com</a><span class="ext">→ COPY</span></div>
+      <div class="contact-row"><span class="k">[ X ]</span><a href="#" class="v">@ysd_ktn</a><span class="ext">→ EXTERNAL</span></div>
+      <div class="contact-row"><span class="k">[ INSTAGRAM ]</span><a href="#" class="v">@ysd.ktn</a><span class="ext">→ EXTERNAL</span></div>
+      <div class="contact-row"><span class="k">[ GITHUB ]</span><a href="#" class="v">github.com/ysd-ktn</a><span class="ext">→ EXTERNAL</span></div>
+    </div>
+  </section>
+</main>
+
+<div class="status-bar">
+  <span><span class="accent">●</span> DOC LOADED · BUILD 0426.2026</span>
+  <span id="coords">CURSOR · 0000,0000</span>
+  <span id="utc">UTC --:--:--</span>
+  <span>VP · <span id="vw">0</span>×<span id="vh">0</span></span>
+</div>
+
+<script>
+  const cur = document.getElementById('cursor');
+  const tag = document.getElementById('cursor-tag');
+  const coords = document.getElementById('coords');
+  document.addEventListener('mousemove', (e) => {
+    cur.style.transform = `translate(${e.clientX}px, ${e.clientY}px) translate(-50%, -50%)`;
+    tag.style.left = e.clientX + 'px';
+    tag.style.top = e.clientY + 'px';
+    coords.textContent = `CURSOR · ${String(e.clientX).padStart(4, '0')},${String(e.clientY).padStart(4, '0')}`;
+  });
+  document.querySelectorAll('a, button, .work').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      tag.classList.add('show');
+      tag.textContent = el.classList.contains('work') ? 'OPEN PROJECT' : el.tagName === 'BUTTON' ? 'FILTER' : 'OPEN LINK';
+    });
+    el.addEventListener('mouseleave', () => { tag.classList.remove('show'); });
+  });
+  function tick() {
+    const now = new Date();
+    document.getElementById('utc').textContent = 'UTC ' + now.toISOString().substring(11, 19);
+    document.getElementById('vw').textContent = window.innerWidth;
+    document.getElementById('vh').textContent = window.innerHeight;
+  }
+  setInterval(tick, 1000); tick();
+</script>
+</body>
+</html>
