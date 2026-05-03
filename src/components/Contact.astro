@@ -1,13 +1,22 @@
 ---
-// Contact — key/value リスト (EMAIL / X / INSTAGRAM / GITHUB)
+// Contact — key/value リスト (EMAIL / X / GITHUB)
 //
-// モックアップ `_mockups/option-1-cyber-v2-writing-grid.html` の section#contact を分解。
+// Phase 5: src/content/contact.json (Content Collections 経由) からデータ読込。
+// order 昇順で並ぶ。Instagram は不要のため content 側に置かない方針。
+// props は override 用に残してある。
+//
 // 各行は 3 カラムグリッド: [ LABEL ] / 値 (リンク) / → COPY or → EXTERNAL
 //
 // action 種別:
 //   - 'copy'     : クリックでクリップボードへ value をコピー (主に mailto 行)
 //   - 'external' : 外部リンク (target="_blank")。ext は装飾のみ
 // 省略時は href が "mailto:" で始まれば copy、それ以外は external として扱う。
+
+import { getCollection } from 'astro:content';
+
+const entriesFromCollection = (await getCollection('contact'))
+  .map((e) => e.data)
+  .sort((a, b) => a.order - b.order);
 
 interface ContactEntry {
   /** "[ EMAIL ]" / "[ X ]" のラベル (角括弧は CSS で付ける、ここは文字だけ) */
@@ -18,6 +27,8 @@ interface ContactEntry {
   href: string;
   /** ext の挙動。省略時は href から自動判定 */
   action?: 'copy' | 'external';
+  /** collection 由来の表示順 (使うのはソート時のみ、表示には不要) */
+  order?: number;
 }
 
 interface Props {
@@ -32,12 +43,7 @@ interface Props {
 const {
   index = '03',
   meta = ['CONTACT', 'OPEN CHANNEL'],
-  entries = [
-    { label: 'EMAIL', value: 'hello@example.com', href: 'mailto:hello@example.com' },
-    { label: 'X', value: '@ysd_ktn', href: 'https://x.com/ysd_ktn' },
-    { label: 'INSTAGRAM', value: '@ysd.ktn', href: 'https://instagram.com/ysd.ktn' },
-    { label: 'GITHUB', value: 'github.com/ysd-ktn', href: 'https://github.com/ysd-ktn' },
-  ],
+  entries = entriesFromCollection,
 } = Astro.props;
 
 /** href から ext 種別を自動判定 */

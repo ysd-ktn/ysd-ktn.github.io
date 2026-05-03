@@ -1,0 +1,23 @@
+[
+  {
+    "id": "email",
+    "label": "EMAIL",
+    "value": "yosida.kotone@gmail.com",
+    "href": "mailto:yosida.kotone@gmail.com",
+    "order": 1
+  },
+  {
+    "id": "x",
+    "label": "X",
+    "value": "@ysd_ktn",
+    "href": "https://x.com/ysd_ktn",
+    "order": 2
+  },
+  {
+    "id": "github",
+    "label": "GITHUB",
+    "value": "github.com/ysd-ktn",
+    "href": "https://github.com/ysd-ktn",
+    "order": 3
+  }
+]

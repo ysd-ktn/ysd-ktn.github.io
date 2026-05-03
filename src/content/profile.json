@@ -1,0 +1,30 @@
+{
+  "main": {
+    "nameFirst": "YOSHIDA",
+    "nameLast": "KOTONE",
+    "nameJp": "吉田琴音",
+    "roleHero": "UI/UX DESIGNER · BASED IN KANAGAWA, JP · CLOSED FOR NEW PROJECTS",
+    "lat": 35.5308,
+    "lng": 139.6968,
+    "lastUpdate": "2026.05.06",
+    "locationJp": "神奈川県",
+    "locationEn": "Kanagawa, Japan",
+    "utc": "+9",
+    "focus": [
+      "UI/UX設計",
+      "デザインシステム構築",
+      "ビジュアル/インフォグラフィックデザイン"
+    ],
+    "tools": [
+      "Figma",
+      "HTML/CSS",
+      "Git",
+      "Adobe Illustrator",
+      "Adobe Photoshop",
+      "Unity"
+    ],
+    "writingIntro": "デジタルプロダクトにおける体験設計やデザインシステムに興味があり、UI/UX設計とインフォグラフィックを軸としたビジュアルデザインを得意としています。",
+    "statusOpen": false,
+    "statusLabel": "CLOSED FOR NEW PROJECTS · INQUIRIES OPEN"
+  }
+}

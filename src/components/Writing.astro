@@ -1,11 +1,17 @@
 ---
 // Writing — note 記事の3カードグリッド + 「VIEW ALL ARTICLES · +N MORE」CTA
 //
-// モックアップ `_mockups/option-1-cyber-v2-writing-grid.html` の section#writing を分解。
-// データは props で受け取る設計。Phase 5 で src/content/writing.json に外出しする。
+// Phase 5: src/content/writing.json からデータ読込。
+// articles のうち featured: true のものを上から3件表示する (Zod で 3件固定を保証)。
+// props は override 用に残してある。
 //
 // Article: meta-row ([ idx ] + date + ♡ likes) / 16:9 サムネ / タイトル / 概要 / NOTE → READ
 // CTA:     `VIEW ALL ARTICLES · +N MORE → NOTE PROFILE` (note プロフィールへの外部リンク)
+
+import { getEntry } from 'astro:content';
+
+const writing = (await getEntry('writing', 'main'))!.data;
+const featuredArticles = writing.articles.filter((a) => a.featured).slice(0, 3);
 
 interface Article {
   /** カード左上の [ idx ] 表示。省略時は配列順から "01", "02"... を自動生成 */
@@ -24,6 +30,10 @@ interface Article {
   url: string;
   /** カードフッタ左の plat 表示。省略時 "NOTE" */
   platform?: string;
+  /** いいね数を非表示にする個別フラグ (collection 由来、表示時には参照する) */
+  showLikes?: boolean;
+  /** トップに表示するか (collection 由来、ここに来る時点で featured: true 済) */
+  featured?: boolean;
 }
 
 interface Props {
@@ -41,35 +51,10 @@ interface Props {
 
 const {
   index = '02',
-  meta = ['WRITING', 'FEATURED · 3 OF 15', 'SELECTED'],
-  articles = [
-    {
-      date: '2025.10',
-      likes: 312,
-      title: 'デザインシステムを5年運用して学んだこと',
-      excerpt:
-        '運用フェーズで見えた、ガバナンスと拡張性のバランス。コンポーネント命名規則の失敗談と、組織サイズに合わせたチューニングの考え方。',
-      url: '#',
-    },
-    {
-      date: '2025.07',
-      likes: 187,
-      title: 'UIリサーチ手法のメモ — インタビュー設計について',
-      excerpt:
-        '少人数でもインサイトを引き出せるインタビュー設計の手順を、実際に使ってる質問テンプレ込みで整理した。',
-      url: '#',
-    },
-    {
-      date: '2024.12',
-      likes: 245,
-      title: 'ブランドアイデンティティ設計のプロセス',
-      excerpt:
-        '小規模スタートアップ向けに、限られた予算と時間でブランドを立ち上げる時のチェックリストと優先順位の付け方。',
-      url: '#',
-    },
-  ],
-  totalCount = 15,
-  noteProfileUrl = 'https://note.com/ysd_ktn',
+  meta = ['WRITING', `FEATURED · 3 OF ${writing.totalCount}`, 'SELECTED'],
+  articles = featuredArticles,
+  totalCount = writing.totalCount,
+  noteProfileUrl = writing.noteProfileUrl,
 } = Astro.props;
 
 const moreCount = Math.max(0, totalCount - articles.length);
@@ -101,7 +86,9 @@ const moreCount = Math.max(0, totalCount - articles.length);
             </div>
             <div class="thumb">{thumbLabel}</div>
             <div class="article-title">{a.title}</div>
-            <div class="article-excerpt">{a.excerpt}</div>
+            <div class="article-excerpt">
+              <div class="excerpt-text">{a.excerpt}</div>
+            </div>
             <div class="ext">
               <span>{a.platform ?? 'NOTE'}</span>
               <span>→ READ <span class="arrow">↗</span></span>
@@ -202,12 +189,23 @@ const moreCount = Math.max(0, totalCount - articles.length);
     color: var(--accent);
   }
 
-  /* 概要 (flex:1 でカード高さを揃え、ext を底に押し付ける) */
+  /* 概要 — 2レイヤ構造で責任分離。
+     外側 (.article-excerpt) は flex: 1 でカード内の空きスペースを埋め、
+     ext footer を底に押し付ける役割のみを持つ。
+     内側 (.excerpt-text) で line-clamp して 2行 + … に切り詰める役割。
+     一緒にすると flex の高さストレッチが line-clamp を無効化するので分けてある。 */
   .writing-card .article-excerpt {
     font-size: 12px;
     color: var(--dim);
     line-height: 1.6;
     flex: 1;
+  }
+  .writing-card .article-excerpt .excerpt-text {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 
   /* カード底の ext (NOTE / → READ ↗) */

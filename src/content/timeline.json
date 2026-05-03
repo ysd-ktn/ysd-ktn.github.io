@@ -1,0 +1,43 @@
+[
+  {
+    "id": "acme-2025",
+    "from": "2025.10",
+    "to": "PRESENT",
+    "title": "株式会社セガ",
+    "role": "Designer",
+    "order": 50
+  },
+  {
+    "id": "byld-2024",
+    "from": "2024.04",
+    "to": "2024.10",
+    "title": "株式会社マネーフォワード",
+    "role": "Product Designer",
+    "order": 40
+  },
+  {
+    "id": "event-2022",
+    "date": "2022.03",
+    "tag": "EVENT",
+    "title": "ClusterGAMEJAM 2022 in SPRING",
+    "detail": "ネクスト部門 受賞",
+    "order": 30
+  },
+  {
+    "id": "exhibition-typewalk-2021",
+    "from": "2021.02",
+    "to": "2021.03",
+    "tag": "EXHIBITION",
+    "title": "京都市芸バーチャル展",
+    "detail": "運営 — in cluster",
+    "order": 20
+  },
+  {
+    "id": "kyoto-art-2020",
+    "from": "2020.04",
+    "to": "2024.03",
+    "title": "京都市立芸術大学",
+    "role": "美術学部 総合芸術学科",
+    "order": 10
+  }
+]

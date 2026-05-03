@@ -1,17 +1,32 @@
 ---
 // About — PROFILE (spec シート) + TIMELINE (経歴 + 展覧会)
 //
-// データは props で受け取る設計。Phase 5 で Content Collections 化したら
-// src/content/profile.json と src/content/timeline.json から流し込む想定。
+// Phase 5: src/content/profile.json (PROFILE 用) と
+// src/content/timeline.json (TIMELINE 用) からデータ読込。
+// props は override 用に残してある。
 //
 // SpecEntry: dl/dt/dd の key/value 1組
 // TimelineEntry: 単発イベント (date + tag) と期間付き (from/to + role) の両方に対応
 
+import { getEntry, getCollection } from 'astro:content';
+
+const profile = (await getEntry('profile', 'main'))!.data;
+
+// timeline は order 降順 (大きい数値ほど上=新しい)
+const timelineFromCollection = (await getCollection('timeline'))
+  .map((e) => e.data)
+  .sort((a, b) => b.order - a.order);
+
 interface SpecEntry {
   key: string;
   value: string;
-  /** 値の頭にアクセント色の ● を付与する (STATUS など) */
-  accent?: boolean;
+  /**
+   * 値の頭にステータスドットを付与する。
+   *  - 'open'   → ● in accent (#00f0bd) — 募集中
+   *  - 'closed' → ○ in dim (#6b6b6b)   — 募集停止 (連絡窓口は別途)
+   *  - undefined → ドットなし (NAME / ROLE 等の通常行)
+   */
+  dot?: 'open' | 'closed';
 }
 
 interface TimelineEntry {
@@ -29,6 +44,8 @@ interface TimelineEntry {
   detail?: string;
   /** 役職 (期間エントリ用、例: "UI Designer") */
   role?: string;
+  /** 表示順序 (collection 由来。表示自体には不要だが型整合のため許容) */
+  order?: number;
 }
 
 interface Props {
@@ -42,46 +59,22 @@ interface Props {
   timeline?: TimelineEntry[];
 }
 
+// profile.json から spec シート 7行を組み立てる。
+// 並び順は DESIGN_SPEC の PROFILE モックに合わせて固定 (NAME → ROLE → ... → STATUS)。
+const specFromProfile: SpecEntry[] = [
+  { key: 'NAME', value: `${profile.nameFirst} ${profile.nameLast} / ${profile.nameJp}` },
+  { key: 'LOCATION', value: `${profile.locationJp} / ${profile.locationEn} (UTC${profile.utc})` },
+  { key: 'FOCUS', value: profile.focus.join(' · ') },
+  { key: 'TOOLS', value: profile.tools.join(' · ') },
+  { key: 'WRITING', value: profile.writingIntro },
+  { key: 'STATUS', value: profile.statusLabel, dot: profile.statusOpen ? 'open' : 'closed' },
+];
+
 const {
   index = '01',
   meta = ['ABOUT', 'PROFILE + TIMELINE', 'v.2026'],
-  spec = [
-    { key: 'NAME', value: 'YOSHIDA KOTONE / 吉田琴音' },
-    { key: 'ROLE', value: 'UI Designer, occasional illustrator' },
-    { key: 'LOCATION', value: '大阪府 / Osaka, Japan (UTC+9)' },
-    {
-      key: 'FOCUS',
-      value:
-        'プロダクトUI · デザインシステム · ブランドアイデンティティ · エディトリアル',
-    },
-    {
-      key: 'TOOLS',
-      value: 'Figma · After Effects · Cinema 4D · HTML/CSS · Git',
-    },
-    {
-      key: 'WRITING',
-      value:
-        'デザインシステムやプロセスについて時々書いてます。デザインミートアップで登壇することも。',
-    },
-    { key: 'STATUS', value: 'OPEN FOR PROJECTS · 2026.Q3', accent: true },
-  ],
-  timeline = [
-    {
-      date: '2024.10',
-      tag: 'EXHIBITION',
-      title: '「TYPE WALK」展',
-      detail: '主催 — 大阪',
-    },
-    { from: '2024.04', to: 'PRESENT', title: '株式会社ACME', role: 'UI Designer' },
-    { from: '2021.04', to: '2024.03', title: 'BYLD Inc.', role: 'Junior Designer' },
-    {
-      from: '2017.04',
-      to: '2021.03',
-      title: '京都芸術大学',
-      role: '美術学部 デザイン学科',
-    },
-    { from: '2014.04', to: '2017.03', title: '大阪府立XX高等学校' },
-  ],
+  spec = specFromProfile,
+  timeline = timelineFromCollection,
 } = Astro.props;
 ---
 
@@ -100,7 +93,11 @@ const {
         <Fragment>
           <dt>{entry.key}</dt>
           <dd>
-            {entry.accent && <span class="status-dot">●</span>}
+            {entry.dot && (
+              <span class={`status-dot status-dot--${entry.dot}`}>
+                {entry.dot === 'open' ? '●' : '○'}
+              </span>
+            )}
             {entry.value}
           </dd>
         </Fragment>
@@ -183,8 +180,15 @@ const {
     margin-left: 4px;
   }
   .spec .status-dot {
-    color: var(--accent);
     margin-right: 6px;
+  }
+  /* 募集中: ● 塗り潰し + アクセント色 */
+  .spec .status-dot--open {
+    color: var(--accent);
+  }
+  /* 募集停止: ○ 中抜き + dim 色 (チャンネルは存在するが non-active のニュアンス) */
+  .spec .status-dot--closed {
+    color: var(--dim);
   }
 
   /* TIMELINE — テーブル */
