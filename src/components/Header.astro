@@ -1,10 +1,11 @@
 ---
 // Header — フローティングピル
-// 通常時: 180×44px、ロゴ + + トグルだけ表示
-// hover時: 720px に展開、ナビ + 言語切替が可視化
+// 通常時: 200×44px、ロゴ + + トグルだけ表示
+// hover時: 横展開してナビが可視化
 //
 // nav 項目はモックの順序を維持。WORKS は現状なし、WRITING を 02 として配置。
-// 言語切替 (EN / JP) は表示のみ。機能は未実装 (DESIGN_SPEC の未決事項)。
+// 言語切替 (EN / JP) は Phase 6 準備で削除済み (DESIGN_SPEC で未決のため、
+// JP/EN コンテンツが揃うまでは UI 自体を出さない方針)。
 //
 // version はあとで package.json から読みたくなるかもしれないが、
 // いったんモック通り `v3.0.0` を直書き。
@@ -29,7 +30,6 @@ const logoText = 'YSD-KTN / v3.0.0';
       ))
     }
   </nav>
-  <span class="lang">EN / JP</span>
   <span class="toggle" aria-hidden="true">+</span>
 </header>
 
@@ -70,11 +70,11 @@ const logoText = 'YSD-KTN / v3.0.0';
     transition: border-color 0.4s;
   }
 
-  header nav,
-  header .lang {
+  header nav {
     max-width: 0;
     opacity: 0;
     overflow: hidden;
+    padding: 0;
     display: flex;
     align-items: center;
     height: 100%;
@@ -83,10 +83,6 @@ const logoText = 'YSD-KTN / v3.0.0';
       opacity 0.25s ease 0.12s,
       padding 0.5s cubic-bezier(0.7, 0, 0.3, 1),
       border-color 0.4s;
-  }
-
-  header nav {
-    padding: 0;
   }
 
   header nav a {
@@ -109,17 +105,12 @@ const logoText = 'YSD-KTN / v3.0.0';
     color: var(--dim);
   }
 
-  header .lang {
-    padding: 0;
-    border-left: 1px dashed transparent;
-  }
-
   header .toggle {
     color: var(--accent);
     flex-shrink: 0;
     /* margin-left は当てない。CSS transition は margin: 0 → auto を補間できない
        (auto が数値じゃないため) ので、ホバー時に + が瞬間的に右へ飛んで回転だけ
-       遅れて始まるカクつきが起きる。代わりに nav と lang の max-width 展開で
+       遅れて始まるカクつきが起きる。代わりに nav の max-width 展開で
        toggle が自然に右へ押し出される構造にしている。 */
     padding: 0 18px 0 6px;
     font-size: 14px;
@@ -134,10 +125,10 @@ const logoText = 'YSD-KTN / v3.0.0';
 
   /* ===== hover state — pill 展開 ===== */
   header:hover {
-    /* 720px から 650px に縮小。実コンテンツ幅 (logo 156 + nav ≈ 371 + lang 82
-       + toggle 34 ≈ 643) にフィットさせて、toggle が右端ぴったりに収まるように。
-       nav 最後の項目 (03 CONTACT) の padding-right を +8 した分も込み。 */
-    width: 650px;
+    /* 旧 650px から lang 領域 (max-width 100 + padding 0 16px = 132px) を
+       削った分だけ縮小。実コンテンツ幅 (logo 156 + nav ≈ 371 + toggle 34 ≈ 561)
+       に余白を含めてフィットさせ、toggle が右端ぴったりに収まるように。 */
+    width: 520px;
   }
   header:hover .logo {
     border-right-color: var(--line);
@@ -146,14 +137,8 @@ const logoText = 'YSD-KTN / v3.0.0';
     max-width: 420px;
     opacity: 1;
   }
-  header:hover .lang {
-    max-width: 100px;
-    opacity: 1;
-    padding: 0 16px;
-    border-left-color: var(--line);
-  }
   header:hover .toggle {
-    /* + → × の 45° 回転のみ。右への移動は nav と lang の max-width 展開
+    /* + → × の 45° 回転のみ。右への移動は nav の max-width 展開
        (transition 0.55s cubic-bezier) によって自然に発生する。 */
     transform: rotate(45deg);
   }
