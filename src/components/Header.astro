@@ -126,9 +126,10 @@ const logoText = 'YSD-KTN / v3.0.0';
   /* ===== hover state — pill 展開 ===== */
   header:hover {
     /* 旧 650px から lang 領域 (max-width 100 + padding 0 16px = 132px) を
-       削った分だけ縮小。実コンテンツ幅 (logo 156 + nav ≈ 371 + toggle 34 ≈ 561)
-       に余白を含めてフィットさせ、toggle が右端ぴったりに収まるように。 */
-    width: 520px;
+       削った分を引いて 518 → 520 で詰めたら、CONTACT が overflow:hidden で
+       toggle に食われた。実コンテンツ (logo 156 + nav ≈ 371 + toggle 34 ≈ 561)
+       に余白 ~20px を載せた 580px が安全圏。 */
+    width: 580px;
   }
   header:hover .logo {
     border-right-color: var(--line);
