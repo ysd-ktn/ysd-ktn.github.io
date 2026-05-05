@@ -28,9 +28,9 @@ const { buildDate = formatBuildDate() } = Astro.props;
 
 <footer class="status-bar" aria-hidden="true">
   <span><span class="blink">●</span> ONLINE · BUILD {buildDate}</span>
-  <span id="status-coords">CURSOR · 0000,0000</span>
+  <span id="status-coords" class="status-cursor">CURSOR · 0000,0000</span>
   <span id="status-utc">UTC --:--:--</span>
-  <span>VIEWPORT · <span id="status-vw">0</span>×<span id="status-vh">0</span></span>
+  <span class="status-viewport">VIEWPORT · <span id="status-vw">0</span>×<span id="status-vh">0</span></span>
 </footer>
 
 <script>
@@ -89,6 +89,25 @@ const { buildDate = formatBuildDate() } = Astro.props;
   @keyframes blink {
     50% {
       opacity: 0;
+    }
+  }
+
+  /* ===== モバイル (~720px) =====
+     幅 326px (390 - padding 32×2) に 4 要素を space-between で並べると
+     確実に overflow するため情報量を削る:
+       - CURSOR · X,Y   → touch には マウスがないので意味なし、 削除
+       - VIEWPORT · W×H → cyber HUD 装飾としては残したいが幅優先で削除
+     残るのは「● ONLINE · BUILD 0505.2026」「UTC HH:MM:SS」 の 2 要素のみ。
+     padding も 32px → 16px に詰める。 */
+  @media (max-width: 720px) {
+    .status-bar {
+      padding: 8px 16px;
+      font-size: 9px;
+      letter-spacing: 0.08em;
+    }
+    .status-bar .status-cursor,
+    .status-bar .status-viewport {
+      display: none;
     }
   }
 </style>
