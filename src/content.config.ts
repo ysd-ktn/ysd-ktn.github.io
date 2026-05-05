@@ -114,7 +114,13 @@ const writingArticleSchema = z
     date: z.string(),
     /** いいね数。省略すると ♡ N 表示自体を非表示 */
     likes: z.number().int().nonnegative().optional(),
-    /** 16:9 サムネ placeholder ラベル。省略時は "⊕ THUMB_NN.PNG · 16:9" を自動生成 */
+    /** サムネ画像のパス (例: "/images/writing/01-xxx.webp")。
+     *  public/ 配下の絶対パスを期待 (Astro は public/ をルートにマップ)。
+     *  Phase 7 直前に dashed プレースホルダ → 実画像に切替済み (2026.05.05)。 */
+    thumbnail: z.string(),
+    /** 16:9 サムネ placeholder ラベル。
+     *  かつての dashed 枠 + テキスト表示用。 thumbnail に切替後は実用上不要だが、
+     *  alt テキストや将来 placeholder へ戻す際の予備として残す (省略可)。 */
     thumbLabel: z.string().optional(),
     /** 記事タイトル */
     title: z.string(),

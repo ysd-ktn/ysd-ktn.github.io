@@ -20,7 +20,9 @@ interface Article {
   date: string;
   /** いいね数。省略すると likes 表示自体を非表示にする */
   likes?: number;
-  /** 16:9 サムネ placeholder ラベル。省略時は "⊕ THUMB_NN.PNG · 16:9" を自動生成 */
+  /** サムネ画像のパス (例: "/images/writing/01-xxx.webp")。public/ 配下を絶対パスで指定 */
+  thumbnail: string;
+  /** (vestigial) 旧 dashed プレースホルダ用ラベル。実画像切替後は未使用、schema 互換のため残置 */
   thumbLabel?: string;
   /** 記事タイトル */
   title: string;
@@ -72,7 +74,6 @@ const moreCount = Math.max(0, totalCount - articles.length);
     {
       articles.map((a, i) => {
         const idx = a.idx ?? String(i + 1).padStart(2, '0');
-        const thumbLabel = a.thumbLabel ?? `⊕ THUMB_${idx}.PNG · 16:9`;
         return (
           <a href={a.url} class="writing-card" target="_blank" rel="noopener">
             <div class="meta-row">
@@ -84,7 +85,9 @@ const moreCount = Math.max(0, totalCount - articles.length);
                 <span class="likes"><span class="heart">♡</span>{a.likes}</span>
               )}
             </div>
-            <div class="thumb">{thumbLabel}</div>
+            <div class="thumb">
+              <img src={a.thumbnail} alt="" loading="lazy" decoding="async" />
+            </div>
             <div class="article-title">{a.title}</div>
             <div class="article-excerpt">
               <div class="excerpt-text">{a.excerpt}</div>
@@ -155,24 +158,30 @@ const moreCount = Math.max(0, totalCount - articles.length);
     font-size: 11px;
   }
 
-  /* 16:9 サムネ placeholder */
+  /* 16:9 サムネ枠 — img を object-fit: cover で詰める。
+     画像のソースは note OGP 標準 (1280×670 ≈ 1.91:1) で 16:9 (1.78:1) より少し横長なので、
+     左右がほんの少しトリミングされる。note OGP は中央配置が多いので実害はない想定。
+     hover で枠を accent 色 + 画像の grayscale を解除して「光が点く」演出。 */
   .writing-card .thumb {
     aspect-ratio: 16 / 9;
-    border: 1px dashed var(--line);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: var(--font-mono);
-    font-size: 11px;
-    color: var(--dim);
-    letter-spacing: 0.05em;
-    filter: grayscale(0.85);
-    transition: border-color 0.15s, color 0.15s;
+    border: 1px solid var(--line);
+    overflow: hidden;
     margin-bottom: 16px;
+    transition: border-color 0.15s;
+  }
+  .writing-card .thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    filter: grayscale(0.85);
+    transition: filter 0.2s;
   }
   .writing-card:hover .thumb {
     border-color: var(--accent);
-    color: var(--accent);
+  }
+  .writing-card:hover .thumb img {
+    filter: grayscale(0);
   }
 
   /* タイトル */
