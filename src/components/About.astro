@@ -241,4 +241,51 @@ const {
     margin-right: 12px;
     vertical-align: middle;
   }
+
+  /* ===== モバイル (~720px) =====
+     PROFILE: dt 200px + dd 1fr の grid だと、 326px 画面で値の領域が
+     126px しか取れず読み辛い + 長いトークン (例: "yosida.kotone@gmail.com" 等)
+     は grid item の min-width:auto = min-content により親 grid を突き破って
+     横スクロール余白を生む。 1カラム縦積みに切替。
+
+     TIMELINE: table 構造のまま td を block 化。 date を 1行目、 title を
+     2行目に積む。 width:240px の固定列も解除。 cell border は tr 側で扱う。 */
+  @media (max-width: 720px) {
+    .spec {
+      grid-template-columns: 1fr;
+    }
+    .spec dt {
+      padding: 14px 0 4px;
+      border-bottom: 0;
+    }
+    .spec dd {
+      padding: 0 0 14px;
+      font-size: 14px;
+      border-bottom: 1px dashed var(--line);
+      overflow-wrap: anywhere;
+    }
+    /* table を捨てて block 縦積みに */
+    .timeline,
+    .timeline tbody,
+    .timeline tr,
+    .timeline td {
+      display: block;
+      width: 100%;
+    }
+    .timeline tr {
+      padding: 12px 0;
+      border-bottom: 1px dashed var(--line);
+    }
+    .timeline td {
+      padding: 0;
+    }
+    .timeline .date {
+      width: auto;
+      margin-bottom: 4px;
+    }
+    .timeline .title {
+      font-size: 14px;
+      overflow-wrap: anywhere;
+    }
+  }
 </style>
