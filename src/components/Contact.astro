@@ -165,4 +165,29 @@ function resolveAction(entry: ContactEntry): 'copy' | 'external' {
   .contact-row button.ext.copied {
     color: var(--accent);
   }
+
+  /* ===== モバイル (~720px) =====
+     - 90px / 1fr / 1fr の 3 カラムグリッドは email アドレス
+       ("yosida.kotone@gmail.com" 等) が grid item の min-content として
+       1fr を突き破って横スクロール余白を生むので、 1カラム縦積みに切替
+     - → COPY / → EXTERNAL は タッチデバイスで COPY ボタンが押せない
+       (Web Clipboard API は touch でも動くが、 ボタン自体の接触面積が小さい)
+       のと、 mailto: は OS のメーラーが立ち上がるので "→ EXTERNAL" の
+       表記も冗長。 モバイルでは ext を完全に非表示にして label / value
+       だけのシンプル表示に */
+  @media (max-width: 720px) {
+    .contact-row {
+      grid-template-columns: 1fr;
+      gap: 4px;
+      padding: 14px 0;
+    }
+    .contact-row a {
+      font-size: 18px;
+      overflow-wrap: anywhere;
+      min-width: 0;
+    }
+    .contact-row .ext {
+      display: none;
+    }
+  }
 </style>
