@@ -56,6 +56,10 @@ body {
   font-family: var(--font-display), var(--font-jp), sans-serif;
   font-size: 14px;
   line-height: 1.5;
+  /* 水平スクロールを完全に止める。 各コンポーネント側で grid item の
+     min-content overflow を潰すのが本筋だが、 万一どこかで長文トークンが
+     親を突き破っても画面右の余白が生まれない保険として root レベルで lock。 */
+  overflow-x: hidden;
 }
 
 /* カスタムカーソル — Cursor.astro が SVG を描画するので OS カーソルは隠す。
@@ -115,6 +119,19 @@ main {
   padding: 80px 32px 80px;
   max-width: 1400px;
   margin: 0 auto;
+}
+
+/* モバイル (~720px) では左右余白を詰める。
+   左右 32px は 390px 画面だと中身 326px しか取れず、Writing カードや
+   Contact 行のテキストが圧迫されるため 16px に。上下も Header floating pill
+   との相性で詰めて良い。 */
+@media (max-width: 720px) {
+  main {
+    padding: 64px 16px 80px;
+  }
+  section {
+    padding: 40px 0;
+  }
 }
 
 /* ============================================================
