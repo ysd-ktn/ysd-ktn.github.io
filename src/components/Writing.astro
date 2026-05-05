@@ -266,4 +266,25 @@ const moreCount = Math.max(0, totalCount - articles.length);
   .writing-more .cta .arrow {
     color: var(--accent);
   }
+
+  /* ===== モバイル (~720px) =====
+     3カラム → 1カラム。 720px だと 1カラムあたり ≈220px しか取れず、
+     16:9 サムネと title / excerpt が 1カードに同居するには窮屈なため、
+     横並びを諦めて縦に積む。 gap=1px の grid 区切り線はそのまま動く
+     (1fr の grid なら水平区切りになる)。 */
+  @media (max-width: 720px) {
+    .writing-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* ===== タッチデバイス向け =====
+     hover が無いデバイスでは、 デスクトップの「hover で grayscale → カラーに
+     点灯」演出が一生発動しない。 最初からフルカラーで見せた方がユーザに
+     画像内容が伝わる。 (Phase 6.5 で実画像に差し替えた時の宿題。) */
+  @media (hover: none) {
+    .writing-card .thumb img {
+      filter: none;
+    }
+  }
 </style>
