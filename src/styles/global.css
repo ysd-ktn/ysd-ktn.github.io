@@ -161,6 +161,11 @@ main {
   .sec-head .meta span {
     white-space: nowrap;
   }
+  /* 中段 span (例: "PROFILE + TIMELINE + EVENTS" / "FEATURED · 3 OF 4" / "OPEN CHANNEL")
+     をモバイルでは非表示。セクション名と版数だけ残して幅超過を解消。 */
+  .sec-head .meta span:nth-child(2) {
+    display: none;
+  }
 }
 
 /* ============================================================

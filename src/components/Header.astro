@@ -228,12 +228,14 @@ const logoText = 'YSD-KTN / v3.0.0';
 
 <script>
   // ── モバイルナビ スクロール連動アクティブ表示 ──────────────────
-  // IntersectionObserver でセクションの出入りを監視し、
-  // viewport 上部に入ったセクションに対応するナビ項目を is-active に切り替える。
+  // IntersectionObserver はスクロールアニメーション中に途中セクションで
+  // 誤発火しやすいため、scroll イベント + getBoundingClientRect() で実装する。
   //
-  // rootMargin '0px 0px -80% 0px':
-  //   viewport の上端〜下から20%の帯でのみ検出。
-  //   つまりセクション上端がビューポートの上位20%に入った時点でアクティブ化。
+  // ロジック:
+  //   1. ページ下端 (余裕 8px) に到達したら contact を強制アクティブ
+  //   2. それ以外: 各セクションの top を測り、ナビバー下端 (NAV_H) を
+  //      超えた最後のセクションをアクティブにする。
+  //      「最後」＝スクロールダウンで一番遅く閾値を越えたセクション。
 
   const mobileLinks = document.querySelectorAll<HTMLAnchorElement>('.mobile-nav a[data-section]');
 
@@ -243,23 +245,41 @@ const logoText = 'YSD-KTN / v3.0.0';
     });
   }
 
-  // 初期状態: 最上部セクション (index) をアクティブに
-  setActive('index');
-
   const sections = (['index', 'about', 'writing', 'contact'] as const)
     .map((id) => document.getElementById(id))
     .filter((el): el is HTMLElement => el !== null);
 
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          setActive(entry.target.id);
-        }
-      });
-    },
-    { rootMargin: '0px 0px -80% 0px', threshold: 0 },
-  );
+  // ナビバー高さ 44px + scroll-margin-top 8px + 浮動小数点バッファ 8px = 60px。
+  // getBoundingClientRect().top は scroll-margin-top の影響で 52.X px になりうるため、
+  // 閾値を 60px にして「ほぼナビバー直下に来た」セクションを確実に捕捉する。
+  const NAV_H = 60;
 
-  sections.forEach((section) => observer.observe(section));
+  function getActiveId(): string {
+    // ページ下端に到達したら CONTACT 固定
+    if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 8) {
+      return 'contact';
+    }
+    // NAV_H 以下になった最後のセクションを返す
+    let activeId = sections[0].id;
+    for (const section of sections) {
+      if (section.getBoundingClientRect().top <= NAV_H) {
+        activeId = section.id;
+      }
+    }
+    return activeId;
+  }
+
+  // ナビリンクタップ時: スクロールアニメーション中もズレないよう即アクティブ化。
+  // スクロール完了後は scroll イベントが正しい値に上書きする。
+  mobileLinks.forEach((link) => {
+    link.addEventListener('click', () => {
+      setActive(link.dataset.section ?? 'index');
+    });
+  });
+
+  // スクロールのたびに再評価（手動スクロール対応）
+  window.addEventListener('scroll', () => setActive(getActiveId()), { passive: true });
+
+  // 初期状態を設定
+  setActive(getActiveId());
 </script>
