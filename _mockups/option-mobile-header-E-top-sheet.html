@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mobile Header — 案 E: トップシート</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0a0c;
+      --bg-alt: #14141a;
+      --fg: #e8e6e0;
+      --dim: #6b6b6b;
+      --line: #2a2a2e;
+      --accent: #00f0bd;
+      --font-mono: 'JetBrains Mono', monospace;
+      --font-sans: 'Barlow', sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #050507;
+      color: var(--fg);
+      font-family: var(--font-mono);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px 60px;
+      gap: 28px;
+    }
+
+    .page-meta {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .page-meta .case {
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      color: var(--dim);
+    }
+    .page-meta h1 {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+    }
+    .page-meta .desc {
+      font-size: 10px;
+      letter-spacing: 0.06em;
+      color: var(--dim);
+      max-width: 400px;
+      line-height: 1.7;
+    }
+
+    /* ── Phone frame ───────────────────────────────── */
+    .phone {
+      width: 390px;
+      height: 700px;
+      background: var(--bg);
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      position: relative;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .phone::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        to bottom,
+        transparent 0px,
+        transparent 3px,
+        rgba(0,0,0,0.07) 3px,
+        rgba(0,0,0,0.07) 4px
+      );
+      pointer-events: none;
+      z-index: 99;
+    }
+
+    /* ─────────────────────────────────────────────────
+       PILL — デスクトップと同じ形・位置・サイズ
+       全体がタップ領域、+ が × に回転するだけ
+    ───────────────────────────────────────────────── */
+    .m-pill {
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 60;
+
+      height: 44px;
+      width: 200px;
+      border: 1px solid var(--accent);
+      border-radius: 9999px;
+      background: var(--bg);
+      overflow: hidden;
+
+      display: flex;
+      align-items: center;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      white-space: nowrap;
+
+      cursor: pointer;
+      user-select: none;
+      -webkit-user-select: none;
+
+      /* ピル全体がタップ領域 */
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .m-pill .logo {
+      font-weight: 700;
+      color: var(--accent);
+      padding: 0 18px;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      flex: 1;
+      pointer-events: none;
+    }
+
+    .m-pill .toggle {
+      color: var(--accent);
+      padding: 0 18px 0 6px;
+      font-size: 14px;
+      line-height: 1;
+      flex-shrink: 0;
+      transform-origin: 11px center;
+      transition: transform 0.4s cubic-bezier(0.7, 0, 0.3, 1);
+      pointer-events: none;
+    }
+    .m-pill.is-open .toggle {
+      transform: rotate(45deg);
+    }
+
+    /* ─────────────────────────────────────────────────
+       TOP SHEET — 画面上部からスライドダウン
+       ピル（z-index:60）の下（z-index:50）で動く
+       padding-top でピルの高さ分を空けてナビを表示
+    ───────────────────────────────────────────────── */
+    .m-sheet {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 50;
+
+      background: var(--bg-alt);
+      border-bottom: 1px solid var(--accent);
+
+      /* 閉じた状態: 画面外（上）に隠す */
+      transform: translateY(-100%);
+      transition: transform 0.5s cubic-bezier(0.7, 0, 0.3, 1);
+
+      /* ピル (20px top + 44px height + 16px gap) のぶん padding を確保 */
+      padding: 80px 0 0;
+    }
+    .m-sheet.is-open {
+      transform: translateY(0);
+    }
+
+    /* シート内のナビ */
+    .m-sheet nav {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .m-sheet nav a {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 0 28px;
+      height: 60px;
+      border-top: 1px solid var(--line);
+      text-decoration: none;
+      color: inherit;
+      transition: background 0.15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .m-sheet nav a:last-child {
+      border-bottom: 1px solid var(--line);
+    }
+    .m-sheet nav a:hover,
+    .m-sheet nav a:active {
+      background: rgba(0,240,189,0.05);
+    }
+    .m-sheet nav a:hover .s-label,
+    .m-sheet nav a:active .s-label {
+      color: var(--accent);
+    }
+
+    .m-sheet .s-num {
+      font-size: 9px;
+      letter-spacing: 0.12em;
+      color: var(--dim);
+      width: 20px;
+      flex-shrink: 0;
+    }
+    .m-sheet .s-label {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      color: var(--fg);
+      flex: 1;
+      transition: color 0.2s;
+    }
+    .m-sheet .s-arrow {
+      color: var(--dim);
+      font-size: 12px;
+    }
+
+    /* ナビ項目のスタッガーアニメーション */
+    .m-sheet nav a {
+      opacity: 0;
+      transform: translateY(-8px);
+      transition:
+        opacity 0.3s,
+        transform 0.3s cubic-bezier(0.7, 0, 0.3, 1),
+        background 0.15s,
+        color 0.2s;
+    }
+    .m-sheet.is-open nav a:nth-child(1) { opacity: 1; transform: none; transition-delay: 0.08s; }
+    .m-sheet.is-open nav a:nth-child(2) { opacity: 1; transform: none; transition-delay: 0.13s; }
+    .m-sheet.is-open nav a:nth-child(3) { opacity: 1; transform: none; transition-delay: 0.18s; }
+    .m-sheet.is-open nav a:nth-child(4) { opacity: 1; transform: none; transition-delay: 0.23s; }
+
+    /* ── Backdrop ──────────────────────────────────── */
+    .m-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(10, 10, 12, 0.5);
+      z-index: 45;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.4s, visibility 0.4s;
+    }
+    .m-backdrop.is-open {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    /* ── Page content ──────────────────────────────── */
+    .m-content {
+      position: absolute;
+      top: 100px;
+      left: 0; right: 0;
+      padding: 24px 24px 80px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .m-content .hero-sub {
+      font-size: 9px;
+      letter-spacing: 0.18em;
+      color: var(--dim);
+    }
+    .m-content .hero-name {
+      font-family: var(--font-sans);
+      font-size: 60px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      line-height: 1;
+      color: var(--fg);
+    }
+    .m-content .hero-role {
+      font-size: 9px;
+      letter-spacing: 0.1em;
+      color: var(--dim);
+      margin-top: 8px;
+      line-height: 1.6;
+    }
+    .m-content .hero-role em { color: var(--accent); font-style: normal; }
+
+    /* ── Footer ────────────────────────────────────── */
+    .m-footer {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      border-top: 1px solid var(--line);
+      padding: 8px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 9px;
+      letter-spacing: 0.08em;
+      color: var(--dim);
+      background: var(--bg);
+      z-index: 10;
+    }
+    .dot { color: var(--accent); animation: blink 1.4s steps(2) infinite; }
+    @keyframes blink { 50% { opacity: 0; } }
+
+    /* hint text */
+    .hint {
+      font-size: 9px;
+      letter-spacing: 0.1em;
+      color: var(--dim);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="page-meta">
+    <span class="case">[ PHASE 7-2 / MOBILE HEADER / OPTION E ]</span>
+    <h1>案 E — トップシート</h1>
+    <p class="desc">
+      ピル全体をタップ領域にして、ナビパネルが画面上部からスルッと降りてくる。<br>
+      ピルはシートの上に浮いたまま × に変わり、もう一度タップで閉じる。
+    </p>
+  </div>
+
+  <div class="phone">
+
+    <!-- ピル（全体がタップ領域） -->
+    <div class="m-pill" id="pill">
+      <span class="logo">YSD-KTN / v3.0.0</span>
+      <span class="toggle">+</span>
+    </div>
+
+    <!-- トップシート（ピルの下レイヤーで降りてくる） -->
+    <div class="m-sheet" id="sheet">
+      <nav>
+        <a href="#index">
+          <span class="s-num">00</span>
+          <span class="s-label">INDEX</span>
+          <span class="s-arrow">→</span>
+        </a>
+        <a href="#about">
+          <span class="s-num">01</span>
+          <span class="s-label">ABOUT</span>
+          <span class="s-arrow">→</span>
+        </a>
+        <a href="#writing">
+          <span class="s-num">02</span>
+          <span class="s-label">WRITING</span>
+          <span class="s-arrow">→</span>
+        </a>
+        <a href="#contact">
+          <span class="s-num">03</span>
+          <span class="s-label">CONTACT</span>
+          <span class="s-arrow">→</span>
+        </a>
+      </nav>
+    </div>
+
+    <!-- バックドロップ（シート外タップで閉じる） -->
+    <div class="m-backdrop" id="backdrop"></div>
+
+    <!-- ページコンテンツ -->
+    <div class="m-content">
+      <span class="hero-sub">PORTFOLIO · 2026</span>
+      <div class="hero-name">YOSHIDA<br>KOTONE</div>
+      <div class="hero-role">
+        <em>›</em> UI/UX DESIGNER · BASED IN<br>
+        KANAGAWA, JP
+      </div>
+    </div>
+
+    <!-- フッター -->
+    <div class="m-footer">
+      <span><span class="dot">●</span> ONLINE · BUILD 0506.2026</span>
+      <span id="utc">UTC 00:00:00</span>
+    </div>
+
+  </div>
+
+  <span class="hint">↑ tap the pill to open / close</span>
+
+  <script>
+    const pill     = document.getElementById('pill');
+    const sheet    = document.getElementById('sheet');
+    const backdrop = document.getElementById('backdrop');
+    let open = false;
+
+    function setOpen(val) {
+      open = val;
+      pill.classList.toggle('is-open', open);
+      sheet.classList.toggle('is-open', open);
+      backdrop.classList.toggle('is-open', open);
+    }
+
+    pill.addEventListener('click', () => setOpen(!open));
+    backdrop.addEventListener('click', () => setOpen(false));
+
+    sheet.querySelectorAll('nav a').forEach(a => {
+      a.addEventListener('click', e => { e.preventDefault(); setOpen(false); });
+    });
+
+    // UTC clock
+    function tick() {
+      const n = new Date();
+      const t = [n.getUTCHours(), n.getUTCMinutes(), n.getUTCSeconds()]
+        .map(v => String(v).padStart(2,'0')).join(':');
+      document.getElementById('utc').textContent = `UTC ${t}`;
+    }
+    tick(); setInterval(tick, 1000);
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mobile Header — 案 D: 常時露出ナビ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    /* ── Design tokens ─────────────────────────────── */
+    :root {
+      --bg: #0a0a0c;
+      --bg-alt: #14141a;
+      --fg: #e8e6e0;
+      --dim: #6b6b6b;
+      --line: #2a2a2e;
+      --accent: #00f0bd;
+      --font-mono: 'JetBrains Mono', monospace;
+      --font-sans: 'Barlow', sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #050507;
+      color: var(--fg);
+      font-family: var(--font-mono);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px 60px;
+      gap: 40px;
+    }
+
+    /* ── Page meta ─────────────────────────────────── */
+    .page-meta {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .page-meta .case {
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      color: var(--dim);
+    }
+    .page-meta h1 {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+    }
+    .page-meta .desc {
+      font-size: 10px;
+      letter-spacing: 0.06em;
+      color: var(--dim);
+      max-width: 460px;
+      line-height: 1.7;
+    }
+
+    /* ── Split layout ──────────────────────────────── */
+    .split {
+      display: flex;
+      gap: 32px;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .variant-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+    .variant-label {
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      color: var(--accent);
+      font-weight: 700;
+    }
+    .variant-sub {
+      font-size: 9px;
+      letter-spacing: 0.08em;
+      color: var(--dim);
+      text-align: center;
+      max-width: 390px;
+      line-height: 1.6;
+    }
+
+    /* ── Phone frame ───────────────────────────────── */
+    .phone {
+      width: 390px;
+      height: 700px;
+      background: var(--bg);
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      position: relative;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .phone::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        to bottom,
+        transparent 0px,
+        transparent 3px,
+        rgba(0,0,0,0.08) 3px,
+        rgba(0,0,0,0.08) 4px
+      );
+      pointer-events: none;
+      z-index: 99;
+    }
+
+    /* ── Shared: page content ──────────────────────── */
+    .m-content {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .m-content .hero-sub {
+      font-size: 9px;
+      letter-spacing: 0.18em;
+      color: var(--dim);
+    }
+    .m-content .hero-name {
+      font-family: var(--font-sans);
+      font-size: 60px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      line-height: 1;
+      color: var(--fg);
+    }
+    .m-content .hero-role {
+      font-size: 9px;
+      letter-spacing: 0.1em;
+      color: var(--dim);
+      margin-top: 8px;
+      line-height: 1.6;
+    }
+    .m-content .hero-role span { color: var(--accent); }
+
+    /* ── Shared: footer ────────────────────────────── */
+    .m-footer {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      border-top: 1px solid var(--line);
+      padding: 8px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 9px;
+      letter-spacing: 0.08em;
+      color: var(--dim);
+      background: var(--bg);
+      z-index: 10;
+    }
+    .m-footer .dot {
+      color: var(--accent);
+      animation: blink 1.4s steps(2) infinite;
+    }
+    @keyframes blink { 50% { opacity: 0; } }
+
+
+    /* ════════════════════════════════════════════════
+       D-1: HORIZONTAL TOP BAR
+    ════════════════════════════════════════════════ */
+
+    /* Full-width header bar */
+    .h-header {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 50;
+      background: var(--bg);
+      border-bottom: 1px solid var(--line);
+    }
+
+    /* Logo row */
+    .h-logo-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      height: 36px;
+      border-bottom: 1px solid var(--line);
+    }
+    .h-logo-row .logo {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+    }
+    .h-logo-row .meta {
+      font-size: 9px;
+      letter-spacing: 0.08em;
+      color: var(--dim);
+    }
+
+    /* Nav row */
+    .h-nav-row {
+      display: flex;
+      align-items: stretch;
+      height: 40px;
+    }
+    .h-nav-row a {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      border-right: 1px solid var(--line);
+      text-decoration: none;
+      color: inherit;
+      transition: background 0.15s, color 0.15s;
+    }
+    .h-nav-row a:last-child { border-right: 0; }
+    .h-nav-row a:hover,
+    .h-nav-row a:active { background: rgba(0,240,189,0.05); }
+    .h-nav-row a:hover .h-nav-label,
+    .h-nav-row a:active .h-nav-label { color: var(--accent); }
+
+    .h-nav-row .h-nav-num {
+      font-size: 8px;
+      letter-spacing: 0.1em;
+      color: var(--dim);
+      line-height: 1;
+    }
+    .h-nav-row .h-nav-label {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: var(--fg);
+      line-height: 1;
+      transition: color 0.15s;
+    }
+
+    /* Active indicator (current section highlight) */
+    .h-nav-row a.active {
+      background: rgba(0,240,189,0.04);
+    }
+    .h-nav-row a.active .h-nav-label {
+      color: var(--accent);
+    }
+    .h-nav-row a.active::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: var(--accent);
+    }
+    .h-nav-row a { position: relative; }
+
+    /* Content offset */
+    .phone-h .m-content {
+      position: absolute;
+      top: 76px; /* logo row 36 + nav row 40 */
+      left: 0;
+      right: 0;
+      padding: 24px 24px 80px;
+    }
+
+
+    /* ════════════════════════════════════════════════
+       D-2: VERTICAL LEFT RAIL
+    ════════════════════════════════════════════════ */
+
+    /* Left rail — thin vertical nav column */
+    .v-rail {
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: 48px;
+      z-index: 50;
+      background: var(--bg);
+      border-right: 1px solid var(--line);
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Logo mark (top of rail) */
+    .v-rail .v-logo {
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-bottom: 1px solid var(--line);
+      flex-shrink: 0;
+    }
+    .v-rail .v-logo-mark {
+      font-size: 9px;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 0.05em;
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      transform: rotate(180deg);
+      line-height: 1;
+    }
+
+    /* Nav items */
+    .v-rail nav {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+    .v-rail nav a {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      border-bottom: 1px solid var(--line);
+      text-decoration: none;
+      color: inherit;
+      transition: background 0.15s;
+      max-height: 90px;
+    }
+    .v-rail nav a:last-child { border-bottom: 0; }
+    .v-rail nav a:hover,
+    .v-rail nav a:active { background: rgba(0,240,189,0.05); }
+    .v-rail nav a:hover .v-nav-label,
+    .v-rail nav a:active .v-nav-label { color: var(--accent); }
+
+    .v-rail .v-nav-num {
+      font-size: 8px;
+      letter-spacing: 0.08em;
+      color: var(--dim);
+      line-height: 1;
+    }
+    .v-rail .v-nav-label {
+      font-size: 8px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      color: var(--fg);
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      transform: rotate(180deg);
+      line-height: 1;
+      transition: color 0.15s;
+    }
+
+    /* Active state */
+    .v-rail nav a.active {
+      background: rgba(0,240,189,0.04);
+    }
+    .v-rail nav a.active .v-nav-label { color: var(--accent); }
+    .v-rail nav a.active::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      width: 1px;
+      background: var(--accent);
+    }
+    .v-rail nav a { position: relative; }
+
+    /* Content offset for vertical rail */
+    .phone-v .m-content {
+      position: absolute;
+      top: 0;
+      left: 48px;
+      right: 0;
+      padding: 32px 20px 80px;
+    }
+
+    .phone-v .m-content .hero-name {
+      font-size: 50px;
+    }
+
+
+    /* ── Pros / Cons ───────────────────────────────── */
+    .eval-block {
+      width: 390px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .eval-title {
+      font-size: 9px;
+      letter-spacing: 0.12em;
+      color: var(--dim);
+      margin-bottom: 6px;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 6px;
+    }
+    .eval-row {
+      display: flex;
+      gap: 8px;
+      font-size: 9px;
+      letter-spacing: 0.06em;
+      line-height: 1.7;
+      color: var(--dim);
+    }
+    .eval-row .mark { flex-shrink: 0; width: 12px; }
+    .eval-row.pro .mark { color: var(--accent); }
+    .eval-row.con .mark { color: #ff4747; }
+
+    /* ── Common note ───────────────────────────────── */
+    .common-note {
+      width: min(860px, 100%);
+      background: var(--bg-alt);
+      border: 1px solid var(--line);
+      border-left: 2px solid var(--accent);
+      padding: 16px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .common-note .note-label {
+      font-size: 9px;
+      letter-spacing: 0.14em;
+      color: var(--accent);
+    }
+    .common-note .note-text {
+      font-size: 10px;
+      letter-spacing: 0.06em;
+      color: var(--dim);
+      line-height: 1.8;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="page-meta">
+    <span class="case">[ PHASE 7-2 / MOBILE HEADER / OPTION D ]</span>
+    <h1>案 D — 常時露出ナビ</h1>
+    <p class="desc">
+      モバイルではピルを廃止し、ナビ項目を常に画面上に表示する案。<br>
+      タップ操作なしで全項目が見え、認知コストがゼロになる。<br>
+      D-1: 横置き（上部 2 段バー） / D-2: 縦置き（左レール）
+    </p>
+  </div>
+
+  <div class="split">
+
+    <!-- ─── D-1: HORIZONTAL ─────────────────────── -->
+    <div class="variant-wrap">
+      <span class="variant-label">D-1 — 横置き（上部 2 段バー）</span>
+      <p class="variant-sub">
+        ロゴ行 + ナビ行の 2 段構成。<br>項目が左右に均等分割されて常時表示。
+      </p>
+      <div class="phone phone-h">
+
+        <header class="h-header">
+          <div class="h-logo-row">
+            <span class="logo">YSD-KTN / v3.0.0</span>
+            <span class="meta">PORTFOLIO · 2026</span>
+          </div>
+          <nav class="h-nav-row">
+            <a href="#index" class="active">
+              <span class="h-nav-num">00</span>
+              <span class="h-nav-label">INDEX</span>
+            </a>
+            <a href="#about">
+              <span class="h-nav-num">01</span>
+              <span class="h-nav-label">ABOUT</span>
+            </a>
+            <a href="#writing">
+              <span class="h-nav-num">02</span>
+              <span class="h-nav-label">WRITING</span>
+            </a>
+            <a href="#contact">
+              <span class="h-nav-num">03</span>
+              <span class="h-nav-label">CONTACT</span>
+            </a>
+          </nav>
+        </header>
+
+        <div class="m-content">
+          <span class="hero-sub">YOSHIDA KOTONE</span>
+          <div class="hero-name">UI/UX<br>DESIGN<br>ER</div>
+          <div class="hero-role">
+            <span>›</span> BASED IN KANAGAWA, JP<br>CLOSED FOR NEW PROJECTS
+          </div>
+        </div>
+
+        <div class="m-footer">
+          <span><span class="dot">●</span> ONLINE · BUILD 0506.2026</span>
+          <span class="utc-clock">UTC 00:00:00</span>
+        </div>
+      </div>
+      <div class="eval-block">
+        <div class="eval-title">[ D-1 評価 ]</div>
+        <div class="eval-row pro"><span class="mark">+</span><span>全項目が常に見えていて認知コストゼロ</span></div>
+        <div class="eval-row pro"><span class="mark">+</span><span>現在地ハイライト（アクティブ表示）が自然に組み込める</span></div>
+        <div class="eval-row pro"><span class="mark">+</span><span>横幅を 4 等分するだけでよく実装がシンプル</span></div>
+        <div class="eval-row con"><span class="mark">−</span><span>ヘッダーが 76px を常に占有するため、Hero の見える面積が減る</span></div>
+        <div class="eval-row con"><span class="mark">−</span><span>WRITING の 7 文字がやや詰まる（9px でギリギリ収まるが余白は少ない）</span></div>
+      </div>
+    </div>
+
+    <!-- ─── D-2: VERTICAL ─────────────────────── -->
+    <div class="variant-wrap">
+      <span class="variant-label">D-2 — 縦置き（左レール）</span>
+      <p class="variant-sub">
+        左端に 48px の縦レールを固定。<br>項目名を縦書きにしてコンパクトに収める。
+      </p>
+      <div class="phone phone-v">
+
+        <div class="v-rail">
+          <div class="v-logo">
+            <span class="v-logo-mark">YSD</span>
+          </div>
+          <nav>
+            <a href="#index" class="active">
+              <span class="v-nav-num">00</span>
+              <span class="v-nav-label">INDEX</span>
+            </a>
+            <a href="#about">
+              <span class="v-nav-num">01</span>
+              <span class="v-nav-label">ABOUT</span>
+            </a>
+            <a href="#writing">
+              <span class="v-nav-num">02</span>
+              <span class="v-nav-label">WRITING</span>
+            </a>
+            <a href="#contact">
+              <span class="v-nav-num">03</span>
+              <span class="v-nav-label">CONTACT</span>
+            </a>
+          </nav>
+        </div>
+
+        <div class="m-content">
+          <span class="hero-sub">PORTFOLIO · 2026</span>
+          <div class="hero-name">YOSHI<br>DA<br>KOTONE</div>
+          <div class="hero-role">
+            <span>›</span> UI/UX DESIGNER<br>KANAGAWA, JP
+          </div>
+        </div>
+
+        <div class="m-footer">
+          <span><span class="dot">●</span> ONLINE · 0506.2026</span>
+          <span class="utc-clock">UTC 00:00:00</span>
+        </div>
+      </div>
+      <div class="eval-block">
+        <div class="eval-title">[ D-2 評価 ]</div>
+        <div class="eval-row pro"><span class="mark">+</span><span>縦方向のスペースをほとんど消費せず Hero の全高を活かせる</span></div>
+        <div class="eval-row pro"><span class="mark">+</span><span>スクロール中も左レールは常に固定され続ける</span></div>
+        <div class="eval-row pro"><span class="mark">+</span><span>縦書きレールがブルータリズムの「HUD 感」に合致する</span></div>
+        <div class="eval-row con"><span class="mark">−</span><span>コンテンツ幅が 342px になり、特に WRITING グリッドが狭くなる</span></div>
+        <div class="eval-row con"><span class="mark">−</span><span>縦書き文字はタップターゲットが視覚的に掴みにくく、直感性がやや落ちる</span></div>
+        <div class="eval-row con"><span class="mark">−</span><span>デスクトップのピル体験とのギャップが最も大きい</span></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Common note -->
+  <div class="common-note">
+    <span class="note-label">[ D 案共通 — 実装上の注意 ]</span>
+    <span class="note-text">
+      デスクトップ (min-width: 721px) では引き続き pill が表示される。
+      このヘッダーは <code>@media (max-width: 720px)</code> でのみ有効にし、
+      Header.astro の既存スタイルは <code>@media (hover: hover) and (min-width: 721px)</code> に閉じる形で共存可能。
+      どちらの案もスクロール追従（position: fixed / sticky）で動作する。
+    </span>
+  </div>
+
+  <script>
+    // UTC clock
+    function tick() {
+      const now = new Date();
+      const t = [now.getUTCHours(), now.getUTCMinutes(), now.getUTCSeconds()]
+        .map(n => String(n).padStart(2,'0')).join(':');
+      document.querySelectorAll('.utc-clock').forEach(el => el.textContent = `UTC ${t}`);
+    }
+    tick();
+    setInterval(tick, 1000);
+
+    // Nav click — update active
+    document.querySelectorAll('.h-nav-row a, .v-rail nav a').forEach(a => {
+      a.addEventListener('click', e => {
+        e.preventDefault();
+        const nav = a.closest('nav, .h-nav-row');
+        nav.querySelectorAll('a').forEach(x => x.classList.remove('active'));
+        a.classList.add('active');
+      });
+    });
+  </script>
+</body>
+</html>

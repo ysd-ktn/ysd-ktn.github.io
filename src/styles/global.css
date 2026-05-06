@@ -127,10 +127,22 @@ main {
    との相性で詰めて良い。 */
 @media (max-width: 720px) {
   main {
-    padding: 64px 16px 80px;
+    /* モバイルナビバー (44px 固定) 分だけ上に押し上げないよう padding-top を追加。
+       64px → 44px (ナビバー高さ) + 24px (ナビバー下余白) = 68px。
+       左右・下は Phase 7-1 の値を維持。 */
+    padding: 68px 16px 80px;
   }
   section {
     padding: 40px 0;
+  }
+
+  /* アンカーリンクが固定ナビバーの下に隠れないよう scroll-margin-top を確保。
+     ナビバー高さ 44px + 余裕 8px = 52px。 */
+  #index,
+  #about,
+  #writing,
+  #contact {
+    scroll-margin-top: 52px;
   }
   /* sec-head: デフォルト側で grid-template-columns を auto 1fr に変えたが、
      mobile では meta の 3 span ("WRITING" "FEATURED · 3 OF 4" "SELECTED") が

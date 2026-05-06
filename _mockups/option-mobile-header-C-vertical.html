@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mobile Header — 案 C: ドロップダウン縦展開</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    /* ── Design tokens ─────────────────────────────── */
+    :root {
+      --bg: #0a0a0c;
+      --bg-alt: #14141a;
+      --fg: #e8e6e0;
+      --dim: #6b6b6b;
+      --line: #2a2a2e;
+      --accent: #00f0bd;
+      --font-mono: 'JetBrains Mono', monospace;
+      --font-sans: 'Barlow', sans-serif;
+    }
+
+    /* ── Page frame ────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #050507;
+      color: var(--fg);
+      font-family: var(--font-mono);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px 60px;
+      gap: 32px;
+    }
+
+    /* ── Meta label ────────────────────────────────── */
+    .page-meta {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .page-meta .case {
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      color: var(--dim);
+    }
+    .page-meta h1 {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+    }
+    .page-meta .desc {
+      font-size: 10px;
+      letter-spacing: 0.06em;
+      color: var(--dim);
+      max-width: 420px;
+      line-height: 1.7;
+    }
+
+    /* ── Frame wrap ────────────────────────────────── */
+    .frame-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+    .frame-label {
+      font-size: 9px;
+      letter-spacing: 0.12em;
+      color: var(--dim);
+      text-transform: uppercase;
+    }
+
+    /* ── Phone frame ───────────────────────────────── */
+    .phone {
+      width: 390px;
+      height: 700px;
+      background: var(--bg);
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Scanline */
+    .phone::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        to bottom,
+        transparent 0px,
+        transparent 3px,
+        rgba(0,0,0,0.08) 3px,
+        rgba(0,0,0,0.08) 4px
+      );
+      pointer-events: none;
+      z-index: 99;
+    }
+
+    /* ── Header wrapper — positions the pill + dropdown ── */
+    .m-header-wrap {
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 60;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      width: 200px;
+    }
+
+    /* ── Pill row ──────────────────────────────────── */
+    .m-pill {
+      height: 44px;
+      border: 1px solid var(--accent);
+      border-radius: 9999px;
+      background: var(--bg);
+      display: flex;
+      align-items: center;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      white-space: nowrap;
+      overflow: hidden;
+      position: relative;
+      z-index: 2;
+      transition:
+        border-radius 0.35s cubic-bezier(0.7, 0, 0.3, 1),
+        border-color 0.35s;
+    }
+
+    /* When open: flatten bottom corners of pill */
+    .m-header-wrap.is-open .m-pill {
+      border-radius: 22px 22px 0 0;
+      border-bottom-color: var(--line);
+    }
+
+    .m-pill .logo {
+      font-weight: 700;
+      color: var(--accent);
+      padding: 0 18px;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      flex: 1;
+    }
+
+    .m-pill .toggle {
+      color: var(--accent);
+      padding: 0 18px 0 6px;
+      font-size: 14px;
+      line-height: 1;
+      flex-shrink: 0;
+      cursor: pointer;
+      transform-origin: 11px center;
+      transition: transform 0.4s cubic-bezier(0.7, 0, 0.3, 1);
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    .m-header-wrap.is-open .m-pill .toggle {
+      transform: rotate(45deg);
+    }
+
+    /* ── Dropdown panel ────────────────────────────── */
+    .m-dropdown {
+      background: var(--bg);
+      border: 1px solid var(--accent);
+      border-top: none;
+      border-radius: 0 0 12px 12px;
+      overflow: hidden;
+      max-height: 0;
+      opacity: 0;
+      transition:
+        max-height 0.45s cubic-bezier(0.7, 0, 0.3, 1),
+        opacity 0.3s ease 0.05s;
+      pointer-events: none;
+    }
+    .m-header-wrap.is-open .m-dropdown {
+      max-height: 300px;
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .m-dropdown nav {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .m-dropdown nav a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 18px;
+      border-top: 1px solid var(--line);
+      text-decoration: none;
+      color: inherit;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      transition: background 0.15s, color 0.15s;
+    }
+    .m-dropdown nav a:first-child { border-top: 0; }
+    .m-dropdown nav a:hover,
+    .m-dropdown nav a:active {
+      background: rgba(0,240,189,0.05);
+    }
+    .m-dropdown nav a:hover .nav-label,
+    .m-dropdown nav a:active .nav-label {
+      color: var(--accent);
+    }
+
+    .m-dropdown .nav-num {
+      color: var(--dim);
+      width: 18px;
+      flex-shrink: 0;
+    }
+    .m-dropdown .nav-label {
+      flex: 1;
+      color: var(--fg);
+      transition: color 0.15s;
+    }
+    .m-dropdown .nav-arrow {
+      color: var(--dim);
+      font-size: 10px;
+    }
+
+    /* stagger animation for items */
+    .m-dropdown nav a {
+      opacity: 0;
+      transform: translateY(-4px);
+      transition:
+        opacity 0.25s,
+        transform 0.25s cubic-bezier(0.7, 0, 0.3, 1),
+        background 0.15s,
+        color 0.15s;
+    }
+    .m-header-wrap.is-open .m-dropdown nav a:nth-child(1) { opacity: 1; transform: none; transition-delay: 0.08s; }
+    .m-header-wrap.is-open .m-dropdown nav a:nth-child(2) { opacity: 1; transform: none; transition-delay: 0.13s; }
+    .m-header-wrap.is-open .m-dropdown nav a:nth-child(3) { opacity: 1; transform: none; transition-delay: 0.18s; }
+    .m-header-wrap.is-open .m-dropdown nav a:nth-child(4) { opacity: 1; transform: none; transition-delay: 0.23s; }
+
+    /* ── Backdrop (light, just dims) ──────────────── */
+    .m-backdrop {
+      position: absolute;
+      inset: 0;
+      z-index: 55;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.35s;
+    }
+    .m-header-wrap.is-open ~ .m-backdrop {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* ── Page content placeholder ──────────────────── */
+    .m-content {
+      padding: 100px 24px 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .m-content .hero-sub {
+      font-size: 9px;
+      letter-spacing: 0.18em;
+      color: var(--dim);
+    }
+    .m-content .hero-name {
+      font-family: var(--font-sans);
+      font-size: 60px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      line-height: 1;
+      color: var(--fg);
+    }
+    .m-content .hero-role {
+      font-size: 9px;
+      letter-spacing: 0.1em;
+      color: var(--dim);
+      margin-top: 8px;
+      line-height: 1.6;
+    }
+    .m-content .hero-role span { color: var(--accent); }
+
+    /* ── Footer ────────────────────────────────────── */
+    .m-footer {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      border-top: 1px solid var(--line);
+      padding: 8px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 9px;
+      letter-spacing: 0.08em;
+      color: var(--dim);
+      background: var(--bg);
+      z-index: 10;
+    }
+    .m-footer .dot {
+      color: var(--accent);
+      animation: blink 1.4s steps(2) infinite;
+    }
+    @keyframes blink { 50% { opacity: 0; } }
+
+    /* ── Pros / Cons ───────────────────────────────── */
+    .eval {
+      width: 390px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .eval-row {
+      display: flex;
+      gap: 8px;
+      font-size: 9px;
+      letter-spacing: 0.06em;
+      line-height: 1.7;
+      color: var(--dim);
+    }
+    .eval-row .mark { flex-shrink: 0; width: 12px; }
+    .eval-row.pro .mark { color: var(--accent); }
+    .eval-row.con .mark { color: #ff4747; }
+  </style>
+</head>
+<body>
+
+  <div class="page-meta">
+    <span class="case">[ PHASE 7-2 / MOBILE HEADER / OPTION C ]</span>
+    <h1>案 C — ドロップダウン縦展開</h1>
+    <p class="desc">
+      + タップ → ピル下端から縦方向にナビパネルを展開。<br>
+      フルスクリーンを奪わず、コンテキストを保ちながら操作できるコンパクト案。
+      ピルの角丸が開いた瞬間に下だけフラットになり、パネルと連結する。
+    </p>
+  </div>
+
+  <div class="frame-wrap">
+    <span class="frame-label">[ INTERACTIVE — tap [ + ] ]</span>
+    <div class="phone" id="phone">
+
+      <!-- Header + dropdown (atomic block) -->
+      <div class="m-header-wrap" id="headerWrap">
+        <div class="m-pill">
+          <span class="logo">YSD-KTN / v3.0.0</span>
+          <span class="toggle" id="toggle">+</span>
+        </div>
+        <div class="m-dropdown" id="dropdown">
+          <nav>
+            <a href="#index">
+              <span class="nav-num">00</span>
+              <span class="nav-label">INDEX</span>
+              <span class="nav-arrow">→</span>
+            </a>
+            <a href="#about">
+              <span class="nav-num">01</span>
+              <span class="nav-label">ABOUT</span>
+              <span class="nav-arrow">→</span>
+            </a>
+            <a href="#writing">
+              <span class="nav-num">02</span>
+              <span class="nav-label">WRITING</span>
+              <span class="nav-arrow">→</span>
+            </a>
+            <a href="#contact">
+              <span class="nav-num">03</span>
+              <span class="nav-label">CONTACT</span>
+              <span class="nav-arrow">→</span>
+            </a>
+          </nav>
+        </div>
+      </div>
+
+      <!-- Thin backdrop (tap to close) -->
+      <div class="m-backdrop" id="backdrop"></div>
+
+      <!-- Page content -->
+      <div class="m-content">
+        <span class="hero-sub">PORTFOLIO · 2026</span>
+        <div class="hero-name">YOSHIDA<br>KOTONE</div>
+        <div class="hero-role">
+          <span>›</span> UI/UX DESIGNER · BASED IN<br>
+          KANAGAWA, JP
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="m-footer">
+        <span><span class="dot">●</span> ONLINE · BUILD 0506.2026</span>
+        <span id="utc">UTC 00:00:00</span>
+      </div>
+
+    </div>
+    <span class="frame-label">↑ tap [ + ] in the pill</span>
+  </div>
+
+  <!-- Pros / Cons -->
+  <div class="eval">
+    <div class="eval-row pro"><span class="mark">+</span><span>ピルのアイデンティティを完全保持。形・色・位置が変わらない</span></div>
+    <div class="eval-row pro"><span class="mark">+</span><span>コンテンツを全く隠さず、ドロップダウンはページの一部に重なる程度</span></div>
+    <div class="eval-row pro"><span class="mark">+</span><span>実装量が最小。CSS の max-height + border-radius 変化のみで完結</span></div>
+    <div class="eval-row con"><span class="mark">−</span><span>ピル幅 200px のまま展開するため、ナビパネルが画面幅の半分強しかない</span></div>
+    <div class="eval-row con"><span class="mark">−</span><span>パネルが画面右端に偏るため、左手で持つと親指が届きにくい</span></div>
+    <div class="eval-row con"><span class="mark">−</span><span>項目名が長い場合に 200px 内で折れる可能性 (現状 4 件は収まる)</span></div>
+  </div>
+
+  <script>
+    const headerWrap = document.getElementById('headerWrap');
+    const toggle = document.getElementById('toggle');
+    const backdrop = document.getElementById('backdrop');
+    let open = false;
+
+    function setOpen(val) {
+      open = val;
+      headerWrap.classList.toggle('is-open', open);
+    }
+
+    toggle.addEventListener('click', () => setOpen(!open));
+    backdrop.addEventListener('click', () => setOpen(false));
+
+    headerWrap.querySelectorAll('.m-dropdown nav a').forEach(a => {
+      a.addEventListener('click', (e) => { e.preventDefault(); setOpen(false); });
+    });
+
+    // UTC clock
+    function tick() {
+      const now = new Date();
+      const hh = String(now.getUTCHours()).padStart(2,'0');
+      const mm = String(now.getUTCMinutes()).padStart(2,'0');
+      const ss = String(now.getUTCSeconds()).padStart(2,'0');
+      document.getElementById('utc').textContent = `UTC ${hh}:${mm}:${ss}`;
+    }
+    tick();
+    setInterval(tick, 1000);
+  </script>
+</body>
+</html>

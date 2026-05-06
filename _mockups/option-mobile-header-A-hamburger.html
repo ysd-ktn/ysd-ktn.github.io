@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mobile Header — 案 A: フルスクリーンオーバーレイ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    /* ── Design tokens ─────────────────────────────── */
+    :root {
+      --bg: #0a0a0c;
+      --bg-alt: #14141a;
+      --fg: #e8e6e0;
+      --dim: #6b6b6b;
+      --line: #2a2a2e;
+      --accent: #00f0bd;
+      --font-mono: 'JetBrains Mono', monospace;
+      --font-sans: 'Barlow', sans-serif;
+    }
+
+    /* ── Page frame ────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #050507;
+      color: var(--fg);
+      font-family: var(--font-mono);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px 60px;
+      gap: 32px;
+    }
+
+    /* ── Meta label ────────────────────────────────── */
+    .page-meta {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .page-meta .case {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      color: var(--dim);
+    }
+    .page-meta h1 {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+    }
+    .page-meta .desc {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.06em;
+      color: var(--dim);
+      max-width: 400px;
+      line-height: 1.7;
+    }
+
+    /* ── Split view ────────────────────────────────── */
+    .split {
+      display: flex;
+      gap: 24px;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .frame-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+    .frame-label {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.12em;
+      color: var(--dim);
+      text-transform: uppercase;
+    }
+
+    /* ── Phone frame ───────────────────────────────── */
+    .phone {
+      width: 390px;
+      height: 700px;
+      background: var(--bg);
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      position: relative;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    /* ── Scanline overlay (decorative) ─────────────── */
+    .phone::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        to bottom,
+        transparent 0px,
+        transparent 3px,
+        rgba(0,0,0,0.08) 3px,
+        rgba(0,0,0,0.08) 4px
+      );
+      pointer-events: none;
+      z-index: 99;
+    }
+
+    /* ── Header pill ───────────────────────────────── */
+    .m-header {
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 60;
+      height: 44px;
+      width: 200px;
+      border: 1px solid var(--accent);
+      border-radius: 9999px;
+      background: var(--bg);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      white-space: nowrap;
+    }
+
+    .m-header .logo {
+      font-weight: 700;
+      color: var(--accent);
+      padding: 0 18px;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      flex: 1;
+    }
+
+    .m-header .toggle {
+      color: var(--accent);
+      padding: 0 18px 0 6px;
+      font-size: 14px;
+      line-height: 1;
+      flex-shrink: 0;
+      cursor: pointer;
+      transform-origin: 11px center;
+      transition: transform 0.4s cubic-bezier(0.7, 0, 0.3, 1);
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    .m-header .toggle.is-open {
+      transform: rotate(45deg);
+    }
+
+    /* ── Full-screen overlay ───────────────────────── */
+    .m-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(10, 10, 12, 0.97);
+      z-index: 50;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 80px 40px 60px;
+      opacity: 0;
+      visibility: hidden;
+      transition:
+        opacity 0.4s cubic-bezier(0.7, 0, 0.3, 1),
+        visibility 0.4s;
+    }
+    .m-overlay.is-open {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    /* Subtle top border accent */
+    .m-overlay::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: var(--accent);
+      opacity: 0.3;
+    }
+
+    .m-overlay .nav-items {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      width: 100%;
+    }
+
+    .m-overlay .nav-item {
+      display: flex;
+      align-items: baseline;
+      gap: 16px;
+      padding: 20px 0;
+      border-bottom: 1px solid var(--line);
+      cursor: pointer;
+      transition: border-color 0.2s;
+      text-decoration: none;
+      color: inherit;
+    }
+    .m-overlay .nav-item:first-child {
+      border-top: 1px solid var(--line);
+    }
+    .m-overlay .nav-item:hover,
+    .m-overlay .nav-item:active {
+      border-color: var(--accent);
+    }
+    .m-overlay .nav-item:hover .nav-label,
+    .m-overlay .nav-item:active .nav-label {
+      color: var(--accent);
+    }
+
+    .m-overlay .nav-num {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      color: var(--dim);
+      flex-shrink: 0;
+      width: 24px;
+    }
+    .m-overlay .nav-label {
+      font-family: var(--font-mono);
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      color: var(--fg);
+      transition: color 0.2s;
+    }
+    .m-overlay .nav-arrow {
+      margin-left: auto;
+      color: var(--dim);
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+
+    /* slide-in animation for items */
+    .m-overlay .nav-item {
+      opacity: 0;
+      transform: translateY(12px);
+      transition:
+        opacity 0.35s cubic-bezier(0.7, 0, 0.3, 1),
+        transform 0.35s cubic-bezier(0.7, 0, 0.3, 1),
+        border-color 0.2s,
+        color 0.2s;
+    }
+    .m-overlay.is-open .nav-item:nth-child(1) { opacity: 1; transform: none; transition-delay: 0.05s; }
+    .m-overlay.is-open .nav-item:nth-child(2) { opacity: 1; transform: none; transition-delay: 0.10s; }
+    .m-overlay.is-open .nav-item:nth-child(3) { opacity: 1; transform: none; transition-delay: 0.15s; }
+    .m-overlay.is-open .nav-item:nth-child(4) { opacity: 1; transform: none; transition-delay: 0.20s; }
+
+    /* ── Page content placeholder ──────────────────── */
+    .m-content {
+      padding: 100px 24px 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .m-content .hero-sub {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.18em;
+      color: var(--dim);
+    }
+    .m-content .hero-name {
+      font-family: var(--font-sans);
+      font-size: clamp(40px, 12vw, 72px);
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      line-height: 1;
+      color: var(--fg);
+    }
+    .m-content .hero-role {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.1em;
+      color: var(--dim);
+      margin-top: 8px;
+      line-height: 1.6;
+    }
+    .m-content .hero-role span {
+      color: var(--accent);
+    }
+
+    /* ── Footer status (compact mobile) ───────────── */
+    .m-footer {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      border-top: 1px solid var(--line);
+      padding: 8px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.08em;
+      color: var(--dim);
+      background: var(--bg);
+      z-index: 10;
+    }
+    .m-footer .dot {
+      color: var(--accent);
+      animation: blink 1.4s steps(2) infinite;
+    }
+    @keyframes blink { 50% { opacity: 0; } }
+
+    /* ── Pros / Cons ───────────────────────────────── */
+    .eval {
+      width: 390px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .eval-row {
+      display: flex;
+      gap: 8px;
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.06em;
+      line-height: 1.7;
+      color: var(--dim);
+    }
+    .eval-row .mark { flex-shrink: 0; width: 12px; }
+    .eval-row.pro .mark { color: var(--accent); }
+    .eval-row.con .mark { color: #ff4747; }
+  </style>
+</head>
+<body>
+
+  <div class="page-meta">
+    <span class="case">[ PHASE 7-2 / MOBILE HEADER / OPTION A ]</span>
+    <h1>案 A — フルスクリーンオーバーレイ</h1>
+    <p class="desc">
+      + タップ → 画面全体をオーバーレイが覆いナビを展開。<br>
+      デスクトップの pill 形状・位置は変えず、タップのみ挙動を追加する最小変更案。
+    </p>
+  </div>
+
+  <div class="split">
+
+    <!-- Closed state -->
+    <div class="frame-wrap">
+      <span class="frame-label">[ CLOSED ]</span>
+      <div class="phone" id="phoneA1">
+        <div class="m-header">
+          <span class="logo">YSD-KTN / v3.0.0</span>
+          <span class="toggle" id="toggleA">+</span>
+        </div>
+        <div class="m-overlay" id="overlayA">
+          <nav class="nav-items">
+            <a class="nav-item" href="#index">
+              <span class="nav-num">00</span>
+              <span class="nav-label">INDEX</span>
+              <span class="nav-arrow">→</span>
+            </a>
+            <a class="nav-item" href="#about">
+              <span class="nav-num">01</span>
+              <span class="nav-label">ABOUT</span>
+              <span class="nav-arrow">→</span>
+            </a>
+            <a class="nav-item" href="#writing">
+              <span class="nav-num">02</span>
+              <span class="nav-label">WRITING</span>
+              <span class="nav-arrow">→</span>
+            </a>
+            <a class="nav-item" href="#contact">
+              <span class="nav-num">03</span>
+              <span class="nav-label">CONTACT</span>
+              <span class="nav-arrow">→</span>
+            </a>
+          </nav>
+        </div>
+        <div class="m-content">
+          <span class="hero-sub">PORTFOLIO · 2026</span>
+          <div class="hero-name">YOSHIDA<br>KOTONE</div>
+          <div class="hero-role">
+            <span>›</span> UI/UX DESIGNER · BASED IN<br>
+            KANAGAWA, JP
+          </div>
+        </div>
+        <div class="m-footer">
+          <span><span class="dot">●</span> ONLINE · BUILD 0506.2026</span>
+          <span>UTC 00:00:00</span>
+        </div>
+      </div>
+      <span class="frame-label">↑ tap [ + ] to open</span>
+    </div>
+
+  </div>
+
+  <!-- Pros / Cons -->
+  <div class="eval">
+    <div class="eval-row pro"><span class="mark">+</span><span>デスクトップとの実装差分が最小。ピル形状・位置をそのまま流用できる</span></div>
+    <div class="eval-row pro"><span class="mark">+</span><span>大きな文字でナビ項目が読みやすく、タップターゲットも十分な高さを確保</span></div>
+    <div class="eval-row pro"><span class="mark">+</span><span>ブルータリズムの「劇的な情報開示」と相性が良い演出</span></div>
+    <div class="eval-row con"><span class="mark">−</span><span>コンテンツが全て隠れるため、スクロール中の位置感覚が失われやすい</span></div>
+    <div class="eval-row con"><span class="mark">−</span><span>項目が 4 件のみのため、フルスクリーンはやや大げさに見える可能性</span></div>
+  </div>
+
+  <script>
+    const toggle = document.getElementById('toggleA');
+    const overlay = document.getElementById('overlayA');
+    let open = false;
+
+    toggle.addEventListener('click', () => {
+      open = !open;
+      overlay.classList.toggle('is-open', open);
+      toggle.classList.toggle('is-open', open);
+    });
+
+    // close on nav item click
+    overlay.querySelectorAll('.nav-item').forEach(item => {
+      item.addEventListener('click', (e) => {
+        e.preventDefault();
+        open = false;
+        overlay.classList.remove('is-open');
+        toggle.classList.remove('is-open');
+      });
+    });
+
+    // UTC clock
+    function tick() {
+      const now = new Date();
+      const hh = String(now.getUTCHours()).padStart(2,'0');
+      const mm = String(now.getUTCMinutes()).padStart(2,'0');
+      const ss = String(now.getUTCSeconds()).padStart(2,'0');
+      document.querySelectorAll('.m-footer span:last-child').forEach(el => {
+        el.textContent = `UTC ${hh}:${mm}:${ss}`;
+      });
+    }
+    tick();
+    setInterval(tick, 1000);
+  </script>
+</body>
+</html>
