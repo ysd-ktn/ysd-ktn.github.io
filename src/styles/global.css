@@ -132,6 +132,23 @@ main {
   section {
     padding: 40px 0;
   }
+  /* sec-head: デフォルト側で grid-template-columns を auto 1fr に変えたが、
+     mobile では meta の 3 span ("WRITING" "FEATURED · 3 OF 4" "SELECTED") が
+     viewport をはみ出さないよう、 親 grid の gap も 10px に詰めて、
+     font-size 9px / letter-spacing 0.04em / meta gap 6px / meta span nowrap
+     で物理幅を絞り込む。 */
+  .sec-head {
+    gap: 10px;
+    margin-bottom: 24px;
+    font-size: 9px;
+    letter-spacing: 0.04em;
+  }
+  .sec-head .meta {
+    gap: 6px;
+  }
+  .sec-head .meta span {
+    white-space: nowrap;
+  }
 }
 
 /* ============================================================
@@ -151,8 +168,13 @@ section:first-of-type {
 /* セクションヘッダ ([ 01 ] ABOUT — PROFILE + TIMELINE — v.2026 のような) */
 .sec-head {
   display: grid;
-  grid-template-columns: 80px 1fr;
-  gap: 32px;
+  /* num 列を 80px 固定にしてた名残 (mock 由来) があったが、 [ 01 ] の実幅は
+     ≈ 36px なので 50px ほど右に空白が伸びて見えてた。 auto 1fr で num の
+     内容幅ぴったりに詰めて、 親 grid の gap だけが [01] と meta の間の
+     余白として残る形に。 gap も 32px だと中間 viewport で余白パツパツに
+     感じるので 16px に詰めて全セクション共通でタイト目に。 */
+  grid-template-columns: auto 1fr;
+  gap: 16px;
   margin-bottom: 32px;
   font-family: var(--font-mono);
   font-size: 11px;
@@ -162,8 +184,16 @@ section:first-of-type {
 .sec-head .num {
   color: var(--accent);
   font-weight: 700;
+  /* num 列は grid-template-columns: auto なので、 通常は内容の min-content
+     (= [ 0N ] 全部並べた幅) まで縮まないはずだが、 隣の 1fr 列 (.meta) が
+     nowrap で長い meta を抱えてると auto 列が文字単位の min-content
+     (= 1 文字幅) まで圧迫されて「[ 02」「]」のように行が割れることがある。
+     num 自身に nowrap を当てて min-content を全文字幅で固定し、 wrap を阻止。 */
+  white-space: nowrap;
 }
 .sec-head .meta {
   display: flex;
-  gap: 24px;
+  /* 24px だと span 同士の余白が広く、 SELECTED が画面端に張り付いた時に
+     ガタつく。 16px に詰めてタイト感を統一。 mobile は別途 6px で更に詰める。 */
+  gap: 16px;
 }

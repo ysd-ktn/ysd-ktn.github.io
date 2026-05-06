@@ -104,7 +104,9 @@ const moreCount = Math.max(0, totalCount - articles.length);
 
   <a href={noteProfileUrl} class="writing-more" target="_blank" rel="noopener">
     <span>VIEW ALL ARTICLES · <span class="count">+{moreCount}</span> MORE</span>
-    <span class="cta">→ NOTE PROFILE <span class="arrow">↗</span></span>
+    <span class="cta"
+      ><span class="cta-text">→ NOTE PROFILE </span><span class="arrow">↗</span></span
+    >
   </a>
 </section>
 
@@ -271,10 +273,23 @@ const moreCount = Math.max(0, totalCount - articles.length);
      3カラム → 1カラム。 720px だと 1カラムあたり ≈220px しか取れず、
      16:9 サムネと title / excerpt が 1カードに同居するには窮屈なため、
      横並びを諦めて縦に積む。 gap=1px の grid 区切り線はそのまま動く
-     (1fr の grid なら水平区切りになる)。 */
+     (1fr の grid なら水平区切りになる)。
+
+     .writing-more (VIEW ALL ARTICLES CTA) は左右 2 span が space-between で
+     並ぶ構造のため、 326px 画面では「VIEW ALL ARTICLES · +N MORE」と
+     「→ NOTE PROFILE ↗」が両方とも折り返してガタつく。 モバイルでは
+     右の cta から「→ NOTE PROFILE」テキストだけ抜いて、 アクセント色の
+     ↗ 矢印は残す。 これで「左: VIEW ALL ARTICLES · +N MORE / 右: ↗」の
+     space-between 配置を保ったままシンプルなボタンに見える。 */
   @media (max-width: 720px) {
     .writing-grid {
       grid-template-columns: 1fr;
+    }
+    .writing-more {
+      padding: 14px 16px;
+    }
+    .writing-more .cta-text {
+      display: none;
     }
   }
 
