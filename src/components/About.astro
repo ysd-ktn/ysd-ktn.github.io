@@ -72,10 +72,14 @@ const specFromProfile: SpecEntry[] = [
 
 const {
   index = '01',
-  meta = ['ABOUT', 'PROFILE + TIMELINE', 'v.2026'],
+  meta = ['ABOUT', 'PROFILE + TIMELINE + EVENTS', 'v.2026'],
   spec = specFromProfile,
   timeline = timelineFromCollection,
 } = Astro.props;
+
+// tag なし → キャリア/学歴タイムライン、tag あり → イベント・展覧会セクション
+const careerTimeline = timeline.filter((e) => !e.tag);
+const eventsTimeline = timeline.filter((e) => e.tag);
 ---
 
 <section id="about">
@@ -109,7 +113,7 @@ const {
   <table class="timeline">
     <tbody>
       {
-        timeline.map((row) => (
+        careerTimeline.map((row) => (
           <tr>
             <td class="date">
               {row.date ? (
@@ -121,7 +125,6 @@ const {
               )}
             </td>
             <td class="title">
-              {row.tag && <span class="tag">{row.tag}</span>}
               <strong>{row.title}</strong>
               {row.detail && <Fragment> {row.detail}</Fragment>}
               {row.role && <Fragment> — {row.role}</Fragment>}
@@ -131,6 +134,37 @@ const {
       }
     </tbody>
   </table>
+
+  {eventsTimeline.length > 0 && (
+    <Fragment>
+      <div class="sub-head">[ {index}.3 / EVENTS ]</div>
+      <table class="timeline">
+        <tbody>
+          {
+            eventsTimeline.map((row) => (
+              <tr>
+                <td class="date">
+                  {row.date ? (
+                    row.date
+                  ) : (
+                    <Fragment>
+                      {row.from} — {row.to === 'PRESENT' ? <span class="now">PRESENT</span> : row.to}
+                    </Fragment>
+                  )}
+                </td>
+                <td class="title">
+                  {row.tag && <span class="tag">{row.tag}</span>}
+                  <strong>{row.title}</strong>
+                  {row.detail && <Fragment> {row.detail}</Fragment>}
+                  {row.role && <Fragment> — {row.role}</Fragment>}
+                </td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </Fragment>
+  )}
 </section>
 
 <style>

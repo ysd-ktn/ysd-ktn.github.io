@@ -122,14 +122,6 @@
 </script>
 
 <style>
-  /* タッチデバイス (hover 不可) では完全に非表示 */
-  @media (hover: none) {
-    .cursor,
-    .cur-meta {
-      display: none;
-    }
-  }
-
   .cursor {
     position: fixed;
     top: 0;
@@ -186,5 +178,17 @@
     font-size: 9px;
     color: var(--accent);
     letter-spacing: 0.05em;
+  }
+
+  /* タッチデバイス (hover 不可) またはモバイル幅では完全に非表示。
+     ★ 末尾に置くことで .cur-meta { display: flex } より後にカスケードされ、
+       確実に上書きできる (同詳細度は後ろ勝ちルール)。
+     @media (hover: none) だけだと一部端末で検出漏れが出るため、
+     プロジェクト共通ブレイクポイント 720px も併記して確実に隠す */
+  @media (hover: none), (max-width: 720px) {
+    .cursor,
+    .cur-meta {
+      display: none;
+    }
   }
 </style>
