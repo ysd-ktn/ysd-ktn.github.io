@@ -97,9 +97,12 @@ const {
      - h1 の clamp(56px, 10vw, 168px) は 56px に下限ロックで OK (390px 画面なら
        Barlow 800 56px の YOSHIDA / KOTONE は余裕で収まる、 検算済)
      - .index は自然 wrap に任せる (font-size 11px の長文 1行、 単純 word-wrap で OK)
-     - .role は flex 単一行で `>` プレフィクス + 1 span 構造のため、 そのままだと
-       テキストが 1 行で overflow する。 flex-wrap: wrap + 子要素を block 扱いで
-       折り返させ、 font-size も 11px に詰める。 */
+     - .role は flex のままだと、 子要素単位で wrap するため `>` ::before と
+       テキスト span が別行に分かれてしまう。 mobile では display: block に
+       切り替えて、 ::before とテキストを inline 文字列として 1 つの塊で流す。
+       これで `> UI/UX DESIGNER · ...` が 1 行目から始まり、 末尾で word-wrap
+       による自然な折り返しになる (`>` がテキストの真横に来る形)。
+       ::before に margin-right: 8px で `>` と本文の間に小さな余白。 */
   @media (max-width: 720px) {
     .hero {
       padding: 32px 0 64px;
@@ -108,10 +111,12 @@ const {
       font-size: clamp(48px, 14vw, 88px);
     }
     .hero .role {
-      flex-wrap: wrap;
-      gap: 8px;
+      display: block;
       font-size: 11px;
       margin-top: 20px;
+    }
+    .hero .role::before {
+      margin-right: 8px;
     }
   }
 </style>
