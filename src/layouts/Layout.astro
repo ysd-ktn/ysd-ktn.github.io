@@ -10,8 +10,12 @@ interface Props {
 
 const {
   title = 'YOSHIDA KOTONE',
-  description = 'UI Designer based in Osaka, Japan.',
+  description = 'UI/UX Designer specializing in building design systems and visual design.',
 } = Astro.props;
+
+const siteUrl = 'https://ysd-ktn.github.io';
+const ogImage = `${siteUrl}/og-image.png`;
+const canonicalUrl = new URL(Astro.url.pathname, siteUrl).href;
 ---
 
 <!doctype html>
@@ -19,9 +23,33 @@ const {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content={description} />
     <meta name="generator" content={Astro.generator} />
+
+    <!-- Primary -->
     <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalUrl} />
+
+    <!-- Favicon -->
+    <link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon-96x96.png" type="image/png" sizes="96x96" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+    <!-- OGP -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:locale" content="ja_JP" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@ysd_ktn" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
