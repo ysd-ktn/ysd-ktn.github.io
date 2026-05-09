@@ -53,10 +53,27 @@ const canonicalUrl = new URL(Astro.url.pathname, siteUrl).href;
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- フォント CSS を非同期ロードして FCP ブロックを解消。
+         media="print" onload="this.media='all'" パターンで
+         レンダーブロッキングを避けつつ読み込み後に全メディアへ適用する。
+         JS 無効環境向けに <noscript> フォールバックも用意。 -->
+    <link
+      rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Noto+Sans+JP:wght@400;700;900&display=swap"
+    />
     <link
       href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Noto+Sans+JP:wght@400;700;900&display=swap"
       rel="stylesheet"
+      media="print"
+      onload="this.media='all'"
     />
+    <noscript>
+      <link
+        href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Noto+Sans+JP:wght@400;700;900&display=swap"
+        rel="stylesheet"
+      />
+    </noscript>
   </head>
   <body>
     <slot />

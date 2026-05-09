@@ -81,6 +81,7 @@ function resolveAction(entry: ContactEntry): 'copy' | 'external' {
               class="ext copy-btn"
               data-copy={entry.value}
               data-cursor-chip="COPY"
+              aria-label={`Copy ${entry.label.toLowerCase()} to clipboard`}
             >
               → COPY
             </button>

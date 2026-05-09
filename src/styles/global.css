@@ -33,7 +33,7 @@
   --bg: #0a0a0c;
   --bg-alt: #14141a;
   --fg: #e8e6e0;
-  --dim: #6b6b6b;
+  --dim: #7e7e7e;
   --line: #2a2a2e;
   --accent: #00f0bd;
   --warn: #ff4747;
@@ -60,6 +60,15 @@ body {
      min-content overflow を潰すのが本筋だが、 万一どこかで長文トークンが
      親を突き破っても画面右の余白が生まれない保険として root レベルで lock。 */
   overflow-x: hidden;
+}
+
+/* キーボードフォーカスインジケーター — アクセント色のアウトラインで視認性を確保。
+   :focus (クリック) ではなく :focus-visible (Tab キー等) のみに適用して
+   マウス操作時の余分なアウトラインを抑制する。 */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 2px;
 }
 
 /* カスタムカーソル — Cursor.astro が SVG を描画するので OS カーソルは隠す。

@@ -21,7 +21,7 @@ const logoText = 'YSD-KTN / v3.0.0';
 
 <header>
   <span class="logo">{logoText}</span>
-  <nav>
+  <nav aria-label="Main navigation">
     {
       navItems.map((item) => (
         <a href={item.href}>
@@ -83,6 +83,10 @@ const logoText = 'YSD-KTN / v3.0.0';
   header nav {
     max-width: 0;
     opacity: 0;
+    /* visibility: hidden でキーボード Tab がここに入らないようにする。
+       opacity が先にフェードアウトしてから hidden になるよう
+       visibility に 0.4s の delay を付ける (opacity の 0.25s より長め)。 */
+    visibility: hidden;
     overflow: hidden;
     padding: 0;
     display: flex;
@@ -92,7 +96,8 @@ const logoText = 'YSD-KTN / v3.0.0';
       max-width 0.55s cubic-bezier(0.7, 0, 0.3, 1),
       opacity 0.25s ease 0.12s,
       padding 0.5s cubic-bezier(0.7, 0, 0.3, 1),
-      border-color 0.4s;
+      border-color 0.4s,
+      visibility 0s ease 0.4s;
   }
 
   header nav a {
@@ -218,6 +223,15 @@ const logoText = 'YSD-KTN / v3.0.0';
   header:hover nav {
     max-width: 420px;
     opacity: 1;
+    /* ホバー時は visibility を即座に visible にして、
+       フォーカスを受け取れるようにする (delay: 0s)。 */
+    visibility: visible;
+    transition:
+      max-width 0.55s cubic-bezier(0.7, 0, 0.3, 1),
+      opacity 0.25s ease 0.12s,
+      padding 0.5s cubic-bezier(0.7, 0, 0.3, 1),
+      border-color 0.4s,
+      visibility 0s ease 0s;
   }
   header:hover .toggle {
     /* + → × の 45° 回転のみ。右への移動は nav の max-width 展開
