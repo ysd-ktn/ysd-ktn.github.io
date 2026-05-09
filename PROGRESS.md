@@ -428,10 +428,26 @@ Add persistent mobile nav bar with scroll-spy
 - ✅ **COPY ボタン `aria-label` 追加** (`Contact.astro`)
   - `aria-label="Copy email to clipboard"` で読み上げ時のコンテキスト明示
 
-#### 修正後のスコア見込み
+#### 修正後スコア (実測)
 
-- Accessibility: 95 → **100** (コントラスト問題が唯一の減点)
-- Performance: 87 → **95+** (レンダーブロッキング解消で FCP/LCP が大幅改善見込み)
+| カテゴリ | 修正前 | 修正後 |
+|---|---|---|
+| Performance | 87 | **91** |
+| Accessibility | 95 | **100** |
+| Best Practices | 100 | **100** |
+| SEO | 100 | **100** |
+
+主要パフォーマンス指標:
+
+| 指標 | 修正前 | 修正後 |
+|---|---|---|
+| FCP | 3.2s | 2.1s |
+| LCP | 3.2s | 2.3s |
+| TBT | 0ms | 270ms |
+| CLS | 0.006 | 0.006 |
+
+- FCP / LCP がフォント非同期化で 1秒以上改善
+- TBT の増加はフォントスワップ再描画コストと計測ノイズの混在。スコアとしては +4 でトレードオフはプラス
 
 ---
 
