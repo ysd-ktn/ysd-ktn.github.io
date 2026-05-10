@@ -95,6 +95,12 @@ const timelineSchema = z
     role: z.string().optional(),
     /** 外部リンク URL (例: 展覧会サイト)。省略可 */
     url: z.string().url().optional(),
+    /** トグル詳細: 本文テキスト (複数段落は "\n\n" で区切る)。省略可 */
+    description: z.string().optional(),
+    /** トグル詳細: リンク一覧。省略可 */
+    links: z
+      .array(z.object({ label: z.string(), url: z.string().url() }).strict())
+      .optional(),
     /** 表示順序。降順で並べる (大きいほど上=新しい) */
     order: z.number().int(),
   })

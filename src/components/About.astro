@@ -30,6 +30,8 @@ interface SpecEntry {
 }
 
 interface TimelineEntry {
+  /** Content Collection の id */
+  id?: string;
   /** 単発イベント (展覧会等) の日付 */
   date?: string;
   /** 期間: 開始 */
@@ -46,6 +48,10 @@ interface TimelineEntry {
   role?: string;
   /** 外部リンク URL (例: 展覧会サイト) */
   url?: string;
+  /** トグル詳細: 本文テキスト */
+  description?: string;
+  /** トグル詳細: リンク一覧 */
+  links?: { label: string; url: string }[];
   /** 表示順序 (collection 由来。表示自体には不要だが型整合のため許容) */
   order?: number;
 }
@@ -115,24 +121,66 @@ const eventsTimeline = timeline.filter((e) => e.tag);
   <table class="timeline">
     <tbody>
       {
-        careerTimeline.map((row) => (
-          <tr>
-            <td class="date">
-              {row.date ? (
-                row.date
-              ) : (
-                <Fragment>
-                  {row.from} — {row.to === 'PRESENT' ? <span class="now">PRESENT</span> : row.to}
-                </Fragment>
+        careerTimeline.map((row, i) => {
+          const hasDetail = !!(row.description || (row.links && row.links.length > 0));
+          const detailId = `tl-detail-${row.id ?? i}`;
+          return (
+            <Fragment>
+              <tr class:list={[{ 'has-detail': hasDetail }]} data-cursor-chip={hasDetail ? 'DETAILS' : undefined}>
+                <td class="date">
+                  {row.date ? (
+                    row.date
+                  ) : (
+                    <Fragment>
+                      {row.from} — {row.to === 'PRESENT' ? <span class="now">PRESENT</span> : row.to}
+                    </Fragment>
+                  )}
+                </td>
+                <td class="title">
+                  <div class="title-wrap">
+                    <span class="title-text">
+                      <strong>{row.title}</strong>
+                      {row.detail && <Fragment> {row.detail}</Fragment>}
+                      {row.role && <Fragment> — {row.role}</Fragment>}
+                    </span>
+                    {hasDetail && (
+                      <button
+                        class="tl-toggle"
+                        aria-expanded="false"
+                        aria-controls={detailId}
+                      >
+                        <span class="tl-toggle-icon" aria-hidden="true">+</span>
+                      </button>
+                    )}
+                  </div>
+                </td>
+              </tr>
+              {hasDetail && (
+                <tr class="timeline-detail" id={detailId}>
+                  <td colspan={2}>
+                    <div class="detail-body">
+                      {row.description && <p class="detail-text">{row.description}</p>}
+                      {row.links && row.links.length > 0 && (
+                        <div class="detail-links">
+                          {row.links.map((link) => (
+                            <a
+                              href={link.url}
+                              target="_blank"
+                              rel="noopener"
+                              class="detail-link"
+                            >
+                              {link.label} <span aria-hidden="true">↗</span>
+                            </a>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </td>
+                </tr>
               )}
-            </td>
-            <td class="title">
-              <strong>{row.title}</strong>
-              {row.detail && <Fragment> {row.detail}</Fragment>}
-              {row.role && <Fragment> — {row.role}</Fragment>}
-            </td>
-          </tr>
-        ))
+            </Fragment>
+          );
+        })
       }
     </tbody>
   </table>
@@ -299,6 +347,91 @@ const eventsTimeline = timeline.filter((e) => e.tag);
     vertical-align: middle;
   }
 
+  /* ===== TIMELINE トグル ===== */
+  /* タイトル行: テキストを flex で左寄せ、ボタンを右端に */
+  .title-wrap {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .title-text {
+    flex: 1;
+  }
+
+  /* [+] トグルインジケーター (枠なし・フラット) */
+  .tl-toggle {
+    appearance: none;
+    background: none;
+    border: none;
+    padding: 0 2px;
+    font-family: var(--font-mono);
+    font-size: 14px;
+    color: var(--accent);
+    cursor: pointer;
+    flex-shrink: 0;
+    line-height: 1;
+    margin-top: 2px;
+    transition: opacity 0.15s;
+  }
+  .tl-toggle:hover {
+    opacity: 0.7;
+  }
+  /* 行全体ホバー: border-bottom が点線→実線+アクセント色に変化 */
+  .timeline tr.has-detail {
+    cursor: pointer;
+    transition: border-color 0.2s;
+  }
+  .timeline tr.has-detail:hover {
+    border-bottom-color: var(--accent);
+    border-bottom-style: solid;
+  }
+
+  /* 詳細行: デフォルトは非表示 */
+  .timeline-detail {
+    display: none;
+  }
+  .timeline-detail.is-open {
+    display: table-row;
+  }
+  .timeline-detail > td {
+    padding-top: 0;
+    padding-bottom: 20px;
+  }
+
+  /* 詳細本体 */
+  .detail-body {
+    border-top: 1px dashed var(--line);
+    padding-top: 12px;
+  }
+  .detail-text {
+    font-size: 13px;
+    color: var(--dim);
+    line-height: 1.8;
+    margin: 0 0 10px;
+  }
+  .detail-text:last-child {
+    margin-bottom: 0;
+  }
+  .detail-links {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .detail-link {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--accent);
+    text-decoration: none;
+    letter-spacing: 0.08em;
+    border-bottom: 1px solid var(--accent);
+    padding-bottom: 1px;
+    transition: opacity 0.15s;
+  }
+  .detail-link:hover {
+    opacity: 0.7;
+  }
+
   /* ===== モバイル (~720px) =====
      PROFILE: dt 200px + dd 1fr の grid だと、 326px 画面で値の領域が
      126px しか取れず読み辛い + 長いトークン (例: "yosida.kotone@gmail.com" 等)
@@ -344,5 +477,42 @@ const eventsTimeline = timeline.filter((e) => e.tag);
       font-size: 14px;
       overflow-wrap: anywhere;
     }
+    /* モバイル: 詳細行の表示制御
+       .timeline tr { display: block } の specificity (0,1,1) が
+       .timeline-detail { display: none } の (0,1,0) に勝ってしまい、
+       閉じた詳細行がモバイルで見えてしまう問題の修正。
+       .timeline tr.timeline-detail (0,2,1) で確実に上書きする。 */
+    .timeline tr.timeline-detail {
+      display: none;
+      padding: 0;
+      border-bottom: 0;
+    }
+    .timeline tr.timeline-detail.is-open {
+      display: block;
+      padding: 0 0 16px;
+      border-bottom: 1px dashed var(--line);
+    }
+    .timeline-detail > td {
+      padding: 0;
+    }
   }
 </style>
+
+<script>
+  // TIMELINE トグル: 行全体クリックで詳細を開閉する
+  // ボタンクリックは tr まで bubble するので、リスナーは tr 側だけでよい
+  document.querySelectorAll<HTMLTableRowElement>('.timeline tr.has-detail').forEach((row) => {
+    row.addEventListener('click', () => {
+      const btn = row.querySelector<HTMLButtonElement>('.tl-toggle');
+      if (!btn) return;
+      const targetId = btn.getAttribute('aria-controls');
+      if (!targetId) return;
+      const detail = document.getElementById(targetId);
+      if (!detail) return;
+      const isOpen = detail.classList.toggle('is-open');
+      btn.setAttribute('aria-expanded', String(isOpen));
+      const icon = btn.querySelector<HTMLElement>('.tl-toggle-icon');
+      if (icon) icon.textContent = isOpen ? '−' : '+';
+    });
+  });
+</script>
