@@ -1,49 +1,69 @@
 # ysd-ktn.github.io
-このリポジトリはysd-ktn.github.ioのリポジトリです。
+
+Yoshida Kotone のポートフォリオサイト。[https://ysd-ktn.github.io](https://ysd-ktn.github.io)
 
 ## 使用技術
-|技術|名前|
+
+| 技術 | 名前 |
 |:--|:--|
-| Webフレームワーク| flask|
-| ホスティング| Github Pages|
+| フレームワーク | [Astro](https://astro.build/) v6 |
+| 言語 | TypeScript |
+| スタイリング | CSS (CSS Variables) |
+| コンテンツ管理 | Astro Content Collections (JSON) |
+| ホスティング | GitHub Pages |
+| デプロイ | GitHub Actions |
 
 ## 構成
-- static
-  - css: CSSのフォルダ。実際にはSASSで書く予定。
-- templates: flaskにおけるテンプレートフォルダ。ここにレンダリング前のHTMLファイルが入っている。
-- .gitignore: gitに追跡させないもの。
-- build.sh: 静的サイト化する時のビルドスクリプト。
-- freeze.py: 静的サイト化するpythonファイルで、build.shから呼び出されるので、自ら実行することはない。
-- index.html: レンダリングされた静的ファイル。
-- run.py: flaskサーバーを立ち上げるためのファイル。手元で確認する際に使用するのみで、実際のホスティングには使用しない。
 
-## フロー
-- 準備
-  - flaskのサーバーを立ち上げる。 `python run.py`
-  - ターミナルの別タブを開く. `command + t`
-  - SCSSファイルの監視。 `sass --watch static/scss/style.scss:static/css/style.css`
-- コーティング
-  - HTMLを編集するなら、`templates`の中のファイル。
-  - SCSSを編集するなら、`static`の中のファイル。
-  - (注意)トップにあるHTMLファイルは静的化されたものなので編集しない。
-- 静的化
-  - `sh script/build.sh`
-- git
-  - ステージングするなら、`git add <file name>`
-  - ログに書き込むなら、`git commit -m "<message>"`
-  - デプロイするなら、`git push`
+```
+src/
+  components/    # 各セクションのコンポーネント
+    Header.astro
+    Hero.astro
+    About.astro
+    Writing.astro
+    Contact.astro
+    Footer.astro
+    Cursor.astro
+  content/       # サイトコンテンツ (JSON)
+    profile.json   # プロフィール情報
+    timeline.json  # 経歴・イベント
+    writing.json   # note 記事
+    contact.json   # 連絡先
+  content.config.ts  # Content Collections スキーマ定義
+  layouts/
+    Layout.astro   # HTML 共通レイアウト (meta / fonts)
+  pages/
+    index.astro    # トップページ (唯一のページ)
+  styles/
+    global.css     # グローバルスタイル・CSS Variables
+public/
+  images/writing/  # 記事サムネイル (WebP)
+  favicon.*        # favicon 一式
+  og-image.png     # OGP 画像
+  robots.txt
+.github/workflows/
+  deploy.yml       # GitHub Actions デプロイ設定
+```
 
-## 処理の流れ
-### 動的サイト
-- クライアントがリクエストを投げる(urlを叩く)
-- pythonサーバー(run.py)がリクエストを受け取る
-- 対応する関数を実行する(例えば、`/art.html`にアクセスされたとすると, `@app.route('/art.html')`の下の関数が実行される. この例では`art`関数. )
-- 大体において, 関数内でflaskの`render_template`関数を実行する. 
-  - `render_template`は第一引数としてファイルパス(templatesのhtml)を受け取り, それをレンダリングしたhtmlファイルを返す. (レンダリングとは, いい感じに画像を埋め込んだりすること.)
-  - また, `render_template`は第二引数以降に任意の変数を受け取ることができ, その変数をパス先のファイル(templatesのhtml)内で使用することができる.
+## 開発
 
-`tempates`内のhtmlファイルにおいて変数を使用する方法は`{{変数名}}`など, 記法が存在し, ifやforなども使用できる. それらに関してはjinja2と検索するとわかるよ. (flaskはjinja2というテンプレートエンジンを使用している.)
+```sh
+npm install
+npm run dev      # 開発サーバー起動 (localhost:4321)
+npm run build    # 静的ファイル生成 (dist/)
+npm run preview  # ビルド結果のプレビュー
+```
 
-### 静的サイト
-- 全てのリクエストに対して予めhtmlファイルをレンダリングしておく. (`sh script/build.sh`がそれに当たる.)
-- リクエストが来たら, そのhtmlファイルを返す. (以上!)
+## コンテンツの更新
+
+サイトの内容は `src/content/` 以下の JSON ファイルを編集する。スキーマは `src/content.config.ts` で定義されており、型に違反した場合はビルドエラーになる。
+
+- **プロフィール**: `src/content/profile.json`
+- **経歴・イベント**: `src/content/timeline.json`
+- **note 記事**: `src/content/writing.json` (featured: true の記事が必ず 3件必要)
+- **連絡先**: `src/content/contact.json`
+
+## デプロイ
+
+`master` ブランチへの push で GitHub Actions が自動的にビルド・デプロイする。手動操作は不要。
