@@ -44,6 +44,8 @@ interface TimelineEntry {
   detail?: string;
   /** 役職 (期間エントリ用、例: "UI Designer") */
   role?: string;
+  /** 外部リンク URL (例: 展覧会サイト) */
+  url?: string;
   /** 表示順序 (collection 由来。表示自体には不要だが型整合のため許容) */
   order?: number;
 }
@@ -154,7 +156,13 @@ const eventsTimeline = timeline.filter((e) => e.tag);
                 </td>
                 <td class="title">
                   {row.tag && <span class="tag">{row.tag}</span>}
-                  <strong>{row.title}</strong>
+                  <strong>
+                    {row.url ? (
+                      <a href={row.url} target="_blank" rel="noopener" class="title-link">{row.title}</a>
+                    ) : (
+                      row.title
+                    )}
+                  </strong>
                   {row.detail && <Fragment> {row.detail}</Fragment>}
                   {row.role && <Fragment> — {row.role}</Fragment>}
                 </td>
@@ -262,6 +270,21 @@ const eventsTimeline = timeline.filter((e) => e.tag);
   }
   .timeline .now {
     color: var(--accent);
+  }
+  .timeline .title-link {
+    color: inherit;
+    text-decoration: none;
+    border-bottom: 1px solid var(--dim);
+    transition: color 0.15s, border-color 0.15s;
+  }
+  .timeline .title-link::after {
+    content: ' ↗';
+    font-size: 0.8em;
+    color: var(--accent);
+  }
+  .timeline .title-link:hover {
+    color: var(--accent);
+    border-color: var(--accent);
   }
   .timeline .tag {
     display: inline-block;

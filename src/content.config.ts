@@ -93,6 +93,8 @@ const timelineSchema = z
     detail: z.string().optional(),
     /** 期間エントリ用の役職 (例: "UI Designer") */
     role: z.string().optional(),
+    /** 外部リンク URL (例: 展覧会サイト)。省略可 */
+    url: z.string().url().optional(),
     /** 表示順序。降順で並べる (大きいほど上=新しい) */
     order: z.number().int(),
   })
