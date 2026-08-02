@@ -62,10 +62,6 @@ const profileSchema = z
     tools: z.array(z.string()).min(1),
     /** WRITING 行の自己紹介文 */
     writingIntro: z.string(),
-    /** STATUS が ● 強調になるか (true で先頭に ● が出る) */
-    statusOpen: z.boolean(),
-    /** STATUS の表示テキスト (例: "OPEN FOR PROJECTS · 2026.Q3") */
-    statusLabel: z.string(),
   })
   .strict();
 

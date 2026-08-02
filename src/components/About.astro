@@ -20,13 +20,6 @@ const timelineFromCollection = (await getCollection('timeline'))
 interface SpecEntry {
   key: string;
   value: string;
-  /**
-   * 値の頭にステータスドットを付与する。
-   *  - 'open'   → ● in accent (#00f0bd) — 募集中
-   *  - 'closed' → ○ in dim (#6b6b6b)   — 募集停止 (連絡窓口は別途)
-   *  - undefined → ドットなし (NAME / ROLE 等の通常行)
-   */
-  dot?: 'open' | 'closed';
 }
 
 interface TimelineEntry {
@@ -75,7 +68,6 @@ const specFromProfile: SpecEntry[] = [
   { key: 'FOCUS', value: profile.focus.join(' · ') },
   { key: 'TOOLS', value: profile.tools.join(' · ') },
   { key: 'WRITING', value: profile.writingIntro },
-  { key: 'STATUS', value: profile.statusLabel, dot: profile.statusOpen ? 'open' : 'closed' },
 ];
 
 const {
@@ -104,14 +96,7 @@ const eventsTimeline = timeline.filter((e) => e.tag);
       spec.map((entry) => (
         <Fragment>
           <dt>{entry.key}</dt>
-          <dd>
-            {entry.dot && (
-              <span class={`status-dot status-dot--${entry.dot}`}>
-                {entry.dot === 'open' ? '●' : '○'}
-              </span>
-            )}
-            {entry.value}
-          </dd>
+          <dd>{entry.value}</dd>
         </Fragment>
       ))
     }
@@ -128,13 +113,28 @@ const eventsTimeline = timeline.filter((e) => e.tag);
             <Fragment>
               <tr class:list={[{ 'has-detail': hasDetail }]} data-cursor-chip={hasDetail ? 'DETAILS' : undefined}>
                 <td class="date">
-                  {row.date ? (
-                    row.date
-                  ) : (
-                    <Fragment>
-                      {row.from} — {row.to === 'PRESENT' ? <span class="now">PRESENT</span> : row.to}
-                    </Fragment>
-                  )}
+                  <div class="date-row">
+                    {hasDetail ? (
+                      <button
+                        class="tl-toggle"
+                        aria-expanded="false"
+                        aria-controls={detailId}
+                      >
+                        <span class="tl-toggle-icon" aria-hidden="true">▶</span>
+                      </button>
+                    ) : (
+                      <span class="date-indent" aria-hidden="true"></span>
+                    )}
+                    <span class="date-inner">
+                      {row.date ? (
+                        row.date
+                      ) : (
+                        <Fragment>
+                          {row.from} — {row.to === 'PRESENT' ? <span class="now">PRESENT</span> : row.to}
+                        </Fragment>
+                      )}
+                    </span>
+                  </div>
                 </td>
                 <td class="title">
                   <div class="title-wrap">
@@ -143,15 +143,6 @@ const eventsTimeline = timeline.filter((e) => e.tag);
                       {row.detail && <Fragment> {row.detail}</Fragment>}
                       {row.role && <Fragment> — {row.role}</Fragment>}
                     </span>
-                    {hasDetail && (
-                      <button
-                        class="tl-toggle"
-                        aria-expanded="false"
-                        aria-controls={detailId}
-                      >
-                        <span class="tl-toggle-icon" aria-hidden="true">+</span>
-                      </button>
-                    )}
                   </div>
                 </td>
               </tr>
@@ -269,18 +260,6 @@ const eventsTimeline = timeline.filter((e) => e.tag);
     color: var(--accent);
     margin-left: 4px;
   }
-  .spec .status-dot {
-    margin-right: 6px;
-  }
-  /* 募集中: ● 塗り潰し + アクセント色 */
-  .spec .status-dot--open {
-    color: var(--accent);
-  }
-  /* 募集停止: ○ 中抜き + dim 色 (チャンネルは存在するが non-active のニュアンス) */
-  .spec .status-dot--closed {
-    color: var(--dim);
-  }
-
   /* TIMELINE — テーブル */
   .timeline {
     width: 100%;
