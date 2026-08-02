@@ -277,14 +277,27 @@ const eventsTimeline = timeline.filter((e) => e.tag);
     font-size: 12px;
     color: var(--dim);
     letter-spacing: 0.05em;
-    width: 240px;
+    width: 200px;
   }
-  .timeline .date::before {
+  /* date セル内のラッパー。td 自体を flex 化すると table-cell の
+     レイアウト (列幅・vertical-align) が壊れるので、必ず内側の div で受ける。 */
+  .timeline .date-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  /* 展開できない行のインデント調整。▶ と同じ幅を確保して、
+     全行の日付テキストの左端を揃える (ガタつき防止)。 */
+  .timeline .date-indent {
+    width: 10px;
+    flex-shrink: 0;
+  }
+  .timeline .date-inner::before {
     content: '[';
     color: var(--accent);
     margin-right: 4px;
   }
-  .timeline .date::after {
+  .timeline .date-inner::after {
     content: ']';
     color: var(--accent);
     margin-left: 4px;
@@ -338,19 +351,22 @@ const eventsTimeline = timeline.filter((e) => e.tag);
     flex: 1;
   }
 
-  /* [+] トグルインジケーター (枠なし・フラット) */
+  /* ▶ / ▼ トグルインジケーター。
+     絶対配置で親の padding 外に吊るすとモバイル (main の左 padding 16px) で
+     画面外に切れるため、フロー内に置いて .date-indent と幅を揃える。 */
   .tl-toggle {
     appearance: none;
     background: none;
     border: none;
-    padding: 0 2px;
+    padding: 0;
     font-family: var(--font-mono);
-    font-size: 14px;
+    font-size: 10px;
+    line-height: 1;
     color: var(--accent);
     cursor: pointer;
+    width: 10px;
     flex-shrink: 0;
-    line-height: 1;
-    margin-top: 2px;
+    text-align: left;
     transition: opacity 0.15s;
   }
   .tl-toggle:hover {
@@ -441,8 +457,14 @@ const eventsTimeline = timeline.filter((e) => e.tag);
       display: block;
       width: 100%;
     }
+    /* モバイルでは date / title が 2 行に積まれるため、▶ を date 行内に
+       置くと「日付に付いたアイコン」に見えてドロワーだと気づきにくい。
+       行全体に左 padding を空け、▶ をその gutter に絶対配置して
+       ブロック全体に対して垂直中央に置く。padding は内側に確保するので
+       デスクトップの負 margin 案と違い画面外にはみ出さない。 */
     .timeline tr {
-      padding: 12px 0;
+      position: relative;
+      padding: 12px 0 12px 18px;
       border-bottom: 1px dashed var(--line);
     }
     .timeline td {
@@ -451,6 +473,16 @@ const eventsTimeline = timeline.filter((e) => e.tag);
     .timeline .date {
       width: auto;
       margin-bottom: 4px;
+    }
+    .timeline .tl-toggle {
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+    /* 全行に padding-left が付くので、フロー内スペーサーは不要 */
+    .timeline .date-indent {
+      display: none;
     }
     .timeline .title {
       font-size: 14px;
@@ -468,7 +500,8 @@ const eventsTimeline = timeline.filter((e) => e.tag);
     }
     .timeline tr.timeline-detail.is-open {
       display: block;
-      padding: 0 0 16px;
+      /* 親行と同じ左 padding で本文の頭を揃える */
+      padding: 0 0 16px 18px;
       border-bottom: 1px dashed var(--line);
     }
     .timeline-detail > td {
@@ -491,7 +524,7 @@ const eventsTimeline = timeline.filter((e) => e.tag);
       const isOpen = detail.classList.toggle('is-open');
       btn.setAttribute('aria-expanded', String(isOpen));
       const icon = btn.querySelector<HTMLElement>('.tl-toggle-icon');
-      if (icon) icon.textContent = isOpen ? '−' : '+';
+      if (icon) icon.textContent = isOpen ? '▼' : '▶';
     });
   });
 </script>
