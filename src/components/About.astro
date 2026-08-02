@@ -120,7 +120,7 @@ const eventsTimeline = timeline.filter((e) => e.tag);
                         aria-expanded="false"
                         aria-controls={detailId}
                       >
-                        <span class="tl-toggle-icon" aria-hidden="true">▶</span>
+                        <span class="tl-toggle-icon" aria-hidden="true">&gt;</span>
                       </button>
                     ) : (
                       <span class="date-indent" aria-hidden="true"></span>
@@ -351,7 +351,11 @@ const eventsTimeline = timeline.filter((e) => e.tag);
     flex: 1;
   }
 
-  /* ▶ / ▼ トグルインジケーター。
+  /* > トグルインジケーター。
+     記号は Hero の役職行 (.hero .role::before) と同じ `>` を使い、
+     サイト全体のモノスペース + ブラケットの世界観に揃える。
+     開閉は文字の差し替えではなく CSS の 90deg 回転で表現する
+     (トランジションが効く / JS は aria-expanded の更新だけで済む)。
      絶対配置で親の padding 外に吊るすとモバイル (main の左 padding 16px) で
      画面外に切れるため、フロー内に置いて .date-indent と幅を揃える。 */
   .tl-toggle {
@@ -360,7 +364,8 @@ const eventsTimeline = timeline.filter((e) => e.tag);
     border: none;
     padding: 0;
     font-family: var(--font-mono);
-    font-size: 10px;
+    font-size: 12px;
+    font-weight: 700;
     line-height: 1;
     color: var(--accent);
     cursor: pointer;
@@ -371,6 +376,15 @@ const eventsTimeline = timeline.filter((e) => e.tag);
   }
   .tl-toggle:hover {
     opacity: 0.7;
+  }
+  /* `>` の回転。span 側にかけるのは、button に transform を当てると
+     モバイルの translateY(-50%) センタリングと競合するため。 */
+  .tl-toggle-icon {
+    display: inline-block;
+    transition: transform 0.2s ease;
+  }
+  .tl-toggle[aria-expanded='true'] .tl-toggle-icon {
+    transform: rotate(90deg);
   }
   /* 行全体ホバー: border-bottom が点線→実線+アクセント色に変化 */
   .timeline tr.has-detail {
@@ -523,8 +537,7 @@ const eventsTimeline = timeline.filter((e) => e.tag);
       if (!detail) return;
       const isOpen = detail.classList.toggle('is-open');
       btn.setAttribute('aria-expanded', String(isOpen));
-      const icon = btn.querySelector<HTMLElement>('.tl-toggle-icon');
-      if (icon) icon.textContent = isOpen ? '▼' : '▶';
+      // アイコンの向きは CSS (aria-expanded="true" で 90deg 回転) に任せる
     });
   });
 </script>
