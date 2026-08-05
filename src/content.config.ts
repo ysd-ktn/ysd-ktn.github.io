@@ -26,7 +26,7 @@
 //   contact.json  — [ { id: "...", ...ContactEntrySchema }, ... ]
 
 import { defineCollection, z } from 'astro:content';
-import { file } from 'astro/loaders';
+import { file, glob } from 'astro/loaders';
 
 // ───────────────────────────────────────────────
 // PROFILE — Hero + About PROFILE シートで使う
@@ -62,6 +62,17 @@ const profileSchema = z
     tools: z.array(z.string()).min(1),
     /** WRITING 行の自己紹介文 */
     writingIntro: z.string(),
+    /** note プロフィールの URL (一覧ページ下部の CTA で使う) */
+    noteProfileUrl: z.string().url(),
+    /** /writing/ の巨大タイトル下に「画面に出す」リード文。
+     *  1要素 = 1行 (配列の区切りがそのまま改行になる)。
+     *  すぐ下にタグのフィルタ行が来るので、 話題の羅列を書くと重複する。
+     *  フィルタからは読み取れないこと (書き手の態度) だけを短く書く。 */
+    writingLede: z.array(z.string()).min(1).max(3),
+    /** /writing/ の meta description。 検索結果や SNS のカードに出る文章。
+     *  画面のリード文とは読む相手も目的も違うので別で持つ。
+     *  こちらは検索で拾われたい語を入れて 120 字前後にするのが目安。 */
+    writingDescription: z.string().min(20).max(160),
   })
   .strict();
 
@@ -107,57 +118,56 @@ const timelineSchema = z
   );
 
 // ───────────────────────────────────────────────
-// WRITING — note 記事リスト + メタ情報
-// articles 内で featured: true がちょうど 3件 (3カラムグリッド固定のため)
+// WRITING — 記事コレクション (src/content/writing/*.md)
+//
+// 自サイトに移行済みの記事と、まだ note にしか無い記事を「1つの
+// コレクション」で扱う。 外部記事も本文なしの .md をスタブとして置き、
+// externalUrl を持たせる。 こうすると一覧の並び替え・タグ絞り込み・
+// 件数カウントを1箇所のロジックで書けて、移行が進むたびに
+// externalUrl を消して本文を足すだけで内部記事に切り替わる。
+//
+// 並び順は date の降順。 トップの LATEST セクションはこの上位3件を
+// 自動で拾うので、 featured フラグの手動管理は不要。
 // ───────────────────────────────────────────────
-const writingArticleSchema = z
-  .object({
-    /** カード左上 [ idx ] 表示。省略時は配列順から自動生成 ("01", "02"...) */
-    idx: z.string().optional(),
-    /** 投稿日 (例: "2025.10") */
-    date: z.string(),
-    /** いいね数。省略すると ♡ N 表示自体を非表示 */
-    likes: z.number().int().nonnegative().optional(),
-    /** サムネ画像のパス (例: "/images/writing/01-xxx.webp")。
-     *  public/ 配下の絶対パスを期待 (Astro は public/ をルートにマップ)。
-     *  Phase 7 直前に dashed プレースホルダ → 実画像に切替済み (2026.05.05)。 */
-    thumbnail: z.string(),
-    /** 16:9 サムネ placeholder ラベル。
-     *  かつての dashed 枠 + テキスト表示用。 thumbnail に切替後は実用上不要だが、
-     *  alt テキストや将来 placeholder へ戻す際の予備として残す (省略可)。 */
-    thumbLabel: z.string().optional(),
-    /** 記事タイトル */
-    title: z.string(),
-    /** 概要 (6行程度) */
-    excerpt: z.string(),
-    /** 記事 URL。本物投入前は "#" でも通る (Phase 8 までに本物に差し替え) */
-    url: z.string(),
-    /** カードフッタ左の plat 表示。省略時 "NOTE" */
-    platform: z.string().optional(),
-    /** いいね数を非表示にしたい個別記事は false (likes 値があっても効く) */
-    showLikes: z.boolean().optional(),
-    /** トップに表示する3件を選ぶフラグ */
-    featured: z.boolean(),
-  })
-  .strict();
+
+/** 一覧のフィルタと連動するタグ。 z.enum なので typo はビルドで落ちる */
+const TAGS = ['DESIGN', 'CAREER', 'AI'] as const;
 
 const writingSchema = z
   .object({
-    /** CTA "→ NOTE PROFILE" のリンク先 */
-    noteProfileUrl: z.string().url(),
-    /** note 上の全記事数 (CTA の "+N MORE" 表示に使用、 N = totalCount - 3) */
-    totalCount: z.number().int().nonnegative(),
-    /** 候補記事リスト (featured: true のうち上から3件をトップに表示) */
-    articles: z.array(writingArticleSchema).min(3),
+    /** 記事タイトル */
+    title: z.string(),
+    /** 公開日。 "2026-06-21" のような文字列を Date に変換する */
+    date: z.coerce.date(),
+    /** タグ (1〜3個想定)。 一覧ページのフィルタになる */
+    tags: z.array(z.enum(TAGS)).min(1).max(3),
+    /** カード / 記事ヘッダのサムネ。
+     *  通常は public/ 配下の絶対パス ("/images/writing/xxx/thumb.webp")。
+     *  自サイトに移行しない外部記事に限り、 note 側の画像 URL を
+     *  そのまま指してもよい (手元に画像が無いため)。 */
+    thumbnail: z.string().regex(/^(\/|https:\/\/)/, {
+      message: 'thumbnail は "/" 始まりのパスか https:// の URL にしてください',
+    }),
+    /** OGP 用画像。 WebP は一部 SNS が読めないので 1200×630 の JPG を指す。
+     *  自サイトで公開する記事では必須 (下の refine で検査)。 */
+    ogpImage: z.string().startsWith('/').optional(),
+    /** note にも載せている場合の URL。 canonical は自サイト側に置き、
+     *  記事ページから note へのリンクは張らない (導線は note → 自サイトの一方通行)。 */
+    noteUrl: z.string().url().optional(),
+    /** まだ自サイトに移行していない記事の外部リンク先。
+     *  これがある = 一覧カードから直接 note へ飛ばす (個別ページを作らない)。 */
+    externalUrl: z.string().url().optional(),
+    /** カードに出す概要 (2行に切り詰めて表示) */
+    excerpt: z.string().min(10),
+    /** true の間はビルド対象から外す */
+    draft: z.boolean().default(false),
   })
   .strict()
-  .refine(
-    (w) => w.articles.filter((a) => a.featured).length === 3,
-    {
-      message:
-        'articles のうち featured: true の記事はちょうど 3件 にしてください (3カラムグリッド固定のため)',
-    }
-  );
+  .refine((a) => Boolean(a.externalUrl) || Boolean(a.ogpImage), {
+    message:
+      '自サイトで公開する記事 (externalUrl なし) には ogpImage が必要です。' +
+      'script/notion-to-md.py が ogp.jpg を書き出すのでそのパスを指定してください',
+  });
 
 // ───────────────────────────────────────────────
 // CONTACT — key/value 連絡先リスト
@@ -189,7 +199,7 @@ const profile = defineCollection({
 });
 
 const writing = defineCollection({
-  loader: file('src/content/writing.json'),
+  loader: glob({ pattern: '**/*.md', base: './src/content/writing' }),
   schema: writingSchema,
 });
 

@@ -58,8 +58,15 @@ body {
   line-height: 1.5;
   /* 水平スクロールを完全に止める。 各コンポーネント側で grid item の
      min-content overflow を潰すのが本筋だが、 万一どこかで長文トークンが
-     親を突き破っても画面右の余白が生まれない保険として root レベルで lock。 */
-  overflow-x: hidden;
+     親を突き破っても画面右の余白が生まれない保険として root レベルで lock。
+
+     `hidden` ではなく `clip` を使うこと。
+     overflow-x: hidden は overflow-y を auto に計算させ、 html/body 自体を
+     スクロールコンテナにしてしまう。 するとその内側の position: sticky は
+     「スクロールしないコンテナ」に貼り付くことになり、 一切固定されなくなる。
+     記事ページの目次サイドバーが流れていったのはこれが原因だった。
+     clip はスクロールコンテナを作らないので、 はみ出しを止める効果だけが残る。 */
+  overflow-x: clip;
 }
 
 /* キーボードフォーカスインジケーター — アクセント色のアウトラインで視認性を確保。
@@ -149,7 +156,7 @@ main {
      ナビバー高さ 44px + 余裕 8px = 52px。 */
   #index,
   #about,
-  #writing,
+  #latest,
   #contact {
     scroll-margin-top: 52px;
   }

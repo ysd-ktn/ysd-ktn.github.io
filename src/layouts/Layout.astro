@@ -6,15 +6,30 @@ import '../styles/global.css';
 interface Props {
   title?: string;
   description?: string;
+  /** OGP 画像のパス (public/ 配下の絶対パス)。
+   *  省略時はサイト共通の og-image.png。
+   *  記事ページでは frontmatter の ogpImage を渡す。
+   *  WebP ではなく JPG を指すこと — 一部の SNS のクローラは OGP の
+   *  WebP を読めず、カードが画像なしで出てしまう。 */
+  image?: string;
+  /** 記事ページでは 'article'。 それ以外は 'website' */
+  type?: 'website' | 'article';
+  /** og:type が article のときの公開日 (ISO 8601) */
+  publishedTime?: string;
 }
 
 const {
   title = 'WATAOKA KOTONE',
   description = 'UI/UX Designer specializing in building design systems and visual design.',
+  image = '/og-image.png',
+  type = 'website',
+  publishedTime,
 } = Astro.props;
 
 const siteUrl = 'https://ysd-ktn.github.io';
-const ogImage = `${siteUrl}/og-image.png`;
+// og:image は絶対 URL でないとクローラに読まれない。
+// new URL() で相対パスを必ず絶対化する。
+const ogImage = new URL(image, siteUrl).href;
 const canonicalUrl = new URL(Astro.url.pathname, siteUrl).href;
 ---
 
@@ -37,12 +52,15 @@ const canonicalUrl = new URL(Astro.url.pathname, siteUrl).href;
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 
     <!-- OGP -->
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={type} />
     <meta property="og:url" content={canonicalUrl} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
     <meta property="og:locale" content="ja_JP" />
+    {publishedTime && <meta property="article:published_time" content={publishedTime} />}
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />

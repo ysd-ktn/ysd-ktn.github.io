@@ -8,9 +8,10 @@
 // SpecEntry: dl/dt/dd の key/value 1組
 // TimelineEntry: 単発イベント (date + tag) と期間付き (from/to + role) の両方に対応
 
-import { getEntry, getCollection } from 'astro:content';
+import { getCollection } from 'astro:content';
+import { requireEntry } from '../lib/content';
 
-const profile = (await getEntry('profile', 'main'))!.data;
+const profile = await requireEntry('profile', 'main');
 
 // timeline は order 降順 (大きい数値ほど上=新しい)
 const timelineFromCollection = (await getCollection('timeline'))

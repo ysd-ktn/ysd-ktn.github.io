@@ -9,11 +9,29 @@
 //
 // version はあとで package.json から読みたくなるかもしれないが、
 // いったんモック通り `v3.0.0` を直書き。
+//
+// ── ナビの意味づけについて ──────────────────────────
+// もともとは「トップページの目次」で、 4 項目すべてが 1 ページ内の
+// セクションだった。 /writing/ を作った時点でサイトは単一ページでは
+// なくなったので、 ナビの定義を「サイトの目次」に変更している。
+//
+//   WRITING はどのページからでも /writing/ へ行く (常に同じ挙動)
+//   トップの 3 件ティザーは LATEST に改名して名前の衝突を解消
+//
+// この結果、 スクロール連動 (scroll-spy) の対象は index / about /
+// contact の 3 つになる。 WRITING はページ遷移なので current prop で
+// アクティブ表示を制御する。
+interface Props {
+  /** 今いる場所。 'writing' なら WRITING をアクティブ表示にする */
+  current?: 'index' | 'writing';
+}
+const { current = 'index' } = Astro.props;
+
 const navItems = [
-  { num: '00', label: 'INDEX', href: '#index' },
-  { num: '01', label: 'ABOUT', href: '#about' },
-  { num: '02', label: 'WRITING', href: '#writing' },
-  { num: '03', label: 'CONTACT', href: '#contact' },
+  { num: '00', label: 'INDEX', href: '/#index', spy: 'index' },
+  { num: '01', label: 'ABOUT', href: '/#about', spy: 'about' },
+  { num: '02', label: 'WRITING', href: '/writing/', spy: null },
+  { num: '03', label: 'CONTACT', href: '/#contact', spy: 'contact' },
 ];
 
 const logoText = 'YSD-KTN / v3.0.0';
@@ -24,7 +42,10 @@ const logoText = 'YSD-KTN / v3.0.0';
   <nav aria-label="Main navigation">
     {
       navItems.map((item) => (
-        <a href={item.href}>
+        <a
+          href={item.href}
+          class={current === 'writing' && item.label === 'WRITING' ? 'is-current' : undefined}
+        >
           <span class="num">{item.num}</span> {item.label}
         </a>
       ))
@@ -36,7 +57,11 @@ const logoText = 'YSD-KTN / v3.0.0';
 <!-- モバイル専用ナビバー (≤720px で表示、デスクトップでは display:none) -->
 <nav class="mobile-nav" aria-label="Navigation">
   {navItems.map((item) => (
-    <a href={item.href} data-section={item.href.slice(1)}>
+    <a
+      href={item.href}
+      data-section={item.spy ?? undefined}
+      class={current === 'writing' && item.label === 'WRITING' ? 'is-active' : undefined}
+    >
       <span class="m-num">{item.num}</span>
       <span class="m-lbl">{item.label}</span>
     </a>
@@ -118,6 +143,9 @@ const logoText = 'YSD-KTN / v3.0.0';
   }
   header nav .num {
     color: var(--dim);
+  }
+  header nav a.is-current {
+    color: var(--accent);
   }
 
   header .toggle {
@@ -251,6 +279,9 @@ const logoText = 'YSD-KTN / v3.0.0';
   //      超えた最後のセクションをアクティブにする。
   //      「最後」＝スクロールダウンで一番遅く閾値を越えたセクション。
 
+  // WRITING はページ遷移なので spy 対象外 (data-section を持たない)。
+  // その項目のアクティブ表示はサーバ側の current prop が付けているので、
+  // ここでは触らない。
   const mobileLinks = document.querySelectorAll<HTMLAnchorElement>('.mobile-nav a[data-section]');
 
   function setActive(id: string) {
@@ -259,7 +290,7 @@ const logoText = 'YSD-KTN / v3.0.0';
     });
   }
 
-  const sections = (['index', 'about', 'writing', 'contact'] as const)
+  const sections = (['index', 'about', 'contact'] as const)
     .map((id) => document.getElementById(id))
     .filter((el): el is HTMLElement => el !== null);
 
@@ -267,6 +298,11 @@ const logoText = 'YSD-KTN / v3.0.0';
   // getBoundingClientRect().top は scroll-margin-top の影響で 52.X px になりうるため、
   // 閾値を 60px にして「ほぼナビバー直下に来た」セクションを確実に捕捉する。
   const NAV_H = 60;
+
+  // 記事ページなど、 spy 対象のセクションが無いページでは何もしない
+  if (sections.length === 0) {
+    // eslint-disable-next-line no-empty
+  } else {
 
   function getActiveId(): string {
     // ページ下端に到達したら CONTACT 固定
@@ -296,4 +332,5 @@ const logoText = 'YSD-KTN / v3.0.0';
 
   // 初期状態を設定
   setActive(getActiveId());
+  }
 </script>

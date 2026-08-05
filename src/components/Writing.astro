@@ -1,238 +1,69 @@
 ---
-// Writing — note 記事の3カードグリッド + 「VIEW ALL ARTICLES · +N MORE」CTA
+// LATEST — トップページに置く最新3件のティザー。
 //
-// Phase 5: src/content/writing.json からデータ読込。
-// articles のうち featured: true のものを上から3件表示する (Zod で 3件固定を保証)。
-// props は override 用に残してある。
+// かつては「WRITING」という名前で、 ナビの遷移先も兼ねていた。
+// /writing/ (一覧ページ) を作った時点で名前が衝突するため LATEST に改名。
+// 役割の違いは以下:
+//   LATEST  — トップページ内の見せ場。 最新3件だけを出す
+//   WRITING — 全記事の書庫。 ナビの WRITING はこちらへ直行する
 //
-// Article: meta-row ([ idx ] + date + ♡ likes) / 16:9 サムネ / タイトル / 概要 / NOTE → READ
-// CTA:     `VIEW ALL ARTICLES · +N MORE → NOTE PROFILE` (note プロフィールへの外部リンク)
+// 表示する3件はコレクションの日付降順から自動で拾う。
+// 以前は featured フラグをちょうど3件立てる運用だったが、 記事を足すたびに
+// 古い記事のフラグを下ろす手作業が要り、 忘れると Zod で落ちるだけだった。
+// 自動化して廃止。
 
-import { getEntry } from 'astro:content';
-
-const writing = (await getEntry('writing', 'main'))!.data;
-const featuredArticles = writing.articles.filter((a) => a.featured).slice(0, 3);
-
-interface Article {
-  /** カード左上の [ idx ] 表示。省略時は配列順から "01", "02"... を自動生成 */
-  idx?: string;
-  /** 投稿日 (例: "2025.10") */
-  date: string;
-  /** いいね数。省略すると likes 表示自体を非表示にする */
-  likes?: number;
-  /** サムネ画像のパス (例: "/images/writing/01-xxx.webp")。public/ 配下を絶対パスで指定 */
-  thumbnail: string;
-  /** (vestigial) 旧 dashed プレースホルダ用ラベル。実画像切替後は未使用、schema 互換のため残置 */
-  thumbLabel?: string;
-  /** 記事タイトル */
-  title: string;
-  /** 概要 */
-  excerpt: string;
-  /** 記事 URL */
-  url: string;
-  /** カードフッタ左の plat 表示。省略時 "NOTE" */
-  platform?: string;
-  /** いいね数を非表示にする個別フラグ (collection 由来、表示時には参照する) */
-  showLikes?: boolean;
-  /** トップに表示するか (collection 由来、ここに来る時点で featured: true 済) */
-  featured?: boolean;
-}
+import ArticleCard from './ArticleCard.astro';
+import { getArticles } from '../lib/writing';
 
 interface Props {
   /** セクション番号 (例: "02") */
   index?: string;
-  /** sec-head の meta 行 */
-  meta?: string[];
-  /** 表示する記事 (3件想定) */
-  articles?: Article[];
-  /** 全記事数 (`+N MORE` の N = totalCount - articles.length) */
-  totalCount?: number;
-  /** CTA のリンク先 (note プロフィール URL) */
-  noteProfileUrl?: string;
 }
 
-const {
-  index = '02',
-  meta = ['WRITING', `FEATURED · 3 OF ${writing.totalCount}`, 'SELECTED'],
-  articles = featuredArticles,
-  totalCount = writing.totalCount,
-  noteProfileUrl = writing.noteProfileUrl,
-} = Astro.props;
+const { index = '02' } = Astro.props;
 
-const moreCount = Math.max(0, totalCount - articles.length);
+const all = await getArticles();
+const latest = all.slice(0, 3);
+const moreCount = Math.max(0, all.length - latest.length);
 ---
 
-<section id="writing">
+<section id="latest">
   <div class="sec-head">
     <div class="num">[ {index} ]</div>
+    <!-- 表示ラベルは WRITING。 内部の id は #latest のまま。
+         ナビの WRITING は /writing/ (書庫) へ直行し、このセクションを
+         スクロール先に取らないので、同じ語を出しても行き先は衝突しない。
+         2番目の span で LATEST と明示して、ここが最新3件の抜粋であり
+         全記事ではないことを伝える。 -->
     <div class="meta">
-      {meta.map((m) => <span>{m}</span>)}
+      <span>WRITING</span>
+      <span>{`LATEST ${latest.length} OF ${all.length}`}</span>
+      <span>SELECTED</span>
     </div>
   </div>
 
   <div class="writing-grid">
-    {
-      articles.map((a, i) => {
-        const idx = a.idx ?? String(i + 1).padStart(2, '0');
-        return (
-          <a href={a.url} class="writing-card" target="_blank" rel="noopener">
-            <div class="meta-row">
-              <div class="meta-left">
-                <span class="idx">[ {idx} ]</span>
-                <span>{a.date}</span>
-              </div>
-              {a.likes != null && (
-                <span class="likes"><span class="heart">♡</span>{a.likes}</span>
-              )}
-            </div>
-            <div class="thumb">
-              <img src={a.thumbnail} alt="" loading="lazy" decoding="async" />
-            </div>
-            <div class="article-title">{a.title}</div>
-            <div class="article-excerpt">
-              <div class="excerpt-text">{a.excerpt}</div>
-            </div>
-            <div class="ext">
-              <span>{a.platform ?? 'NOTE'}</span>
-              <span>→ READ <span class="arrow">↗</span></span>
-            </div>
-          </a>
-        );
-      })
-    }
+    {latest.map((a, i) => <ArticleCard article={a} index={i + 1} />)}
   </div>
 
-  <a href={noteProfileUrl} class="writing-more" target="_blank" rel="noopener">
-    <span>VIEW ALL ARTICLES · <span class="count">+{moreCount}</span> MORE</span>
+  <a href="/writing/" class="writing-more">
+    <span>
+      VIEW ALL ARTICLES{moreCount > 0 && <> · <span class="count">+{moreCount}</span> MORE</>}
+    </span>
     <span class="cta"
-      ><span class="cta-text">→ NOTE PROFILE </span><span class="arrow">↗</span></span
+      ><span class="cta-text">WRITING </span><span class="arrow">→</span></span
     >
   </a>
 </section>
 
 <style>
-  /* ===== 3カードグリッド ===== */
+  /* 3カードグリッド。 区切り線はカード側の outline が描く
+     (ArticleCard.astro のコメント参照)。 */
   .writing-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 1px;
-    background: var(--line);
     border: 1px solid var(--line);
-  }
-
-  /* カード本体 (a タグ): bg を 1px gap の上に重ねて区切り線を演出 */
-  .writing-card {
-    background: var(--bg);
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    transition: background 0.15s;
-    text-decoration: none;
-    color: inherit;
-  }
-  .writing-card:hover {
-    background: var(--bg-alt);
-  }
-
-  /* meta-row: [ idx ] + 日付 / ♡ likes */
-  .writing-card .meta-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-family: var(--font-mono);
-    font-size: 10px;
-    color: var(--dim);
-    letter-spacing: 0.1em;
-    margin-bottom: 12px;
-  }
-  .writing-card .meta-row .meta-left {
-    display: flex;
-    gap: 12px;
-    align-items: center;
-  }
-  .writing-card .meta-row .idx,
-  .writing-card .meta-row .likes {
-    color: var(--accent);
-    font-weight: 700;
-  }
-  .writing-card .meta-row .likes .heart {
-    margin-right: 3px;
-    font-size: 11px;
-  }
-
-  /* 16:9 サムネ枠 — img を object-fit: cover で詰める。
-     画像のソースは note OGP 標準 (1280×670 ≈ 1.91:1) で 16:9 (1.78:1) より少し横長なので、
-     左右がほんの少しトリミングされる。note OGP は中央配置が多いので実害はない想定。
-     hover で枠を accent 色 + 画像の grayscale を解除して「光が点く」演出。 */
-  .writing-card .thumb {
-    aspect-ratio: 16 / 9;
-    border: 1px solid var(--line);
-    overflow: hidden;
-    margin-bottom: 16px;
-    transition: border-color 0.15s;
-  }
-  .writing-card .thumb img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-    filter: grayscale(0.85);
-    transition: filter 0.2s;
-  }
-  .writing-card:hover .thumb {
-    border-color: var(--accent);
-  }
-  .writing-card:hover .thumb img {
-    filter: grayscale(0);
-  }
-
-  /* タイトル */
-  .writing-card .article-title {
-    font-family: var(--font-display);
-    font-size: 17px;
-    font-weight: 700;
-    line-height: 1.25;
-    margin-bottom: 8px;
-    color: var(--fg);
-    transition: color 0.15s;
-  }
-  .writing-card:hover .article-title {
-    color: var(--accent);
-  }
-
-  /* 概要 — 2レイヤ構造で責任分離。
-     外側 (.article-excerpt) は flex: 1 でカード内の空きスペースを埋め、
-     ext footer を底に押し付ける役割のみを持つ。
-     内側 (.excerpt-text) で line-clamp して 2行 + … に切り詰める役割。
-     一緒にすると flex の高さストレッチが line-clamp を無効化するので分けてある。 */
-  .writing-card .article-excerpt {
-    font-size: 12px;
-    color: var(--dim);
-    line-height: 1.6;
-    flex: 1;
-  }
-  .writing-card .article-excerpt .excerpt-text {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-
-  /* カード底の ext (NOTE / → READ ↗) */
-  .writing-card .ext {
-    font-family: var(--font-mono);
-    font-size: 10px;
-    color: var(--dim);
-    letter-spacing: 0.1em;
-    margin-top: 16px;
-    padding-top: 12px;
-    border-top: 1px dashed var(--line);
-    display: flex;
-    justify-content: space-between;
-  }
-  .writing-card .ext .arrow {
-    color: var(--accent);
   }
 
   /* ===== VIEW ALL ARTICLES CTA ===== */
@@ -258,7 +89,6 @@ const moreCount = Math.max(0, totalCount - articles.length);
   .writing-more .count {
     color: var(--accent);
     font-weight: 700;
-    margin-right: 4px;
   }
   .writing-more .cta {
     display: flex;
@@ -271,16 +101,10 @@ const moreCount = Math.max(0, totalCount - articles.length);
 
   /* ===== モバイル (~720px) =====
      3カラム → 1カラム。 720px だと 1カラムあたり ≈220px しか取れず、
-     16:9 サムネと title / excerpt が 1カードに同居するには窮屈なため、
-     横並びを諦めて縦に積む。 gap=1px の grid 区切り線はそのまま動く
-     (1fr の grid なら水平区切りになる)。
+     16:9 サムネと title / excerpt が同居するには窮屈なため縦に積む。
 
-     .writing-more (VIEW ALL ARTICLES CTA) は左右 2 span が space-between で
-     並ぶ構造のため、 326px 画面では「VIEW ALL ARTICLES · +N MORE」と
-     「→ NOTE PROFILE ↗」が両方とも折り返してガタつく。 モバイルでは
-     右の cta から「→ NOTE PROFILE」テキストだけ抜いて、 アクセント色の
-     ↗ 矢印は残す。 これで「左: VIEW ALL ARTICLES · +N MORE / 右: ↗」の
-     space-between 配置を保ったままシンプルなボタンに見える。 */
+     CTA は左右 2 span の space-between なので、 326px 幅では両方が
+     折り返してガタつく。 右の cta からテキストだけ抜いて矢印を残す。 */
   @media (max-width: 720px) {
     .writing-grid {
       grid-template-columns: 1fr;
@@ -290,16 +114,6 @@ const moreCount = Math.max(0, totalCount - articles.length);
     }
     .writing-more .cta-text {
       display: none;
-    }
-  }
-
-  /* ===== タッチデバイス向け =====
-     hover が無いデバイスでは、 デスクトップの「hover で grayscale → カラーに
-     点灯」演出が一生発動しない。 最初からフルカラーで見せた方がユーザに
-     画像内容が伝わる。 (Phase 6.5 で実画像に差し替えた時の宿題。) */
-  @media (hover: none) {
-    .writing-card .thumb img {
-      filter: none;
     }
   }
 </style>

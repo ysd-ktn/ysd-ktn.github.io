@@ -7,9 +7,9 @@
 // 名前は firstName / lastName で分割。Barlow 800、巨大に表示。
 // アクセント色のピリオドは lastName の末尾につける。
 
-import { getEntry } from 'astro:content';
+import { requireEntry } from '../lib/content';
 
-const profile = (await getEntry('profile', 'main'))!.data;
+const profile = await requireEntry('profile', 'main');
 
 interface Props {
   /** セクションインデックス表記 (例: "00 / INDEX") */

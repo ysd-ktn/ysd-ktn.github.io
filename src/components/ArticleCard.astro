@@ -1,0 +1,186 @@
+---
+// 記事カード — 一覧ページとトップの LATEST セクションで共用する。
+//
+// 移行済み記事は自サイトの個別ページへ、 未移行記事は note へ直接飛ぶ。
+// カードフッタ左のラベル (● READ HERE / NOTE) で見分けられる。
+
+import { isExternal, hrefOf, ym, type Article } from '../lib/writing';
+
+interface Props {
+  article: Article;
+  /** カード左上の [ 01 ] 表示に使う通し番号 */
+  index: number;
+}
+
+const { article, index } = Astro.props;
+const { data } = article;
+const external = isExternal(article);
+---
+
+<a
+  href={hrefOf(article)}
+  class="writing-card"
+  data-tags={data.tags.join(',')}
+  target={external ? '_blank' : undefined}
+  rel={external ? 'noopener' : undefined}
+>
+  <div class="meta-row">
+    <div class="meta-left">
+      <span class="idx">[ {String(index).padStart(2, '0')} ]</span>
+      <span>{ym(data.date)}</span>
+    </div>
+    <span class="tag">{data.tags[0]}</span>
+  </div>
+
+  <div class="thumb">
+    <img src={data.thumbnail} alt="" loading="lazy" decoding="async" />
+  </div>
+
+  <div class="article-title">{data.title}</div>
+  <div class="article-excerpt">
+    <div class="excerpt-text">{data.excerpt}</div>
+  </div>
+
+  <div class="ext">
+    <span class={external ? '' : 'self'}>{external ? 'NOTE' : 'READ HERE'}</span>
+    <span>READ <span class="arrow">{external ? '↗' : '→'}</span></span>
+  </div>
+</a>
+
+<style>
+  /* 区切り線はカード側の outline で描く。
+     グリッド側に background: var(--line) を敷いて 1px gap から透かす
+     手もあるが、 タグで絞り込んで表示枚数が 3 未満になると、
+     空いたセルがそのまま --line 色の大きな塊として見えてしまう。
+     outline はレイアウトに影響せず border box の外側に描かれるので、
+     隣り合うカードの outline が 1px の gap を互いに埋めて 1 本の線になり、
+     カードが無いセルには何も描かれない。 */
+  .writing-card {
+    background: var(--bg);
+    outline: 1px solid var(--line);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    transition: background 0.15s;
+    text-decoration: none;
+    color: inherit;
+  }
+  .writing-card:hover {
+    background: var(--bg-alt);
+    color: inherit;
+  }
+  /* hidden 属性でフィルタするので display:flex を上書きさせる */
+  .writing-card[hidden] {
+    display: none;
+  }
+
+  .meta-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--dim);
+    letter-spacing: 0.1em;
+    margin-bottom: 12px;
+  }
+  .meta-left {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+  .idx {
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .tag {
+    border: 1px solid var(--line);
+    padding: 2px 7px;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    color: var(--dim);
+  }
+
+  /* 16:9 サムネ。 hover で枠を accent にして grayscale を解く演出 */
+  .thumb {
+    aspect-ratio: 16 / 9;
+    border: 1px solid var(--line);
+    overflow: hidden;
+    margin-bottom: 16px;
+    transition: border-color 0.15s;
+    background: var(--bg-alt);
+  }
+  .thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    filter: grayscale(0.85);
+    transition: filter 0.2s;
+  }
+  .writing-card:hover .thumb {
+    border-color: var(--accent);
+  }
+  .writing-card:hover .thumb img {
+    filter: grayscale(0);
+  }
+
+  .article-title {
+    font-family: var(--font-display);
+    font-size: 17px;
+    font-weight: 700;
+    line-height: 1.25;
+    margin-bottom: 8px;
+    color: var(--fg);
+    transition: color 0.15s;
+  }
+  .writing-card:hover .article-title {
+    color: var(--accent);
+  }
+
+  /* 概要は 2 レイヤ構造。
+     外側が flex:1 で余白を埋めて ext を底に押し付け、
+     内側が line-clamp で 2 行に切る。 一緒にすると flex の
+     高さストレッチが line-clamp を無効化するので分けてある。 */
+  .article-excerpt {
+    font-size: 12px;
+    color: var(--dim);
+    line-height: 1.6;
+    flex: 1;
+    font-family: var(--font-jp);
+  }
+  .excerpt-text {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .ext {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--dim);
+    letter-spacing: 0.1em;
+    margin-top: 16px;
+    padding-top: 12px;
+    border-top: 1px dashed var(--line);
+    display: flex;
+    justify-content: space-between;
+  }
+  .ext .arrow {
+    color: var(--accent);
+  }
+  /* サイト内で読める記事だけ ● を点ける */
+  .ext .self::before {
+    content: '● ';
+    color: var(--accent);
+  }
+
+  /* タッチデバイスは hover 演出が発動しないので最初からフルカラー */
+  @media (hover: none) {
+    .thumb img {
+      filter: none;
+    }
+  }
+</style>

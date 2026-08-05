@@ -1,0 +1,1032 @@
+---
+// /writing/<slug>/ — 記事個別ページ
+//
+// モック: _mockups/writing-detail.html
+//
+// 読了インジケーターは「縦の線が上から accent で満ちる」という1つの
+// 比喩を、 その画面幅に存在する要素に宿らせる:
+//   PC (1181px〜) — 目次の縦罫線が満ちる (.toc::before)
+//   1180px 以下   — 画面右端の縦レールが満ちる (.edge-rail)
+// 横方向のバーを使わないので、 SP のナビバーのアクティブ下線
+// (accent の横線) と混同されることが構造的に起きない。
+
+import type { GetStaticPaths } from 'astro';
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import Cursor from '../../components/Cursor.astro';
+import { render } from 'astro:content';
+import { getArticles, isExternal, tocFrom, ymd } from '../../lib/writing';
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  const articles = await getArticles();
+  // 未移行 (externalUrl 持ち) の記事は個別ページを作らない。
+  // 一覧のカードから note へ直接飛ばす。
+  const own = articles.filter((a) => !isExternal(a));
+
+  return own.map((article) => {
+    // PREV / NEXT は「自サイトで読める記事」の中だけで繋ぐ。
+    // 外部記事を混ぜると遷移先が note になって回遊が切れるため。
+    const i = own.findIndex((a) => a.id === article.id);
+    return {
+      params: { slug: article.id },
+      props: {
+        article,
+        // own は新しい順なので、 index が大きいほど古い
+        newer: i > 0 ? own[i - 1] : undefined,
+        older: i < own.length - 1 ? own[i + 1] : undefined,
+      },
+    };
+  });
+};
+
+const { article, newer, older } = Astro.props;
+const { data } = article;
+const { Content, headings } = await render(article);
+
+const toc = tocFrom(headings);
+---
+
+<Layout
+  title={`${data.title} — WATAOKA KOTONE`}
+  description={data.excerpt}
+  image={data.ogpImage}
+  type="article"
+  publishedTime={data.date.toISOString()}
+>
+  <Cursor />
+  <Header current="writing" />
+
+  <!-- 進捗レール (1180px 以下でのみ表示。 PC は目次の罫線が担当) -->
+  <div class="edge-rail" aria-hidden="true"><i></i><b></b></div>
+
+  <main>
+    <div class="art-layout">
+      <!-- ROW 1 — ヘッダ帯 -->
+      <div class="art-top">
+        <div class="crumb">
+          <a href="/">INDEX</a>
+          <span class="sep">/</span>
+          <a href="/writing/">WRITING</a>
+          <span class="sep">/</span>
+          <span class="here">{data.title}</span>
+        </div>
+
+        <div class="art-head">
+          <h1 class="art-title">{data.title}</h1>
+          <div class="art-meta">
+            <span><span class="k">PUBLISHED:</span>{ymd(data.date)}</span>
+            <span>
+              <span class="k">TAG:</span>
+              <span class="tag-list">
+                {data.tags.map((t, i) => (
+                  <>
+                    {i > 0 && <span class="sep">·</span>}
+                    <a href={`/writing/?tag=${t}`}>{t}</a>
+                  </>
+                ))}
+              </span>
+            </span>
+          </div>
+        </div>
+
+        <div class="art-hero">
+          <img src={data.thumbnail} alt="" fetchpriority="high" decoding="async" />
+        </div>
+      </div>
+
+      <!-- ROW 2 — 本文 -->
+      <div class="art-main">
+        {toc.length > 1 && (
+          <!-- 記事冒頭の目次。 開いた状態を既定にする。
+               閉じていると開かれないまま読み進められてしまい、
+               「この記事に何が書いてあるか」を先に渡せないため。 -->
+          <details class="toc-mobile" open>
+            <summary>INDEX OF THIS ARTICLE</summary>
+            <nav class="toc">
+              {toc.map((h, i) => (
+                <a href={`#${h.slug}`}>{String(i + 1).padStart(2, '0')} — {h.text}</a>
+              ))}
+            </nav>
+          </details>
+        )}
+
+        <article class="prose" id="prose">
+          <Content />
+        </article>
+
+        <div class="art-foot">
+          <!-- 広告枠: 記事末尾。 読み終わった人にだけ見える位置。
+               global.css の --ad-display を none にすると枠ごと消える。 -->
+          <div class="ad-slot">
+            <div class="ad-label">— ADVERTISEMENT —</div>
+            <div class="ad-box">AD SLOT B · END OF ARTICLE</div>
+          </div>
+
+          <!-- 道具の帯 — 読み終わった直後が一番共有したい瞬間 -->
+          <div class="art-actions">
+            <a href="/writing/" class="act">
+              <span class="dir">← INDEX</span>
+              <span class="t">ALL ARTICLES</span>
+            </a>
+            <button class="act act-share" type="button">
+              <span class="dir">SHARE ↗</span>
+              <span class="t" data-label>X · LINE · COPY</span>
+            </button>
+          </div>
+
+          {(newer || older) && (
+            <div class="pager">
+              {older ? (
+                <a href={`/writing/${older.id}/`} class="prev">
+                  <span class="dir">← PREV</span>
+                  <span class="t">{older.data.title}</span>
+                </a>
+              ) : (
+                <span class="prev is-empty">
+                  <span class="dir">← PREV</span>
+                  <span class="t">これが最初の記事です</span>
+                </span>
+              )}
+              {newer ? (
+                <a href={`/writing/${newer.id}/`} class="next">
+                  <span class="dir">NEXT →</span>
+                  <span class="t">{newer.data.title}</span>
+                </a>
+              ) : (
+                <span class="next is-empty">
+                  <span class="dir">NEXT →</span>
+                  <span class="t">最新の記事です</span>
+                </span>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+
+      <!-- ROW 2 — sticky サイドバー -->
+      <aside class="art-side" id="side">
+        {toc.length > 1 && (
+          <div class="side-block">
+            <div class="side-h">INDEX OF THIS ARTICLE</div>
+            <nav class="toc" id="toc">
+              {toc.map((h, i) => (
+                <a href={`#${h.slug}`}>{String(i + 1).padStart(2, '0')} — {h.text}</a>
+              ))}
+            </nav>
+          </div>
+        )}
+
+        <div class="side-block">
+          <div class="side-h">SHARE</div>
+          <div class="share">
+            <a href="#" id="share-x" target="_blank" rel="noopener">X / TWITTER <span class="arrow">↗</span></a>
+            <a href="#" id="share-copy">COPY LINK <span class="arrow">⧉</span></a>
+          </div>
+        </div>
+
+        <div class="side-block">
+          <div class="side-h">READ NEXT</div>
+          <div class="share">
+            {newer && <a href={`/writing/${newer.id}/`}>{newer.data.title} <span class="arrow">→</span></a>}
+            {older && <a href={`/writing/${older.id}/`}>{older.data.title} <span class="arrow">→</span></a>}
+            <a href="/writing/" class="all">VIEW ALL <span class="arrow">→</span></a>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <Footer />
+</Layout>
+
+<style is:global>
+  /* ============================================================
+   * 記事ページのスタイル。
+   * <Content /> が吐く要素はスコープ付き CSS が当たらないので
+   * is:global にしている。 セレクタは必ず記事ページ固有のクラス
+   * (.prose / .art-* / .edge-rail) の配下に閉じること。
+   * ============================================================ */
+
+  /* --- PC: 目次の罫線を進捗レールに兼用 ---
+     新しい UI 要素を1つも増やさずに進捗を表せる。
+     「今どの章か」と「どこまで読んだか」が同じ線の上で一致する。
+     高さは JS が --toc-fill に流し込む。 */
+  .art-side .toc {
+    position: relative;
+  }
+  .art-side .toc::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 1px;
+    height: var(--toc-fill, 0px);
+    background: var(--accent);
+    box-shadow: 0 0 6px rgba(0, 240, 189, 0.5);
+    transition: height 0.12s linear;
+    z-index: 1;
+  }
+
+  /* --- SP/タブレット: 画面右端の縦レール --- */
+  .edge-rail {
+    display: none;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 32px;
+    width: 2px;
+    background: var(--line);
+    z-index: 101;
+  }
+  .edge-rail i {
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 0;
+    background: var(--accent);
+    box-shadow: 0 0 8px rgba(0, 240, 189, 0.5);
+    transition: height 0.08s linear;
+  }
+  .edge-rail b {
+    position: absolute;
+    right: 0;
+    width: 10px;
+    height: 1px;
+    background: var(--accent);
+    transition: top 0.08s linear;
+  }
+
+  /* ===== 記事レイアウト (センター基準) =====
+     3カラム grid で「左ガター / コンテンツ 680px / 右ガター」を作る。
+     左右ガターが 1fr で対称なのでコンテンツ列はページ中央に固定される。
+
+     行を分けているのが要点:
+       row 1 = crumb + タイトル + ヒーロー
+       row 2 = 本文 + 目次
+     目次を row 2 に閉じ込めることで sticky が上に登っても本文の
+     開始位置までしか来ない = サムネイルに食い込まない。 */
+  .art-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 680px) minmax(0, 1fr);
+    column-gap: 32px;
+    align-items: start;
+  }
+  .art-top {
+    grid-column: 2;
+    grid-row: 1;
+    min-width: 0;
+  }
+  .art-main {
+    grid-column: 2;
+    grid-row: 2;
+    min-width: 0;
+  }
+
+  /* ===== 記事ヘッダ ===== */
+  .art-layout .crumb {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: var(--dim);
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+  }
+  .art-layout .crumb a {
+    color: var(--dim);
+  }
+  .art-layout .crumb a:hover {
+    color: var(--accent);
+  }
+  .art-layout .crumb .sep {
+    color: var(--line);
+  }
+  /* 記事タイトルは長いので、 パンくずの末尾では省略する */
+  .art-layout .crumb .here {
+    color: var(--accent);
+    font-weight: 700;
+    max-width: 22em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .art-head {
+    margin-bottom: 44px;
+  }
+  /* 日本語タイトルなので Barlow ではなく Noto Sans JP 900。
+     Barlow だとフォールバックが効いてウェイトがちぐはぐになる。 */
+  .art-title {
+    font-family: var(--font-jp);
+    font-weight: 900;
+    font-size: clamp(26px, 4.4vw, 42px);
+    line-height: 1.32;
+    letter-spacing: -0.01em;
+    color: var(--fg-read);
+    margin-bottom: 24px;
+  }
+  .art-meta {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--dim);
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    padding: 14px 0;
+  }
+  /* ラベルはコロンまで含めて accent + bold のひと塊にする。
+     mono の画面での `key: value` は設定ファイルの見慣れた形なので、
+     どこまでが見出しでどこからが中身かが説明なしで切れる。 */
+  .art-meta .k {
+    color: var(--accent);
+    font-weight: 700;
+    margin-right: 7px;
+  }
+  /* タグは一覧のフィルタへのリンク。 平常時はリンクであることを
+     主張しない (meta 行は押させたい導線ではないため)。
+     ホバーで accent に変わることで「押せた」と分かれば十分。 */
+  .art-meta .tag-list a {
+    color: inherit;
+    transition: color 0.15s;
+  }
+  .art-meta .tag-list a:hover {
+    color: var(--accent);
+  }
+  .art-meta .tag-list .sep {
+    color: inherit;
+    margin: 0 8px;
+  }
+
+  .art-hero {
+    aspect-ratio: 16 / 9;
+    border: 1px solid var(--line);
+    background: var(--bg-alt);
+    overflow: hidden;
+    margin-bottom: 56px;
+  }
+  .art-hero img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* ===== 本文タイポグラフィ =====
+     トップページの「見る」ための密度から「読む」ための密度へ切り替える。
+     可読性は本文カラムに、 サイバー調はメタ情報側に分担させる。 */
+  .prose {
+    font-family: var(--font-jp);
+    font-size: 15px;
+    line-height: 1.95;
+    color: var(--fg-read);
+    letter-spacing: 0.01em;
+  }
+  .prose > * + * {
+    margin-top: 1.5em;
+  }
+  .prose h2 {
+    font-family: var(--font-jp);
+    font-weight: 900;
+    font-size: 21px;
+    line-height: 1.5;
+    color: var(--fg-read);
+    margin-top: 3.2em;
+    padding-top: 1.2em;
+    border-top: 1px solid var(--line);
+    position: relative;
+    letter-spacing: 0;
+    /* 目次から飛んだとき見出しがヘッダに隠れないように */
+    scroll-margin-top: 88px;
+  }
+  /* H3 — 元は 16px / 700 / --fg-read で、 本文 (15px / 400 / --fg-read)
+     との差が 1px とウェイトだけだったため埋もれていた。
+     色を --dim に落とし、 上の余白を広げて塊の切れ目を作ることで差をつける。
+
+     縦棒は立てるが accent ではなく --dim にする。
+     accent の左縦棒は blockquote の署名なので、 そこを借りると
+     小見出しと引用が同じ種類の要素に見えてしまう。
+     棒を文字と同じ --dim に揃えると見出しがひと塊として読め、
+     「accent の棒 + 背景 = 引用」との違いも保たれる。 */
+  .prose h3 {
+    font-family: var(--font-jp);
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--dim);
+    margin-top: 3em;
+    padding-left: 12px;
+    border-left: 2px solid var(--dim);
+    scroll-margin-top: 88px;
+  }
+  .prose strong {
+    color: var(--accent);
+    font-weight: 700;
+  }
+  /* 見出しの中の強調は無効化する。
+     Notion の書き出しには `## **見出し**` のように見出し全体が
+     太字で囲まれたものが混ざる。 変換スクリプト側でも剥がしているが、
+     取りこぼしても見出しが accent 色に染まらないようここで止める。 */
+  .prose :is(h2, h3, h4) strong {
+    color: inherit;
+    font-weight: inherit;
+  }
+  .prose a {
+    color: var(--accent);
+    border-bottom: 1px solid rgba(0, 240, 189, 0.35);
+    transition: border-color 0.15s;
+  }
+  .prose a:hover {
+    border-bottom-color: var(--accent);
+  }
+  .prose ul,
+  .prose ol {
+    padding-left: 1.3em;
+  }
+  .prose li {
+    margin-top: 0.6em;
+  }
+  .prose li::marker {
+    color: var(--accent);
+  }
+  .prose blockquote {
+    border-left: 2px solid var(--accent);
+    background: var(--bg-alt);
+    padding: 18px 22px;
+    color: var(--dim);
+    font-size: 14px;
+  }
+  .prose blockquote > * + * {
+    margin-top: 1em;
+  }
+  .prose img {
+    width: 100%;
+    height: auto;
+    border: 1px solid var(--line);
+    display: block;
+    background: var(--bg-alt);
+  }
+  /* 画像直後の斜体 1 行はキャプション扱い。
+     Notion / note の記法をそのまま活かすための割り切り。 */
+  .prose p > em:only-child {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-style: normal;
+    letter-spacing: 0.08em;
+    color: var(--dim);
+    line-height: 1.7;
+  }
+  .prose pre {
+    background: var(--bg-alt);
+    border: 1px solid var(--line);
+    padding: 18px;
+    overflow-x: auto;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    line-height: 1.8;
+  }
+  .prose code {
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    color: var(--accent);
+    background: var(--bg-alt);
+    padding: 2px 6px;
+    border: 1px solid var(--line);
+  }
+  .prose pre code {
+    border: 0;
+    padding: 0;
+    background: none;
+    color: inherit;
+  }
+  .prose hr {
+    border: 0;
+    border-top: 1px dashed var(--line);
+  }
+
+  /* ===== リンクカード =====
+     単独で置かれたリンクを枠付きのカードにする (rehype-link-cards.ts)。
+     公式の埋め込みウィジェットは相手のスクリプトを読み込むぶん重く、
+     見た目もサイトのトーンから浮くので、 リンク先の名前と行き先だけを
+     自前の枠で出す。 記事末尾の PREV/NEXT と同じ 1px 枠の語彙。 */
+  .prose .link-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    border: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    padding: 16px 20px;
+    text-decoration: none;
+    color: var(--fg-read);
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .prose .link-card:hover {
+    border-color: var(--accent);
+    background: var(--bg-alt);
+  }
+  .prose .link-card .lc-label {
+    font-family: var(--font-jp);
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.5;
+  }
+  /* 先頭のリンクアイコン。 本文と同じ ::before で足すので、
+     マークアップ側にも RSS 側にも余計な文字が混ざらない。 */
+  .prose .link-card .lc-label::before {
+    content: '🔗';
+    margin-right: 8px;
+    font-size: 12px;
+    /* 絵文字は行の中で少し浮いて見えるので下げて文字と揃える */
+    display: inline-block;
+    transform: translateY(1px);
+  }
+  .prose .link-card:hover .lc-label {
+    color: var(--accent);
+  }
+  .prose .link-card .lc-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--dim);
+  }
+  .prose .link-card .lc-arrow {
+    color: var(--accent);
+  }
+  @media (max-width: 720px) {
+    /* 幅が足りないので縦積みにする */
+    .prose .link-card {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+    }
+  }
+
+  /* ===== 広告枠 =====
+     「AD」ラベルを必ず出す (AdSense のポリシー要件でもあり、
+     訪問者への誠実さでもある)。 --ad-display で丸ごと消せる。 */
+  .ad-slot {
+    display: var(--ad-display, none);
+    border: 1px dashed var(--line);
+    padding: 14px;
+    margin-bottom: 40px;
+  }
+  .ad-slot .ad-label {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    color: var(--line);
+    margin-bottom: 10px;
+  }
+  .ad-slot .ad-box {
+    min-height: 250px;
+    background: var(--bg-alt);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: var(--dim);
+  }
+
+  /* ===== sticky サイドバー ===== */
+  .art-side {
+    grid-column: 3;
+    grid-row: 2;
+    position: sticky;
+    top: 88px;
+    align-self: start;
+    width: 100%;
+    max-width: 180px;
+    font-family: var(--font-mono);
+    /* 章が多い記事だと目次が viewport を超えて下側が一生見えなくなる。
+       頭打ちにして溢れたぶんは内部スクロールへ逃がす。
+       そのスクロールバーは目次レールと紛らわしいので隠す。 */
+    max-height: calc(100vh - 140px);
+    overflow-y: auto;
+    scrollbar-width: none;
+  }
+  .art-side::-webkit-scrollbar {
+    display: none;
+  }
+  .side-block + .side-block {
+    margin-top: 36px;
+  }
+  .side-h {
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    color: var(--dim);
+    padding: 0 0 10px 18px;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 14px;
+  }
+  .art-side .toc a {
+    display: block;
+    font-size: 11px;
+    line-height: 1.6;
+    letter-spacing: 0.04em;
+    color: var(--dim);
+    padding: 7px 0 7px 18px;
+    border-left: 1px solid var(--line);
+    transition: color 0.15s;
+  }
+  .art-side .toc a:hover {
+    color: var(--fg);
+  }
+  /* アクティブ項目は文字色だけ。 縦線は ::before のレールが担当するので
+     border-left まで accent にすると線が二重に見える。 */
+  .art-side .toc a.is-active {
+    color: var(--accent);
+  }
+  .share {
+    padding-left: 18px;
+  }
+  .share a {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--dim);
+    padding: 9px 0;
+    border-bottom: 1px dashed var(--line);
+  }
+  .share a:hover {
+    color: var(--accent);
+  }
+  .share .arrow {
+    color: var(--accent);
+  }
+  .share a.all {
+    border-bottom: 0;
+    color: var(--fg);
+    padding-top: 12px;
+  }
+  .share a.all:hover {
+    color: var(--accent);
+  }
+
+  /* ===== 記事末尾 ===== */
+  .art-foot {
+    margin-top: 72px;
+  }
+
+  /* アクション行 — 記事直後の「道具」の帯。
+     pager (110px) より低い 72px にしてラベルだけを持たせる。
+     同じ 1px グリッドの語彙を使いながら性格の差を高さで出す。
+     列数: PC はサイドバーに SHARE があるので 1 列、 1180px 以下で 2 列。 */
+  .art-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+  }
+  .act {
+    background: var(--bg);
+    padding: 16px 20px;
+    min-height: 72px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 8px;
+    font-family: var(--font-mono);
+    letter-spacing: 0.1em;
+    color: var(--fg);
+    border: 0;
+    text-align: left;
+    cursor: pointer;
+    transition: background 0.15s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .act:hover,
+  .act:active {
+    background: var(--bg-alt);
+  }
+  .act .dir {
+    font-size: 9px;
+    letter-spacing: 0.16em;
+    color: var(--accent);
+  }
+  .act .t {
+    font-size: 11px;
+    color: var(--dim);
+    transition: color 0.15s;
+  }
+  .act:hover .t,
+  .act:active .t {
+    color: var(--accent);
+  }
+  .act-share {
+    display: none;
+  }
+
+  /* PREV / NEXT — 記事末尾の最後の要素。
+     上のアクション行とは余白で切り離す。 あちらは「道具」、
+     こちらは「次のコンテンツ」で性質が違う。
+     順序は 記事 → 共有 → 次の記事。 */
+  .pager {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+    margin-top: 40px;
+  }
+  .pager > * {
+    background: var(--bg);
+    padding: 20px;
+    transition: background 0.15s;
+    min-height: 110px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .pager a:hover {
+    background: var(--bg-alt);
+  }
+  .pager .dir {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    letter-spacing: 0.16em;
+    color: var(--accent);
+    margin-bottom: 10px;
+  }
+  .pager .t {
+    font-family: var(--font-jp);
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.5;
+    color: var(--fg);
+  }
+  .pager a:hover .t {
+    color: var(--accent);
+  }
+  .pager .next {
+    text-align: right;
+  }
+  /* 前後の記事が無い側は枠だけ残して沈める */
+  .pager .is-empty .dir {
+    color: var(--line);
+  }
+  .pager .is-empty .t {
+    color: var(--dim);
+    font-weight: 400;
+    font-size: 12px;
+  }
+
+  /* ===== レスポンシブ =====
+     1180px 以下: サイドバーを落として 1 カラム (本文は中央のまま)。
+     閾値の根拠: 本文 680 + gap 32×2 + ガター 180×2 + main padding 32×2
+     = 1168px。 余裕を見て 1180px で切っている。 */
+  .toc-mobile {
+    display: none;
+  }
+  @media (max-width: 1180px) {
+    .art-layout {
+      grid-template-columns: minmax(0, 680px);
+      justify-content: center;
+      column-gap: 0;
+    }
+    .art-top,
+    .art-main {
+      grid-column: 1;
+    }
+    .art-side {
+      display: none;
+    }
+    .edge-rail {
+      display: block;
+    }
+    .art-actions {
+      grid-template-columns: 1fr 1fr;
+    }
+    .act-share {
+      display: flex;
+    }
+
+    /* レールがスクロール位置と残量を両方示すので、 OS の
+       スクロールバーとは役割が完全に重複する。 画面に出ている
+       縦インジケーターを常に 1 本にするため OS 側を消す。
+       メディアクエリが見る幅はスクロールバー領域を含んだ値なので、
+       隠しても判定は変わらず、 出たり消えたりの振動は起きない。 */
+    html {
+      scrollbar-width: none;
+    }
+    html::-webkit-scrollbar {
+      display: none;
+    }
+
+    .toc-mobile {
+      display: block;
+      border: 1px solid var(--line);
+      margin-bottom: 40px;
+    }
+    .toc-mobile summary {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      color: var(--dim);
+      padding: 14px 18px;
+      cursor: pointer;
+      list-style: none;
+      display: flex;
+      justify-content: space-between;
+    }
+    .toc-mobile summary::-webkit-details-marker {
+      display: none;
+    }
+    .toc-mobile summary::after {
+      content: '+';
+      color: var(--accent);
+    }
+    .toc-mobile[open] summary::after {
+      content: '−';
+    }
+    .toc-mobile .toc {
+      padding: 0 18px 16px;
+    }
+    .toc-mobile .toc a {
+      display: block;
+      font-size: 11px;
+      line-height: 1.6;
+      color: var(--dim);
+      padding: 7px 0 7px 12px;
+      border-left: 1px solid var(--line);
+    }
+    .toc-mobile .toc a:hover {
+      color: var(--accent);
+    }
+  }
+
+  @media (max-width: 720px) {
+    .edge-rail {
+      top: 44px;
+    }
+    /* モバイルは行長が自然に短くなるので少し大きくする */
+    .prose {
+      font-size: 15.5px;
+      line-height: 1.9;
+    }
+    .pager {
+      grid-template-columns: 1fr;
+    }
+    .pager .next {
+      text-align: left;
+    }
+    .art-meta {
+      gap: 12px;
+      font-size: 9px;
+    }
+  }
+</style>
+
+<script>
+  // ══ 読了インジケーター + 目次ハイライト ══════════════════
+  //
+  // 「読書線」= viewport の上から 35% の位置。 この線が今どの章の
+  // どのあたりを通っているかを基準にする。 viewport の上端や下端を
+  // 基準にするより体感とのズレが小さい。
+  //
+  // PC (目次レール) と SP (右端レール) は同じ計算結果を共有する。
+  // どちらを見せるかは CSS の @media が決めるので、 JS は両方を
+  // 無条件に更新すればよい。
+
+  const article = document.getElementById('prose');
+  const railFill = document.querySelector<HTMLElement>('.edge-rail i');
+  const railKnob = document.querySelector<HTMLElement>('.edge-rail b');
+  const tocEl = document.getElementById('toc');
+  const side = document.getElementById('side');
+  const tocLinks = tocEl ? [...tocEl.querySelectorAll<HTMLAnchorElement>('a')] : [];
+  const headings = article ? [...article.querySelectorAll<HTMLElement>('h2')] : [];
+
+  function sectionBounds() {
+    const artTop = article!.getBoundingClientRect().top + window.scrollY;
+    const artBot = artTop + article!.offsetHeight;
+    const tops = headings.map((h) => h.getBoundingClientRect().top + window.scrollY);
+    const starts = [artTop, ...tops.slice(1)];
+    const ends = [...starts.slice(1), artBot];
+    return { artTop, artBot, starts, ends };
+  }
+
+  function update() {
+    if (!article) return;
+    const { artTop, artBot, starts, ends } = sectionBounds();
+    const pos = window.scrollY + window.innerHeight * 0.35;
+
+    const ratio = Math.min(1, Math.max(0, (pos - artTop) / (artBot - artTop)));
+    if (railFill) railFill.style.height = ratio * 100 + '%';
+    if (railKnob) railKnob.style.top = ratio * 100 + '%';
+
+    if (!headings.length || !tocEl) return;
+
+    let current = 0;
+    starts.forEach((s, i) => {
+      if (pos >= s) current = i;
+    });
+    const within = Math.min(
+      1,
+      Math.max(0, (pos - starts[current]) / (ends[current] - starts[current]))
+    );
+
+    // 目次レール。 全項目が同じ高さと仮定すると、 タイトルが 2 行に
+    // 折り返す項目が混ざった瞬間にズレる。 実際の位置を読む。
+    const link = tocLinks[current];
+    if (link) {
+      tocEl.style.setProperty('--toc-fill', link.offsetTop + link.offsetHeight * within + 'px');
+    }
+    tocLinks.forEach((a, i) => a.classList.toggle('is-active', i === current));
+
+    // 目次が内部スクロールしている場合、 現在地を視界に入れる
+    if (link && side && side.scrollHeight > side.clientHeight) {
+      const top = link.offsetTop;
+      const bot = top + link.offsetHeight;
+      const PAD = 48;
+      if (bot > side.scrollTop + side.clientHeight - PAD) {
+        side.scrollTop = bot - side.clientHeight + PAD;
+      } else if (top < side.scrollTop + PAD) {
+        side.scrollTop = Math.max(0, top - PAD);
+      }
+    }
+  }
+
+  window.addEventListener('scroll', update, { passive: true });
+  window.addEventListener('resize', update, { passive: true });
+  update();
+
+  // ══ シェア ══════════════════════════════════════════════
+  // OGP カードは共有先 (X / Slack / LINE 等) が URL を取りに来て
+  // <head> の og:* を読んで組み立てる。 こちらから画像を渡す口は無い。
+  const SHARE_TITLE = document.title.split(' — ')[0];
+  const SHARE_URL = location.href;
+
+  async function copyUrl(): Promise<boolean> {
+    try {
+      await navigator.clipboard.writeText(SHARE_URL);
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  const shareX = document.getElementById('share-x') as HTMLAnchorElement | null;
+  if (shareX) {
+    shareX.href =
+      'https://twitter.com/intent/tweet?text=' +
+      encodeURIComponent(SHARE_TITLE) +
+      '&url=' +
+      encodeURIComponent(SHARE_URL) +
+      '&via=ysd_ktn';
+  }
+
+  const shareCopy = document.getElementById('share-copy');
+  if (shareCopy) {
+    const orig = shareCopy.innerHTML;
+    let timer: number;
+    shareCopy.addEventListener('click', async (e) => {
+      e.preventDefault();
+      const ok = await copyUrl();
+      shareCopy.innerHTML = ok
+        ? 'COPIED <span class="arrow">✓</span>'
+        : 'COPY FAILED <span class="arrow">×</span>';
+      clearTimeout(timer);
+      timer = window.setTimeout(() => {
+        shareCopy.innerHTML = orig;
+      }, 1600);
+    });
+  }
+
+  // SP: 端末の共有シートを 1 タップで開く。 LINE でも Slack でも
+  // AirDrop でも、 その人が普段使うものが出る方が速い。
+  const shareSp = document.querySelector<HTMLButtonElement>('.act-share');
+  if (shareSp) {
+    const label = shareSp.querySelector<HTMLElement>('[data-label]')!;
+    const orig = label.textContent ?? '';
+    let timer: number;
+    shareSp.addEventListener('click', async () => {
+      if (navigator.share) {
+        try {
+          await navigator.share({ title: SHARE_TITLE, url: SHARE_URL });
+        } catch {
+          /* シートを閉じただけ */
+        }
+        return;
+      }
+      label.textContent = (await copyUrl()) ? 'COPIED ✓' : 'COPY FAILED ×';
+      clearTimeout(timer);
+      timer = window.setTimeout(() => {
+        label.textContent = orig;
+      }, 1600);
+    });
+  }
+</script>
