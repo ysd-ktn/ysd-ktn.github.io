@@ -1,0 +1,308 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>目次の深さ / 章数 検証 — WRITING MOCKUP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet" />
+<style>
+/* ============================================================
+ * MOCKUP — 目次の深さ (H2のみ / H2+H3) と 章数 (6/12/24) の検証
+ *
+ * 右下の MOCK CONTROL で切り替える。 記事本文は JS で生成する。
+ * 確認したいこと:
+ *   1. 目次に H3 まで入れると進捗レールの粒度がどう変わるか
+ *   2. 章が多くて目次が viewport を超えたときの内部スクロール挙動
+ *   3. 内部スクロール時、 現在地の項目が自動で視界に入るか
+ * ============================================================ */
+:root{
+  --bg:#0a0a0c; --bg-alt:#14141a; --fg:#e8e6e0; --dim:#7e7e7e;
+  --line:#2a2a2e; --accent:#00f0bd; --warn:#ff4747;
+  --fg-read:#f0efea;
+  --font-display:'Barlow',sans-serif;
+  --font-mono:'JetBrains Mono',monospace;
+  --font-jp:'Noto Sans JP',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-display),var(--font-jp),sans-serif;font-size:14px;line-height:1.5;overflow-x:hidden}
+a{color:var(--fg);text-decoration:none}
+a:hover{color:var(--accent)}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:100;background:repeating-linear-gradient(0deg,transparent 0,transparent 3px,rgba(255,255,255,.006) 3px,rgba(255,255,255,.006) 4px)}
+
+header{position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:50;height:44px;width:200px;border:1px solid var(--accent);border-radius:9999px;background:var(--bg);display:flex;align-items:center;font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;white-space:nowrap}
+header .logo{font-weight:700;color:var(--accent);padding:0 18px}
+header .toggle{color:var(--accent);padding:0 18px 0 6px;font-size:14px;margin-left:auto}
+
+main{padding:80px 32px 100px;max-width:1400px;margin:0 auto}
+.crumb{font-family:var(--font-mono);font-size:10px;letter-spacing:.12em;color:var(--dim);display:flex;gap:8px;margin-bottom:32px}
+.crumb .sep{color:var(--line)}
+.crumb .here{color:var(--accent);font-weight:700}
+
+.art-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,680px) minmax(0,1fr);column-gap:32px;align-items:start}
+.art-top{grid-column:2;grid-row:1;min-width:0}
+.art-main{grid-column:2;grid-row:2;min-width:0}
+.art-title{font-family:var(--font-jp);font-weight:900;font-size:clamp(26px,4.4vw,42px);line-height:1.32;color:var(--fg-read);margin-bottom:24px}
+.art-meta{display:flex;gap:20px;font-family:var(--font-mono);font-size:10px;letter-spacing:.1em;color:var(--dim);border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:14px 0;margin-bottom:44px}
+.art-meta .k{color:var(--accent);font-weight:700;margin-right:6px}
+.art-hero{aspect-ratio:16/9;border:1px solid var(--line);background:var(--bg-alt);margin-bottom:56px;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:11px;letter-spacing:.15em;color:var(--line)}
+
+.prose{font-family:var(--font-jp);font-size:15px;line-height:1.95;color:var(--fg-read)}
+.prose > * + *{margin-top:1.5em}
+.prose h2{font-family:var(--font-jp);font-weight:900;font-size:21px;line-height:1.5;color:var(--fg-read);margin-top:3.2em;padding-top:1.2em;border-top:1px solid var(--line);position:relative}
+.prose h2::before{content:attr(data-n);position:absolute;top:-.6em;left:0;font-family:var(--font-mono);font-size:10px;font-weight:700;letter-spacing:.14em;color:var(--accent);background:var(--bg);padding-right:12px}
+.prose h3{font-family:var(--font-jp);font-weight:700;font-size:16px;line-height:1.6;color:var(--fg-read);margin-top:2.4em}
+.prose strong{color:var(--accent);font-weight:700}
+
+/* ===== サイドバー =====
+   max-height で頭打ちにして、 溢れたぶんは内部スクロールへ。
+   内部スクロールバーは目次レールと紛らわしいので隠す。 */
+.art-side{grid-column:3;grid-row:2;position:sticky;top:88px;align-self:start;width:100%;max-width:180px;font-family:var(--font-mono);
+  max-height:calc(100vh - 140px);overflow-y:auto;scrollbar-width:none}
+.art-side::-webkit-scrollbar{display:none}
+.side-h{font-size:9px;letter-spacing:.18em;color:var(--dim);padding:0 0 10px 18px;border-bottom:1px solid var(--line);margin-bottom:14px;position:sticky;top:0;background:var(--bg);z-index:2}
+
+/* 目次 + 進捗レール */
+.toc{position:relative}
+.toc::before{content:'';position:absolute;left:0;top:0;width:1px;height:var(--toc-fill,0px);background:var(--accent);box-shadow:0 0 6px rgba(0,240,189,.5);transition:height .12s linear;z-index:1}
+.toc a{display:block;font-size:11px;line-height:1.6;color:var(--dim);padding:7px 0 7px 18px;border-left:1px solid var(--line);transition:color .15s}
+.toc a.lv3{padding-left:30px;font-size:10px}
+.toc a.is-active{color:var(--accent)}
+
+/* 目次が内部スクロールしていることを示すフェード
+   (上下端で内容が切れていることを伝える) */
+.side-fade{position:sticky;bottom:0;height:24px;margin-top:-24px;background:linear-gradient(to bottom,transparent,var(--bg));pointer-events:none;z-index:2}
+
+.status-bar{position:fixed;bottom:0;left:0;right:0;background:var(--bg);border-top:1px solid var(--line);padding:8px 32px;display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:10px;color:var(--dim);letter-spacing:.1em;z-index:50}
+.status-bar .blink{color:var(--accent);animation:blink 1.4s steps(2) infinite}
+@keyframes blink{50%{opacity:0}}
+
+/* 右端レール (1180px 以下) */
+.edge-rail{display:none;position:fixed;top:0;right:0;bottom:32px;width:2px;background:var(--line);z-index:101}
+.edge-rail i{position:absolute;inset:0 0 auto 0;height:0;background:var(--accent);box-shadow:0 0 8px rgba(0,240,189,.5);transition:height .08s linear}
+.edge-rail b{position:absolute;right:0;width:10px;height:1px;background:var(--accent);transition:top .08s linear}
+
+/* ===== MOCK CONTROL ===== */
+.ctrl{position:fixed;right:16px;bottom:44px;z-index:200;background:var(--bg);border:1px solid var(--warn);font-family:var(--font-mono);width:232px}
+.ctrl .h{font-size:9px;letter-spacing:.14em;color:var(--warn);padding:9px 12px;border-bottom:1px solid var(--warn)}
+.ctrl .g{padding:10px 12px;border-bottom:1px dashed var(--line)}
+.ctrl .g:last-child{border-bottom:0}
+.ctrl .lbl{font-size:9px;letter-spacing:.12em;color:var(--dim);margin-bottom:7px}
+.ctrl .row{display:flex;gap:4px}
+.ctrl button{flex:1;background:none;border:1px solid var(--line);color:var(--dim);font-family:var(--font-mono);font-size:10px;padding:6px 4px;cursor:pointer}
+.ctrl button:hover{color:var(--fg);border-color:var(--dim)}
+.ctrl button.on{color:var(--accent);border-color:var(--accent);background:rgba(0,240,189,.07);font-weight:700}
+.ctrl .note{font-size:9px;color:var(--line);line-height:1.6;padding:9px 12px;border-top:1px dashed var(--line)}
+
+@media (max-width:1180px){
+  .art-layout{grid-template-columns:minmax(0,680px);justify-content:center;column-gap:0}
+  .art-top,.art-main{grid-column:1}
+  .art-side{display:none}
+  .edge-rail{display:block}
+  html{scrollbar-width:none}
+  html::-webkit-scrollbar{display:none}
+}
+@media (max-width:720px){
+  main{padding:68px 16px 90px}
+  header{display:none}
+  .edge-rail{top:0}
+  .ctrl{right:8px;left:8px;width:auto;bottom:34px}
+  .status-bar{padding:8px 16px;font-size:9px}
+}
+</style>
+</head>
+<body>
+
+<div class="edge-rail" aria-hidden="true"><i></i><b></b></div>
+
+<header><span class="logo">YSD-KTN / v3.0.0</span><span class="toggle">+</span></header>
+
+<main>
+  <div class="art-layout">
+
+    <div class="art-top">
+      <div class="crumb"><span>INDEX</span><span class="sep">/</span><span>WRITING</span><span class="sep">/</span><span class="here">[ 01 ]</span></div>
+      <h1 class="art-title">目次の深さと章数による<br />レールの挙動テスト</h1>
+      <div class="art-meta">
+        <span><span class="k">PUBLISHED</span>2026.08.03</span>
+        <span><span class="k">TAG</span>DESIGN · AI · CAREER</span>
+      </div>
+      <div class="art-hero">HERO — 1600×900</div>
+    </div>
+
+    <div class="art-main">
+      <article class="prose" id="prose"></article>
+      <div style="height:120px"></div>
+    </div>
+
+    <aside class="art-side" id="side">
+      <div class="side-h">INDEX OF THIS ARTICLE</div>
+      <nav class="toc" id="toc"></nav>
+      <div class="side-fade"></div>
+    </aside>
+
+  </div>
+</main>
+
+<footer class="status-bar">
+  <span><span class="blink">●</span> ONLINE · BUILD 0803.2026</span>
+  <span id="status-utc">UTC --:--:--</span>
+  <span>VIEWPORT · <span id="status-vw">0</span>×<span id="status-vh">0</span></span>
+</footer>
+
+<div class="ctrl">
+  <div class="h">▲ MOCK CONTROL</div>
+  <div class="g">
+    <div class="lbl">章数 (H2 の数)</div>
+    <div class="row" id="ctrl-ch">
+      <button data-ch="6">6</button>
+      <button data-ch="12" class="on">12</button>
+      <button data-ch="24">24</button>
+    </div>
+  </div>
+  <div class="g">
+    <div class="lbl">目次に入れる見出し</div>
+    <div class="row" id="ctrl-depth">
+      <button data-depth="2" class="on">H2 のみ</button>
+      <button data-depth="3">H2 + H3</button>
+    </div>
+  </div>
+  <div class="note">目次が画面を超えると内部スクロールに切り替わり、現在地の項目が自動で視界に入る。ウィンドウの高さを縮めても確認できる。</div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════════
+//  記事を動的生成 (章数 / 見出し深さを切り替えて検証するため)
+// ══════════════════════════════════════════════════════════
+const TITLES = [
+  'きっかけは「なんかすごいらしい」','環境構築でいきなり詰まった','デザイナーの言語でAIに話しかける',
+  '最初に捨てた思い込み','ターミナルと和解するまでの三日間','コンポーネントという単位で考える',
+  '余白の指示は数値ではなく意図で伝える','壊してから直すという学び方','デザインシステムを自分で持つということ',
+  'レビューしてくれる人がいない問題','設計の妥当性を判断できない','パフォーマンスという新しい視点',
+  'アクセシビリティで詰まったところ','コントラスト比と向き合う','フォントの読み込みで学んだこと',
+  '公開してから気づいた不具合','アナリティクスを入れてみる','検索から人が来るまでの時間',
+  '書くことと作ることの往復','ポートフォリオは終わらない','次に作りたいものの話',
+  '三週間を振り返って','デザイナーがコードを書く意味','これから始める人へ'
+];
+const PARAS = [
+  'デザインをしていると、自分の引き出しの少なさに気づく瞬間があります。新しいアイデアが必要な場面でも、頭に浮かぶのは過去の延長線上のものばかりでした。',
+  '分からないことを分からないまま聞く、というのが結局いちばん効きました。エラーの文面をそのまま貼ると、次にやることが一つだけ返ってきます。',
+  '<strong>意図さえ正確に言語化できれば、実装は向こうがやってくれる</strong>。問われていたのはコードの知識ではなく、自分が何を作りたいのかを言葉にする能力でした。',
+  'ここで一度立ち止まって、そもそも何を解決したかったのかを書き出しました。手が動くようになると、目的を見失いやすくなります。',
+  '結果として、当初の見積もりの数倍の時間がかかりました。ただ、その時間の大半は手戻りではなく、理解のために使われていたと思います。'
+];
+
+const prose = document.getElementById('prose');
+const tocEl = document.getElementById('toc');
+const side  = document.getElementById('side');
+const railFill = document.querySelector('.edge-rail i');
+const railKnob = document.querySelector('.edge-rail b');
+
+let headings = [];   // 目次に載せる見出し (深さ設定に応じて H2 のみ / H2+H3)
+let tocLinks = [];
+
+function build(nCh, depth){
+  // --- 本文 ---
+  let html = '<p>この記事は目次と進捗レールの挙動を検証するためのダミーです。章数と見出しの深さを右下のコントロールで切り替えられます。</p>';
+  for (let i = 0; i < nCh; i++){
+    const n = String(i+1).padStart(2,'0');
+    html += `<h2 id="s${i}" data-n="[ ${n} ]">${TITLES[i % TITLES.length]}</h2>`;
+    html += `<p>${PARAS[i % PARAS.length]}</p>`;
+    html += `<h3 id="s${i}-a">${TITLES[(i+7) % TITLES.length]}</h3>`;
+    html += `<p>${PARAS[(i+2) % PARAS.length]}</p>`;
+    html += `<p>${PARAS[(i+4) % PARAS.length]}</p>`;
+  }
+  prose.innerHTML = html;
+
+  // --- 目次 ---
+  // レールは「目次に載っている見出し」を章の区切りとして扱う。
+  // H3 まで載せると区切りが細かくなり、 線は速く動くようになる。
+  const sel = depth === 3 ? 'h2, h3' : 'h2';
+  headings = [...prose.querySelectorAll(sel)];
+  tocEl.innerHTML = headings.map(h => {
+    const lv3 = h.tagName === 'H3' ? ' lv3' : '';
+    const num = h.dataset.n ? h.dataset.n.replace(/[\[\] ]/g,'') + ' — ' : '';
+    return `<a href="#${h.id}" class="${lv3.trim()}">${num}${h.textContent}</a>`;
+  }).join('');
+  tocLinks = [...tocEl.querySelectorAll('a')];
+
+  update();
+}
+
+// ══════════════════════════════════════════════════════════
+//  進捗計算 (writing-detail.html と同一ロジック)
+// ══════════════════════════════════════════════════════════
+function sectionBounds(){
+  const artTop = prose.getBoundingClientRect().top + window.scrollY;
+  const artBot = artTop + prose.offsetHeight;
+  const tops   = headings.map(h => h.getBoundingClientRect().top + window.scrollY);
+  const starts = [artTop, ...tops.slice(1)];
+  const ends   = [...starts.slice(1), artBot];
+  return { artTop, artBot, starts, ends };
+}
+
+function update(){
+  if (!headings.length) return;
+  const { artTop, artBot, starts, ends } = sectionBounds();
+  const pos = window.scrollY + window.innerHeight * 0.35;
+
+  // 右端レール (SP)
+  const ratio = Math.min(1, Math.max(0, (pos - artTop) / (artBot - artTop)));
+  railFill.style.height = (ratio * 100) + '%';
+  railKnob.style.top    = (ratio * 100) + '%';
+
+  // 現在の章
+  let current = 0;
+  starts.forEach((s, i) => { if (pos >= s) current = i; });
+  const within = Math.min(1, Math.max(0,
+    (pos - starts[current]) / (ends[current] - starts[current])));
+
+  // 目次レール — 実際の項目の位置で計算するので、
+  // 2行に折り返す項目や H3 の低い行高が混ざってもズレない
+  const link = tocLinks[current];
+  if (link){
+    tocEl.style.setProperty('--toc-fill', (link.offsetTop + link.offsetHeight * within) + 'px');
+  }
+  tocLinks.forEach((a, i) => a.classList.toggle('is-active', i === current));
+
+  // ── 目次が内部スクロールしている場合、 現在地を視界に入れる ──
+  // 章が多いと目次が max-height で頭打ちになり、 進行中の項目が
+  // 枠外に出てしまう。 はみ出した時だけ最小限スクロールさせる。
+  if (link && side.scrollHeight > side.clientHeight){
+    const top = link.offsetTop, bot = top + link.offsetHeight;
+    const viewTop = side.scrollTop, viewBot = viewTop + side.clientHeight;
+    const PAD = 48;  // side-h (sticky ヘッダ) とフェードのぶんの余裕
+    if (bot > viewBot - PAD)      side.scrollTop = bot - side.clientHeight + PAD;
+    else if (top < viewTop + PAD) side.scrollTop = Math.max(0, top - PAD);
+  }
+}
+
+window.addEventListener('scroll', update, {passive:true});
+window.addEventListener('resize', update, {passive:true});
+
+// ── コントロール ──
+let curCh = 12, curDepth = 2;
+document.querySelectorAll('#ctrl-ch button').forEach(b => b.addEventListener('click', () => {
+  curCh = +b.dataset.ch;
+  document.querySelectorAll('#ctrl-ch button').forEach(x => x.classList.toggle('on', x === b));
+  build(curCh, curDepth);
+}));
+document.querySelectorAll('#ctrl-depth button').forEach(b => b.addEventListener('click', () => {
+  curDepth = +b.dataset.depth;
+  document.querySelectorAll('#ctrl-depth button').forEach(x => x.classList.toggle('on', x === b));
+  build(curCh, curDepth);
+}));
+
+build(curCh, curDepth);
+
+function tick(){
+  document.getElementById('status-utc').textContent = 'UTC ' + new Date().toISOString().substring(11,19);
+  document.getElementById('status-vw').textContent = window.innerWidth;
+  document.getElementById('status-vh').textContent = window.innerHeight;
+}
+tick(); setInterval(tick,1000); window.addEventListener('resize', tick, {passive:true});
+</script>
+</body>
+</html>

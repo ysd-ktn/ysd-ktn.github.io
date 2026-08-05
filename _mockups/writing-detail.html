@@ -1,0 +1,689 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>コードが書けないデザイナーのバイブコーディング実践記 — WATAOKA KOTONE</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet" />
+<style>
+/* ============================================================
+ * MOCKUP — /writing/[slug]/ 個別記事ページ
+ *
+ * 設計方針:
+ *   トップページの「見る」ための密度から、「読む」ための密度へ切り替える。
+ *   ただし世界観は捨てない。可読性は本文カラムに、サイバー調はメタ情報側に
+ *   分担させる。
+ *
+ *   1. 本文カラムは 680px 上限 (日本語 40〜45字/行)
+ *   2. 本文だけ --fg を明るく (#e8e6e0 → #f0efea)、行間 1.9
+ *   3. scanline は opacity 半減、vignette は据え置き
+ *   4. 上端 1px の読了プログレスバー (accent)
+ *   5. 右カラムに sticky 目次、現在地を accent でハイライト
+ *   6. 広告枠は「本文中盤」と「記事末尾」の 2 箇所のみ
+ * ============================================================ */
+:root{
+  --bg:#0a0a0c; --bg-alt:#14141a; --fg:#e8e6e0; --dim:#7e7e7e;
+  --line:#2a2a2e; --accent:#00f0bd; --warn:#ff4747;
+  /* 記事ページ専用: 本文用の少し明るい前景色 */
+  --fg-read:#f0efea;
+  --font-display:'Barlow',sans-serif;
+  --font-mono:'JetBrains Mono',monospace;
+  --font-jp:'Noto Sans JP',sans-serif;
+  /* 広告枠の ON/OFF。 none にすれば枠ごと消える */
+  --ad-display:block;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-display),var(--font-jp),sans-serif;font-size:14px;line-height:1.5;overflow-x:hidden}
+a{color:var(--fg);text-decoration:none}
+a:hover{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+/* 記事ページでは scanline を半分の濃さに (長文で目が滑るのを防ぐ) */
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:100;background:repeating-linear-gradient(0deg,transparent 0,transparent 3px,rgba(255,255,255,.006) 3px,rgba(255,255,255,.006) 4px)}
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:99;background:radial-gradient(ellipse at center,transparent 70%,rgba(0,0,0,.35) 100%)}
+
+/* ===== 読了インジケーター =====
+   表現はひとつ「縦の線が上から accent で満ちる」。
+   それをその画面幅に存在する要素に宿らせる。
+
+     PC (1181px〜)  : 目次の縦罫線そのものが満ちる     → .toc::before
+     SP/タブレット   : 画面右端の縦レールが満ちる       → .edge-rail
+
+   ヘッダーが PC でピル / SP で固定バーに変わるのと同じ考え方で、
+   別々の仕組みを 2 つ持つのではなく、同じ比喩の宿り先が変わるだけ。
+
+   横方向のバーを一切使わないので、 SP のナビバーのアクティブ下線
+   (accent の横線) と混同されることが構造的に起こらない。 */
+
+/* --- PC: 目次の罫線を進捗レールに兼用 ---
+   新しい UI 要素をひとつも増やさずに進捗を表せる。
+   「今どの章か」と「どこまで読んだか」が同じ線の上で一致する。
+   高さは JS が --toc-fill に流し込む。 */
+.toc{position:relative}
+.toc::before{content:'';position:absolute;left:0;top:0;width:1px;height:var(--toc-fill,0px);background:var(--accent);box-shadow:0 0 6px rgba(0,240,189,.5);transition:height .12s linear;z-index:1}
+
+/* --- 右端レールが出る幅では OS のスクロールバーを消す ---
+   レールはスクロール位置と残量を両方示すので、 スクロールバーと
+   完全に役割が重複する。 同じ場所に 2 本の縦インジケーターが
+   並ぶ状態を解消するため、 レールが出る幅では OS 側を消す。
+
+   タッチ判定 (hover: none) は入れない。 デバイス種別ではなく
+   「レールが表示されているかどうか」と条件を一致させることで、
+   画面に出ている縦インジケーターが常に 1 本になる。
+
+   無限ループの心配は無い:
+     メディアクエリが評価する幅はスクロールバー領域を含んだ値
+     (window.innerWidth 相当) なので、 スクロールバーを隠しても
+     判定に使う幅は変化しない。 → 出たり消えたりの振動は起きない。
+
+   失う操作はスクロールバーのドラッグのみ。 ホイール / トラックパッド /
+   キーボード (Space, PgDn, 矢印) はすべてそのまま動く。 */
+@media (max-width: 1180px) {
+  html { scrollbar-width: none; }              /* Firefox */
+  html::-webkit-scrollbar { display: none; }   /* Chrome / Safari */
+}
+
+/* --- SP/タブレット: 画面右端の縦レール ---
+   bottom を 32px 空けてステータスバーの上で止める。
+   SP では top を 44px に下げてナビバーの下から始める。 */
+.edge-rail{display:none;position:fixed;top:0;right:0;bottom:32px;width:2px;background:var(--line);z-index:101}
+.edge-rail i{position:absolute;inset:0 0 auto 0;height:0;background:var(--accent);box-shadow:0 0 8px rgba(0,240,189,.5);transition:height .08s linear}
+/* 現在位置のノブ — レールから 10px 内側に伸びる 1px の横棒 */
+.edge-rail b{position:absolute;right:0;width:10px;height:1px;background:var(--accent);transition:top .08s linear}
+
+/* ===== header pill ===== */
+header{position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:50;height:44px;width:200px;border:1px solid var(--accent);border-radius:9999px;background:var(--bg);overflow:hidden;display:flex;align-items:center;font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;white-space:nowrap;transition:width .55s cubic-bezier(.7,0,.3,1)}
+header .logo{font-weight:700;color:var(--accent);padding:0 18px;height:100%;display:flex;align-items:center;flex-shrink:0;border-right:1px dashed transparent;transition:border-color .4s}
+header nav{max-width:0;opacity:0;visibility:hidden;overflow:hidden;display:flex;align-items:center;height:100%;transition:max-width .55s cubic-bezier(.7,0,.3,1),opacity .25s ease .12s,visibility 0s ease .4s}
+header nav a{padding:0 14px;display:flex;gap:6px;border-left:1px dashed var(--line);align-items:center;height:100%}
+header nav a:first-child{border-left:0}
+header nav a:last-child{padding-right:22px}
+header nav .num{color:var(--dim)}
+header nav a.is-current{color:var(--accent)}
+header .toggle{color:var(--accent);flex-shrink:0;padding:0 18px 0 6px;font-size:14px;line-height:1;transform-origin:11px center;transition:transform .4s cubic-bezier(.7,0,.3,1)}
+header:hover{width:580px}
+header:hover .logo{border-right-color:var(--line)}
+header:hover nav{max-width:420px;opacity:1;visibility:visible;transition:max-width .55s cubic-bezier(.7,0,.3,1),opacity .25s ease .12s,visibility 0s ease 0s}
+header:hover .toggle{transform:rotate(45deg)}
+
+main{padding:80px 32px 100px;max-width:1400px;margin:0 auto}
+
+/* ===== 記事ヘッダ =====
+   タイトルは Barlow ではなく Noto Sans JP 900。 日本語タイトルなので
+   Barlow だとフォールバックが効いてウェイトがちぐはぐになる。 */
+.crumb{font-family:var(--font-mono);font-size:10px;letter-spacing:.12em;color:var(--dim);display:flex;gap:8px;align-items:center;margin-bottom:32px;flex-wrap:wrap}
+.crumb a{color:var(--dim)}
+.crumb .sep{color:var(--line)}
+.crumb .here{color:var(--accent);font-weight:700}
+
+.art-head{margin-bottom:44px}
+.art-title{font-family:var(--font-jp);font-weight:900;font-size:clamp(26px,4.4vw,42px);line-height:1.32;letter-spacing:-.01em;color:var(--fg-read);margin-bottom:24px}
+.art-meta{display:flex;gap:20px;flex-wrap:wrap;font-family:var(--font-mono);font-size:10px;letter-spacing:.1em;color:var(--dim);border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:14px 0}
+/* ラベルはコロンまで含めて accent + bold のひと塊にする。
+   mono の画面での `key: value` は設定ファイルやログの見慣れた形なので、
+   どこまでが見出しでどこからが中身かが説明なしで切れる。 */
+.art-meta .k{color:var(--accent);font-weight:700;margin-right:7px}
+/* タグ — 一覧のフィルタへのリンク。 2〜3個想定。
+   ボタン状のチップにはせず、 mono の文字列のまま並べる
+   (チップは meta 行の「細い帯」という性格を壊すため)。
+
+   平常時はリンクであることを主張しない。 meta 行は「読む前に
+   目に入る補足情報」であって押させたい導線ではないので、 下線を
+   出すと帯がうるさくなる。 ホバーで accent に変わることで
+   「押せた」と分かれば十分。
+
+   区切りの `·` も同じ --dim で置く。 --line だと暗すぎて背景に
+   沈み、 タグ同士の間隔だけが空いて見えるため。
+   下線が付くのはリンク部分だけなので、 `·` を挟んでも下線が
+   繋がって 1 語に見えることはない。 */
+.art-meta .tag-list a{color:inherit;transition:color .15s}
+.art-meta .tag-list a:hover{color:var(--accent)}
+.art-meta .tag-list .sep{color:inherit;margin:0 8px}
+
+/* ヒーロー画像 — 16:9、 記事ページでは grayscale をかけない */
+.art-hero{aspect-ratio:16/9;border:1px solid var(--line);background:var(--bg-alt);margin-bottom:56px;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:11px;letter-spacing:.15em;color:var(--line)}
+
+/* ===== 記事レイアウト (センター基準) =====
+   3カラム grid で「左ガター / コンテンツ 680px / 右ガター」を作る。
+   左右ガターが 1fr で対称なので、 コンテンツ列はページ中央に固定される。
+
+   column-gap は 32px。 目次 (3列目) の左端が、 コンテンツ列 (2列目) の
+   右端 = ヒーロー画像の右端から 32px 右に立つ。
+   目次リンクの border-left がそこに 1px の縦罫線として通り、
+   本文と目次を分ける区切りとして機能する。
+
+   32px の根拠: 本文の行間が 15px × 1.95 ≒ 29px。 罫線までの距離が
+   行間より狭いと、 近接の原理で罫線が「本文の一部」として読まれてしまう。
+   行間を上回る 32px を確保して、 別ゾーンとして分離させる。
+   (16px で試したが案の定ビチビチだった。)
+
+   行を明示的に分けているのがポイント:
+     row 1 = crumb + タイトル + ヒーロー
+     row 2 = 本文 + 目次
+   目次を row 2 に閉じ込めることで、 sticky が上に登っても
+   本文の開始位置までしか来ない = サムネイルに食い込まない。 */
+.art-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,680px) minmax(0,1fr);column-gap:32px;align-items:start}
+/* ヘッダ帯とヒーローも本文と同じ 2列目に入れる。
+   → サムネイルと本文の左右端が完全に一致する。 */
+.art-top{grid-column:2;grid-row:1;min-width:0}
+.art-main{grid-column:2;grid-row:2;min-width:0}
+
+/* ===== 本文タイポグラフィ ===== */
+.prose{font-family:var(--font-jp);font-size:15px;line-height:1.95;color:var(--fg-read);letter-spacing:.01em}
+.prose > * + *{margin-top:1.5em}
+.prose h2{font-family:var(--font-jp);font-weight:900;font-size:21px;line-height:1.5;color:var(--fg-read);margin-top:3.2em;padding-top:1.2em;border-top:1px solid var(--line);position:relative;letter-spacing:0}
+/* h2 の頭に mono のセクション番号を絶対配置。 読み物としての区切りを
+   世界観の側で表現する。 */
+.prose h2::before{content:attr(data-n);position:absolute;top:-.6em;left:0;font-family:var(--font-mono);font-size:10px;font-weight:700;letter-spacing:.14em;color:var(--accent);background:var(--bg);padding-right:12px}
+.prose h3{font-family:var(--font-jp);font-weight:700;font-size:16px;line-height:1.6;color:var(--fg-read);margin-top:2.4em}
+.prose p{font-size:15px}
+.prose strong{color:var(--accent);font-weight:700}
+.prose a{color:var(--accent);border-bottom:1px solid rgba(0,240,189,.35);transition:.15s}
+.prose a:hover{border-bottom-color:var(--accent)}
+.prose ul,.prose ol{padding-left:1.3em}
+.prose li{margin-top:.6em}
+.prose li::marker{color:var(--accent)}
+/* 引用: 左に accent の縦線。 背景は bg-alt で沈める */
+.prose blockquote{border-left:2px solid var(--accent);background:var(--bg-alt);padding:18px 22px;color:var(--dim);font-size:14px}
+.prose blockquote p{font-size:14px}
+/* 画像: 枠線 + 下にキャプション */
+.prose figure{margin-top:2.4em}
+.prose .img-ph{aspect-ratio:16/9;border:1px solid var(--line);background:var(--bg-alt);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:10px;letter-spacing:.15em;color:var(--line)}
+.prose figcaption{font-family:var(--font-mono);font-size:10px;letter-spacing:.08em;color:var(--dim);margin-top:10px}
+/* コードブロック */
+.prose pre{background:var(--bg-alt);border:1px solid var(--line);padding:18px;overflow-x:auto;font-family:var(--font-mono);font-size:12px;line-height:1.8;color:var(--fg)}
+.prose code{font-family:var(--font-mono);font-size:12.5px;color:var(--accent);background:var(--bg-alt);padding:2px 6px;border:1px solid var(--line)}
+.prose pre code{border:0;padding:0;background:none;color:inherit}
+
+/* ===== 広告枠 =====
+   「AD」ラベルを必ず付ける (AdSense のポリシー要件でもあり、
+   訪問者への誠実さでもある)。 dashed 枠で本文と明確に分離する。
+   var(--ad-display) を none にすれば枠ごと消える。 */
+.ad-slot{display:var(--ad-display);border:1px dashed var(--line);padding:14px;margin-top:3.5em;margin-bottom:3.5em}
+.ad-slot .ad-label{font-family:var(--font-mono);font-size:9px;letter-spacing:.18em;color:var(--line);margin-bottom:10px}
+.ad-slot .ad-box{min-height:250px;background:var(--bg-alt);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:10px;letter-spacing:.12em;color:var(--dim);text-align:center;line-height:2}
+
+/* ===== sticky サイドバー =====
+   grid-row:2 に固定してあるので、 スクロールを戻しても本文の開始位置より
+   上へは行かない (= ヒーロー画像の横に並ばない)。
+   この要素の左端 = コンテンツ列の右端 + column-gap 32px。
+   padding は付けず、 内側の border-left をその位置の境界線として立たせる。
+   幅 180px は、 gap を 32px に広げた分の帳尻合わせ。 これで折り返し
+   閾値を 1180px に据え置ける (下の @media のコメント参照)。 */
+.art-side{grid-column:3;grid-row:2;position:sticky;top:88px;align-self:start;width:100%;max-width:180px;font-family:var(--font-mono);
+  /* 章が多い記事だと目次が viewport を超えて、 sticky なのに下側が
+     一生見えなくなる。 上端 88px + ステータスバー + 余白を引いた高さで
+     頭打ちにして、 溢れたぶんは内部スクロールに逃がす。
+     内部スクロールバー自体は目次レールと紛らわしいので隠す。 */
+  max-height:calc(100vh - 140px);overflow-y:auto;scrollbar-width:none}
+.art-side::-webkit-scrollbar{display:none}
+.side-block + .side-block{margin-top:36px}
+.side-h{font-size:9px;letter-spacing:.18em;color:var(--dim);padding:0 0 10px 18px;border-bottom:1px solid var(--line);margin-bottom:14px}
+/* 目次: 現在地に accent の縦線 + 文字色。
+   border-left がコンテンツ列との境界 (= サムネ右端) にちょうど乗る。 */
+.toc a{display:block;font-size:11px;line-height:1.6;letter-spacing:.04em;color:var(--dim);padding:7px 0 7px 18px;border-left:1px solid var(--line);transition:.15s}
+.toc a:hover{color:var(--fg)}
+/* アクティブ項目は文字色だけを変える。 縦線側は ::before のレールが
+   担当するので、 border-left まで accent にすると線が二重に見える。 */
+.toc a.is-active{color:var(--accent)}
+.toc a.lv3{padding-left:30px;font-size:10px}
+/* シェア — 目次と左端を揃える */
+.share{padding-left:18px}
+.share a{display:flex;justify-content:space-between;gap:8px;font-size:10px;letter-spacing:.1em;color:var(--dim);padding:9px 0;border-bottom:1px dashed var(--line)}
+.share a:hover{color:var(--accent)}
+.share .arrow{color:var(--accent)}
+/* READ NEXT 末尾の一覧リンク — 記事リンクと区別するため罫線を消して
+   ひとつ字下げせず、 やや強めの色で「まとめ」の位置づけにする */
+.share a.all{border-bottom:0;color:var(--fg);padding-top:12px}
+.share a.all:hover{color:var(--accent)}
+
+/* ===== 記事末尾 ===== */
+.art-foot{margin-top:72px}
+
+/* PREV / NEXT — 記事末尾の最後の要素。
+   上の .art-actions とは余白で切り離す。 あちらは「道具」、
+   こちらは「次のコンテンツ」で性質が違うため、 連結して 1 つの
+   モジュールに見せるより、 別セクションとして分けた方が読める。
+
+   順序は 記事 → 共有 → 次の記事。 読み終わった直後は共有したい
+   衝動が一番強いのでそこに SHARE を置き、 PREV/NEXT は
+   「まだ読み足りない人」への提案として最後に置いて締める。
+
+   note への相互リンクは意図的に置かない (せっかく自サイトに来た
+   読者を外部へ送り出すだけで、 回遊も広告も canonical の示唆も
+   全部マイナスに働くため。 導線は note → 自サイトの一方通行にする)。 */
+.pager{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);margin-top:40px}
+.pager a{background:var(--bg);padding:20px;transition:background .15s;min-height:110px;display:flex;flex-direction:column;justify-content:space-between}
+.pager a:hover{background:var(--bg-alt)}
+.pager .dir{font-family:var(--font-mono);font-size:9px;letter-spacing:.16em;color:var(--accent);margin-bottom:10px}
+.pager .t{font-family:var(--font-jp);font-size:13px;font-weight:700;line-height:1.5;color:var(--fg)}
+.pager a:hover .t{color:var(--accent)}
+.pager .next{text-align:right}
+
+/* ===== アクション行 (一覧へ戻る / シェア) =====
+   記事本文のすぐ下に置く「道具」の帯。 下の PREV/NEXT とは
+   余白 40px で切り離して別セクションにする。
+
+   pager (110px) より低い 72px にして、 タイトルではなくラベルだけを
+   持たせる。 情報量と高さを落とすことで、 同じ 1px グリッドの語彙を
+   使いながら「こちらは操作」という性格の差が出る。
+
+   列数は幅で変わる:
+     PC (1181px〜) — サイドバーに SHARE があるので 1 列 (一覧のみ)
+     1180px 以下   — サイドバーが消えるので 2 列 (一覧 + シェア) */
+.art-actions{display:grid;grid-template-columns:1fr;gap:1px;background:var(--line);border:1px solid var(--line)}
+.act{background:var(--bg);padding:16px 20px;min-height:72px;display:flex;flex-direction:column;justify-content:space-between;gap:8px;
+  font-family:var(--font-mono);letter-spacing:.1em;color:var(--fg);border:0;text-align:left;cursor:pointer;transition:background .15s;-webkit-tap-highlight-color:transparent}
+.act:hover,.act:active{background:var(--bg-alt)}
+.act .dir{font-size:9px;letter-spacing:.16em;color:var(--accent)}
+.act .t{font-size:11px;color:var(--dim);transition:color .15s}
+.act:hover .t,.act:active .t{color:var(--accent)}
+/* シェアはサイドバーに SHARE ブロックが無い幅でのみ出す */
+.act-share{display:none}
+@media (max-width:1180px){
+  .art-actions{grid-template-columns:1fr 1fr}
+  .act-share{display:flex}
+}
+
+/* ===== status bar ===== */
+.status-bar{position:fixed;bottom:0;left:0;right:0;background:var(--bg);border-top:1px solid var(--line);padding:8px 32px;display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:10px;color:var(--dim);letter-spacing:.1em;z-index:50}
+.status-bar .blink{color:var(--accent);animation:blink 1.4s steps(2) infinite}
+@keyframes blink{50%{opacity:0}}
+
+/* ===== レスポンシブ =====
+   1180px 以下: サイドバーを落として 1カラム (本文は中央のまま)。
+   目次は本文冒頭の <details> 折りたたみに変形する。
+
+   閾値の根拠: 左右ガターを対称に保ったまま右ガターに目次 180px を
+   収めるには、 本文 680 + gap 32×2 + ガター 180×2 + main padding 32×2
+   = 1168px が必要。 余裕を見て 1180px で切っている。 */
+.mobile-nav{display:none}
+.toc-mobile{display:none}
+@media (max-width:1180px){
+  .art-layout{grid-template-columns:minmax(0,680px);justify-content:center;column-gap:0}
+  .art-top,.art-main{grid-column:1}
+  .art-side{display:none}
+  /* 目次が消えるので、 進捗レールを画面右端に付け替える */
+  .edge-rail{display:block}
+  .toc-mobile{display:block;border:1px solid var(--line);margin-bottom:40px}
+  .toc-mobile summary{font-family:var(--font-mono);font-size:10px;letter-spacing:.14em;color:var(--dim);padding:14px 18px;cursor:pointer;list-style:none;display:flex;justify-content:space-between}
+  .toc-mobile summary::-webkit-details-marker{display:none}
+  .toc-mobile summary::after{content:'+';color:var(--accent)}
+  .toc-mobile[open] summary::after{content:'−'}
+  .toc-mobile .toc{padding:0 18px 16px}
+}
+@media (max-width:720px){
+  main{padding:68px 16px 90px}
+  header{display:none}
+  .mobile-nav{display:flex;position:fixed;top:0;left:0;right:0;height:44px;z-index:50;background:var(--bg);border-bottom:1px solid var(--line);font-family:var(--font-mono);white-space:nowrap}
+  .mobile-nav a{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;border-right:1px solid var(--line);color:inherit}
+  .mobile-nav a:last-child{border-right:0}
+  .mobile-nav .m-num{font-size:8px;letter-spacing:.1em;color:var(--dim);line-height:1}
+  .mobile-nav .m-lbl{font-size:9px;font-weight:700;letter-spacing:.1em;line-height:1}
+  .mobile-nav a.is-active{box-shadow:inset 0 -2px 0 var(--accent)}
+  .mobile-nav a.is-active .m-num,.mobile-nav a.is-active .m-lbl{color:var(--accent)}
+  /* レールはナビバーの下から始める */
+  .edge-rail{top:44px}
+  /* モバイルは行長が自然に短くなるので font-size を少し上げて読みやすく */
+  .prose{font-size:15.5px;line-height:1.9}
+  .pager{grid-template-columns:1fr}
+  .pager .next{text-align:left}
+  .status-bar{padding:8px 16px;font-size:9px}
+  .status-cursor,.status-viewport{display:none}
+  .art-meta{gap:12px;font-size:9px}
+}
+</style>
+</head>
+<body>
+
+<!-- 進捗レール (SP/タブレット用。 PC では目次の罫線が担当するので非表示) -->
+<div class="edge-rail" aria-hidden="true"><i></i><b></b></div>
+
+<header>
+  <span class="logo">YSD-KTN / v3.0.0</span>
+  <nav aria-label="Main navigation">
+    <a href="../index.html"><span class="num">00</span> INDEX</a>
+    <a href="../index.html#about"><span class="num">01</span> ABOUT</a>
+    <a href="writing-index.html" class="is-current"><span class="num">02</span> WRITING</a>
+    <a href="../index.html#contact"><span class="num">03</span> CONTACT</a>
+  </nav>
+  <span class="toggle" aria-hidden="true">+</span>
+</header>
+
+<nav class="mobile-nav" aria-label="Navigation">
+  <a href="../index.html"><span class="m-num">00</span><span class="m-lbl">INDEX</span></a>
+  <a href="../index.html#about"><span class="m-num">01</span><span class="m-lbl">ABOUT</span></a>
+  <a href="writing-index.html" class="is-active"><span class="m-num">02</span><span class="m-lbl">WRITING</span></a>
+  <a href="../index.html#contact"><span class="m-num">03</span><span class="m-lbl">CONTACT</span></a>
+</nav>
+
+<main>
+
+  <div class="art-layout">
+
+    <!-- ROW 1 — ヘッダ帯 (全幅を張って中央 820px に収める) -->
+    <div class="art-top">
+      <div class="crumb">
+        <a href="../index.html">INDEX</a>
+        <span class="sep">/</span>
+        <a href="writing-index.html">WRITING</a>
+        <span class="sep">/</span>
+        <span class="here">[ 01 ]</span>
+      </div>
+
+      <div class="art-head">
+        <h1 class="art-title">コードが書けないデザイナーの<br />バイブコーディング実践記</h1>
+        <div class="art-meta">
+          <span><span class="k">PUBLISHED:</span>2026.06.14</span>
+          <span><span class="k">TAG:</span><span class="tag-list"><a href="writing-index.html">AI</a><span
+            class="sep">·</span><a href="writing-index.html">DESIGN</a></span></span>
+        </div>
+      </div>
+
+      <div class="art-hero">01-CLAUDE.WEBP — 1600×900</div>
+    </div>
+
+    <!-- ROW 2 — 本文 (中央 680px) -->
+    <div class="art-main">
+      <!-- モバイル用の折りたたみ目次 (1080px 以下で表示) -->
+      <details class="toc-mobile">
+        <summary>INDEX OF THIS ARTICLE</summary>
+        <nav class="toc">
+          <a href="#s1">01 — きっかけは「なんかすごいらしい」</a>
+          <a href="#s2">02 — 環境構築でいきなり詰まった</a>
+          <a href="#s3">03 — デザイナーの言語でAIに話しかける</a>
+          <a href="#s4">04 — できたもの、できなかったもの</a>
+        </nav>
+      </details>
+
+      <article class="prose">
+
+        <p>「AIエージェント」「プロンプトエンジニアリング」「バイブコーディング」。SNSで目にする機会も多くなってきたこれらの言葉ですが、正直、作りたいものもない中でそれらを試す機会もなかなかなく、気にはなりつつも放置してきました。</p>
+
+        <p>そんな中、<strong>「Claudeがなんかマジですごいらしい」</strong>と人から勧められたのをきっかけに、重い腰を上げて触ってみることにしました。この記事は、コードがまったく書けないデザイナーが、3週間かけて自分のポートフォリオサイトを一から作り直した記録です。</p>
+
+        <h2 id="s1" data-n="[ 01 ]">きっかけは「なんかすごいらしい」</h2>
+
+        <p>私はデザイナーです。Figma は毎日触るし、CSS もなんとなく読めます。でも「読める」と「書ける」の間には深い谷があって、その谷を埋めるために時間を使う気にはずっとなれませんでした。エンジニアに頼めば済む話だし、頼めない環境では諦めればいい。そう思っていました。</p>
+
+        <blockquote>
+          <p>コードが書けないことをコンプレックスに思う必要はない。でも「書けないから選べない」状態は、デザイナーとしての選択肢を確実に狭めている。</p>
+        </blockquote>
+
+        <p>この感覚が変わったのは、実際に手を動かし始めてからでした。</p>
+
+        <h2 id="s2" data-n="[ 02 ]">環境構築でいきなり詰まった</h2>
+
+        <p>最初の壁は、想像通り環境構築でした。ターミナルという黒い画面に何を打てばいいのか分からない。npm と node の違いも分からない。ここで多くの人が脱落するんだろうな、と思いながら、分からないことをそのまま質問することにしました。</p>
+
+        <figure>
+          <div class="img-ph">SCREENSHOT — TERMINAL</div>
+          <figcaption>FIG.01 — 初めて開いたターミナル。何をすればいいのか本当に分からなかった</figcaption>
+        </figure>
+
+        <h3>分からないことを、分からないまま聞く</h3>
+
+        <p>結果的にこれが一番効きました。「エラーが出ました」ではなく、画面に出た文字をそのまま貼る。すると次にやることが1つだけ返ってくる。それを実行する。この繰り返しで、3日目にはローカルサーバーが立ち上がっていました。</p>
+
+        <pre><code>$ npm install
+$ npm run dev
+
+  astro  v6.2.0 ready in 412 ms
+  ┃ Local    http://localhost:4321/</code></pre>
+
+        <p>この <code>localhost:4321</code> が自分のブラウザに表示された瞬間のことは、たぶん結構長く覚えていると思います。</p>
+
+        <!-- ▼ 広告枠 1: 本文中盤。 h2 の3つ目の直前に配置する ▼ -->
+        <div class="ad-slot">
+          <div class="ad-label">— ADVERTISEMENT —</div>
+          <div class="ad-box">AD SLOT A · IN-ARTICLE<br />336×280 / RESPONSIVE</div>
+        </div>
+        <!-- ▲ 広告枠 1 ここまで ▲ -->
+
+        <h2 id="s3" data-n="[ 03 ]">デザイナーの言語でAIに話しかける</h2>
+
+        <p>ここからが本題です。私はコードの語彙を持っていませんが、<strong>デザインの語彙は持っています</strong>。そして分かったのは、デザインの語彙のままで十分に伝わるということでした。</p>
+
+        <ul>
+          <li>「カードの余白が詰まりすぎているので、上下を1.5倍にしたい」</li>
+          <li>「ホバーしたときに、画像のグレースケールが解けて色が点く感じにしたい」</li>
+          <li>「この行、日本語だと1行が長すぎて読みにくい。40字くらいで折り返して」</li>
+        </ul>
+
+        <p>どれも「実装の指示」ではなく「意図の説明」です。意図さえ正確に言語化できれば、実装は向こうがやってくれる。つまりこの作業で問われていたのは、コードの知識ではなく<strong>自分が何を作りたいのかを言葉にする能力</strong>でした。それはデザイナーが普段からやっていることです。</p>
+
+        <h2 id="s4" data-n="[ 04 ]">できたもの、できなかったもの</h2>
+
+        <p>3週間で、Astro 製のポートフォリオサイトが完成しました。カスタムカーソル、スクロール連動のナビ、コンテンツを JSON で管理する仕組みまで含めて、全部自分の手元にあります。</p>
+
+        <p>一方で、できなかったこともあります。設計の妥当性を自分で判断できない。「これで合ってますか」と聞くしかない場面が何度もありました。ここは今後の課題として残っています。</p>
+
+        <p>それでも、<strong>「作れないから諦める」が「作ってみてから考える」に変わった</strong>のは、私にとって決定的な変化でした。</p>
+
+      </article>
+
+      <div class="art-foot">
+
+        <!-- ▼ 広告枠 2: 記事末尾。 読み終わった人にだけ見える位置 ▼ -->
+        <div class="ad-slot" style="margin-top:0">
+          <div class="ad-label">— ADVERTISEMENT —</div>
+          <div class="ad-box">AD SLOT B · END OF ARTICLE<br />728×90 or RESPONSIVE</div>
+        </div>
+        <!-- ▲ 広告枠 2 ここまで ▲ -->
+
+        <!-- 道具の帯 — 記事直後。 読み終わった直後が一番共有したい瞬間 -->
+        <div class="art-actions">
+          <a href="writing-index.html" class="act">
+            <span class="dir">← INDEX</span>
+            <span class="t">ALL ARTICLES</span>
+          </a>
+          <button class="act act-share" type="button">
+            <span class="dir">SHARE ↗</span>
+            <span class="t" data-label>X · LINE · COPY</span>
+          </button>
+        </div>
+
+        <!-- 次のコンテンツ — 余白 40px で上と切り離した別セクション -->
+        <div class="pager">
+          <a href="#" class="prev">
+            <span class="dir">← PREV · [ 02 ]</span>
+            <span class="t">ゲーム業界に転職しました</span>
+          </a>
+          <a href="#" class="next">
+            <span class="dir">[ 00 ] · NEXT →</span>
+            <span class="t">最新記事はまだありません</span>
+          </a>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ROW 2 — sticky サイドバー (右ガター) -->
+    <aside class="art-side">
+      <div class="side-block">
+        <div class="side-h">INDEX OF THIS ARTICLE</div>
+        <nav class="toc" id="toc">
+          <a href="#s1" class="is-active">01 — きっかけは「なんかすごいらしい」</a>
+          <a href="#s2">02 — 環境構築でいきなり詰まった</a>
+          <a href="#s3">03 — デザイナーの言語でAIに話しかける</a>
+          <a href="#s4">04 — できたもの、できなかったもの</a>
+        </nav>
+      </div>
+
+      <div class="side-block">
+        <div class="side-h">SHARE</div>
+        <div class="share">
+          <a href="#" id="share-x" target="_blank" rel="noopener">X / TWITTER <span class="arrow">↗</span></a>
+          <a href="#" id="share-copy">COPY LINK <span class="arrow">⧉</span></a>
+        </div>
+      </div>
+
+      <div class="side-block">
+        <div class="side-h">READ NEXT</div>
+        <div class="share">
+          <a href="#">[ 02 ] ゲーム業界に転職しました <span class="arrow">→</span></a>
+          <a href="#">[ 03 ] 1日1作字 <span class="arrow">→</span></a>
+          <a href="writing-index.html" class="all">VIEW ALL <span class="arrow">→</span></a>
+        </div>
+      </div>
+    </aside>
+
+  </div>
+
+</main>
+
+<footer class="status-bar" aria-hidden="true">
+  <span><span class="blink">●</span> ONLINE · BUILD 0803.2026</span>
+  <span id="status-coords" class="status-cursor">CURSOR · 0000,0000</span>
+  <span id="status-utc">UTC --:--:--</span>
+  <span class="status-viewport">VIEWPORT · <span id="status-vw">0</span>×<span id="status-vh">0</span></span>
+</footer>
+
+<script>
+// ── 読了インジケーター + 目次ハイライト ──────────────────
+//
+// 「読書線」= viewport の上から 35% の位置。 この線が今どの章の
+// どのあたりを通っているかを基準にする。 viewport の上端や下端を
+// 基準にするより体感とのズレが小さい。
+//
+// PC (目次レール) と SP (右端レール) は同じ計算結果を共有する。
+// どちらを見せるかは CSS の @media が決めるので、 JS は両方を
+// 無条件に更新すればよい。
+//
+// 章の区切りに getBoundingClientRect() を使うのは既存 Header.astro の
+// モバイルナビと同じ理由 (スムーススクロール中の誤発火を避けるため)。
+
+const article  = document.querySelector('.prose');
+const headings = [...article.querySelectorAll('h2')];
+const tocEl    = document.getElementById('toc');
+const tocLinks = [...tocEl.querySelectorAll('a')];
+const railFill = document.querySelector('.edge-rail i');
+const railKnob = document.querySelector('.edge-rail b');
+
+// 各章の絶対 top / bottom を求める。 1章目の開始は本文の先頭。
+function sectionBounds(){
+  const artTop = article.getBoundingClientRect().top + window.scrollY;
+  const artBot = artTop + article.offsetHeight;
+  const tops   = headings.map(h => h.getBoundingClientRect().top + window.scrollY);
+  const starts = [artTop, ...tops.slice(1)];
+  const ends   = [...starts.slice(1), artBot];
+  return { artTop, artBot, starts, ends };
+}
+
+function update(){
+  const { artTop, artBot, starts, ends } = sectionBounds();
+  const pos = window.scrollY + window.innerHeight * 0.35;
+
+  // ── SP/タブレット: 右端レール (記事全体に対する比率) ──
+  const ratio = Math.min(1, Math.max(0, (pos - artTop) / (artBot - artTop)));
+  railFill.style.height = (ratio * 100) + '%';
+  railKnob.style.top    = (ratio * 100) + '%';
+
+  // ── 現在の章を特定 ──
+  let current = 0;
+  starts.forEach((s, i) => { if (pos >= s) current = i; });
+  const within = Math.min(1, Math.max(0,
+    (pos - starts[current]) / (ends[current] - starts[current])));
+
+  // ── PC: 目次レール ──
+  // 「全項目が同じ高さ」と仮定して linkH × index で計算すると、
+  // タイトルが長くて 2 行に折り返す項目が混ざった瞬間にズレる。
+  // 実際の項目の offsetTop / offsetHeight を読んで位置を出す。
+  // (.toc は position:relative なので offsetTop は .toc 基準になる)
+  const link = tocLinks[current];
+  if (link) {
+    tocEl.style.setProperty('--toc-fill',
+      (link.offsetTop + link.offsetHeight * within) + 'px');
+  }
+
+  // ── 目次の現在地ハイライト ──
+  tocLinks.forEach((a, i) => a.classList.toggle('is-active', i === current));
+}
+
+window.addEventListener('scroll', update, { passive: true });
+window.addEventListener('resize', update, { passive: true });
+update();
+
+// ══ シェア ══════════════════════════════════════════════
+// PC: X への intent リンク + クリップボードコピー
+// SP: 端末の共有シート (Web Share API)。 非対応ならコピーに退避。
+//
+// OGP カードは共有先 (X / Slack / LINE 等) が URL を取りに来て
+// <head> の og:* を読んで組み立てる。 こちら側で画像を渡す口は無い。
+// → 記事ごとのサムネを出すには Layout.astro の og:image を
+//   記事の thumbnail で上書きできるようにする必要がある (実装時の宿題)。
+
+const SHARE_TITLE = document.title.split(' — ')[0];
+const SHARE_URL   = location.href;
+
+// 一時的にラベルを差し替えてフィードバックを返す
+function flash(el, text, ms = 1600){
+  const target = el.querySelector('[data-label]') ?? el;
+  if (target.dataset.orig == null) target.dataset.orig = target.textContent;
+  target.textContent = text;
+  clearTimeout(target._t);
+  target._t = setTimeout(() => { target.textContent = target.dataset.orig; }, ms);
+}
+
+async function copyUrl(){
+  // navigator.clipboard は https / localhost でのみ使える。
+  // file:// で開いたモックでは失敗するので execCommand に退避する。
+  try {
+    await navigator.clipboard.writeText(SHARE_URL);
+    return true;
+  } catch {
+    const ta = document.createElement('textarea');
+    ta.value = SHARE_URL; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
+    const ok = document.execCommand('copy');
+    document.body.removeChild(ta);
+    return ok;
+  }
+}
+
+// ── PC: X ──
+const shareX = document.getElementById('share-x');
+if (shareX){
+  shareX.href = 'https://twitter.com/intent/tweet'
+    + '?text=' + encodeURIComponent(SHARE_TITLE)
+    + '&url='  + encodeURIComponent(SHARE_URL)
+    + '&via=ysd_ktn';
+}
+
+// ── PC: コピー ──
+const shareCopy = document.getElementById('share-copy');
+if (shareCopy){
+  const orig = shareCopy.innerHTML;
+  shareCopy.addEventListener('click', async (e) => {
+    e.preventDefault();
+    const ok = await copyUrl();
+    shareCopy.innerHTML = ok ? 'COPIED <span class="arrow">✓</span>'
+                             : 'COPY FAILED <span class="arrow">×</span>';
+    clearTimeout(shareCopy._t);
+    shareCopy._t = setTimeout(() => { shareCopy.innerHTML = orig; }, 1600);
+  });
+}
+
+// ── SP: 共有シート ──
+const shareSp = document.querySelector('.act-share');
+if (shareSp){
+  shareSp.addEventListener('click', async () => {
+    if (navigator.share){
+      try { await navigator.share({ title: SHARE_TITLE, url: SHARE_URL }); }
+      catch { /* ユーザーがシートを閉じただけ。 何もしない */ }
+      return;
+    }
+    flash(shareSp, (await copyUrl()) ? 'COPIED ✓' : 'COPY FAILED ×');
+  });
+}
+
+// ── status bar ──────────────────────────────────────
+const coordsEl=document.getElementById('status-coords');
+document.addEventListener('mousemove',e=>{coordsEl.textContent='CURSOR · '+String(e.clientX).padStart(4,'0')+','+String(e.clientY).padStart(4,'0')},{passive:true});
+function tick(){document.getElementById('status-utc').textContent='UTC '+new Date().toISOString().substring(11,19);document.getElementById('status-vw').textContent=window.innerWidth;document.getElementById('status-vh').textContent=window.innerHeight}
+tick();setInterval(tick,1000);window.addEventListener('resize',tick,{passive:true});
+</script>
+</body>
+</html>

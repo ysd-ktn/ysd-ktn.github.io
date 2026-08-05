@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>WRITING — WATAOKA KOTONE</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet" />
+<style>
+/* ============================================================
+ * MOCKUP — /writing/ 一覧ページ
+ * 既存 global.css のトークンをそのまま複製 (モック単体で動くよう自己完結)
+ * ============================================================ */
+:root{
+  --bg:#0a0a0c; --bg-alt:#14141a; --fg:#e8e6e0; --dim:#7e7e7e;
+  --line:#2a2a2e; --accent:#00f0bd; --warn:#ff4747;
+  --font-display:'Barlow',sans-serif;
+  --font-mono:'JetBrains Mono',monospace;
+  --font-jp:'Noto Sans JP',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--fg);font-family:var(--font-display),var(--font-jp),sans-serif;font-size:14px;line-height:1.5;overflow-x:hidden}
+a{color:var(--fg);text-decoration:none}
+a:hover{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:100;background:repeating-linear-gradient(0deg,transparent 0,transparent 3px,rgba(255,255,255,.012) 3px,rgba(255,255,255,.012) 4px)}
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:99;background:radial-gradient(ellipse at center,transparent 65%,rgba(0,0,0,.4) 100%)}
+main{padding:80px 32px 80px;max-width:1400px;margin:0 auto}
+
+/* ===== header pill (既存 Header.astro と同一) ===== */
+header{position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:50;height:44px;width:200px;border:1px solid var(--accent);border-radius:9999px;background:var(--bg);overflow:hidden;display:flex;align-items:center;font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;white-space:nowrap;transition:width .55s cubic-bezier(.7,0,.3,1)}
+header .logo{font-weight:700;color:var(--accent);padding:0 18px;height:100%;display:flex;align-items:center;flex-shrink:0;border-right:1px dashed transparent;transition:border-color .4s}
+header nav{max-width:0;opacity:0;visibility:hidden;overflow:hidden;display:flex;align-items:center;height:100%;transition:max-width .55s cubic-bezier(.7,0,.3,1),opacity .25s ease .12s,visibility 0s ease .4s}
+header nav a{padding:0 14px;display:flex;gap:6px;border-left:1px dashed var(--line);align-items:center;height:100%}
+header nav a:first-child{border-left:0}
+header nav a:last-child{padding-right:22px}
+header nav .num{color:var(--dim)}
+header nav a.is-current{color:var(--accent)}
+header .toggle{color:var(--accent);flex-shrink:0;padding:0 18px 0 6px;font-size:14px;line-height:1;transform-origin:11px center;transition:transform .4s cubic-bezier(.7,0,.3,1)}
+header:hover{width:580px}
+header:hover .logo{border-right-color:var(--line)}
+header:hover nav{max-width:420px;opacity:1;visibility:visible;transition:max-width .55s cubic-bezier(.7,0,.3,1),opacity .25s ease .12s,visibility 0s ease 0s}
+header:hover .toggle{transform:rotate(45deg)}
+
+/* ===== ページヘッダ =====
+   トップページの section と違い、 /writing/ は独立ページなので
+   「今どこにいるか」を最初に明示する必要がある。
+   breadcrumb (mono) → 巨大タイトル → 説明文 の3段構え。 */
+.page-head{padding:8px 0 40px}
+.crumb{font-family:var(--font-mono);font-size:10px;letter-spacing:.12em;color:var(--dim);display:flex;gap:8px;align-items:center;margin-bottom:28px}
+.crumb a{color:var(--dim)}
+.crumb a:hover{color:var(--accent)}
+.crumb .sep{color:var(--line)}
+.crumb .here{color:var(--accent);font-weight:700}
+
+.page-title{font-family:var(--font-display);font-weight:800;font-size:clamp(48px,11vw,120px);line-height:.88;letter-spacing:-.02em;margin-bottom:20px}
+.page-title .dot{color:var(--accent)}
+
+.page-lede{max-width:560px;font-family:var(--font-jp);font-size:13px;line-height:1.9;color:var(--dim)}
+
+/* ===== メタ + フィルタ行 =====
+   sec-head と同じ mono 帯を流用しつつ、右側をフィルタボタン群に。
+   ボタンは <a> で、実装時は ?tag=design ではなく静的な
+   /writing/tag/design/ を生成する想定 (静的サイトなので JS 不要)。 */
+.list-bar{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:14px 0;margin-bottom:32px;font-family:var(--font-mono);font-size:10px;letter-spacing:.1em;color:var(--dim)}
+.list-bar .count{color:var(--dim)}
+.list-bar .count b{color:var(--accent);font-weight:700}
+.filters{display:flex;gap:6px;flex-wrap:wrap}
+.filters a{padding:5px 12px;border:1px solid var(--line);color:var(--dim);font-size:10px;letter-spacing:.1em;transition:.15s}
+.filters a:hover{border-color:var(--accent);color:var(--accent)}
+.filters a.is-active{border-color:var(--accent);color:var(--accent);background:rgba(0,240,189,.06);font-weight:700}
+
+/* ===== カードグリッド =====
+   トップの Writing.astro と同じ 1px gap 方式。
+   一覧では 3列だが、記事が増えても行が伸びるだけで済む。 */
+.writing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line)}
+.writing-card{background:var(--bg);padding:20px;display:flex;flex-direction:column;transition:background .15s;color:inherit}
+.writing-card:hover{background:var(--bg-alt);color:inherit}
+.writing-card .meta-row{display:flex;justify-content:space-between;align-items:center;font-family:var(--font-mono);font-size:10px;color:var(--dim);letter-spacing:.1em;margin-bottom:12px}
+.writing-card .meta-left{display:flex;gap:12px;align-items:center}
+.writing-card .idx{color:var(--accent);font-weight:700}
+/* タグ: カード内での分類表示。 外枠なしの小さい mono で控えめに */
+.writing-card .tag{border:1px solid var(--line);padding:2px 7px;font-size:9px;letter-spacing:.1em;color:var(--dim)}
+.writing-card .thumb{aspect-ratio:16/9;border:1px solid var(--line);overflow:hidden;margin-bottom:16px;transition:border-color .15s;position:relative;background:var(--bg-alt)}
+.writing-card .thumb img{width:100%;height:100%;object-fit:cover;display:block;filter:grayscale(.85);transition:filter .2s}
+.writing-card:hover .thumb{border-color:var(--accent)}
+.writing-card:hover .thumb img{filter:grayscale(0)}
+/* 画像が無いモック用のダミー枠 */
+.thumb-ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:10px;letter-spacing:.15em;color:var(--line)}
+.writing-card .article-title{font-family:var(--font-display);font-size:17px;font-weight:700;line-height:1.25;margin-bottom:8px;color:var(--fg);transition:color .15s}
+.writing-card:hover .article-title{color:var(--accent)}
+.writing-card .article-excerpt{font-size:12px;color:var(--dim);line-height:1.6;flex:1;font-family:var(--font-jp)}
+.writing-card .excerpt-text{display:-webkit-box;-webkit-line-clamp:2;line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.writing-card .ext{font-family:var(--font-mono);font-size:10px;color:var(--dim);letter-spacing:.1em;margin-top:16px;padding-top:12px;border-top:1px dashed var(--line);display:flex;justify-content:space-between}
+.writing-card .ext .arrow{color:var(--accent)}
+/* 外部 (note) 記事は左ラベルを dim のまま、内部記事は accent の ● を付けて
+   「サイト内で読める」ことを一目で分かるようにする */
+.writing-card .ext .self::before{content:'● ';color:var(--accent)}
+
+/* ===== 末尾 CTA ===== */
+.list-foot{margin-top:24px;padding:18px 24px;border:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;font-family:var(--font-mono);font-size:12px;letter-spacing:.08em;transition:.15s}
+.list-foot:hover{border-color:var(--accent);color:var(--accent);background:var(--bg-alt)}
+.list-foot .arrow{color:var(--accent)}
+
+/* ===== status bar ===== */
+.status-bar{position:fixed;bottom:0;left:0;right:0;background:var(--bg);border-top:1px solid var(--line);padding:8px 32px;display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:10px;color:var(--dim);letter-spacing:.1em;z-index:50}
+.status-bar .blink{color:var(--accent);animation:blink 1.4s steps(2) infinite}
+@keyframes blink{50%{opacity:0}}
+
+/* ===== mobile ===== */
+.mobile-nav{display:none}
+@media (max-width:720px){
+  main{padding:68px 16px 80px}
+  header{display:none}
+  .mobile-nav{display:flex;position:fixed;top:0;left:0;right:0;height:44px;z-index:50;background:var(--bg);border-bottom:1px solid var(--line);font-family:var(--font-mono);white-space:nowrap}
+  .mobile-nav a{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;border-right:1px solid var(--line);color:inherit}
+  .mobile-nav a:last-child{border-right:0}
+  .mobile-nav .m-num{font-size:8px;letter-spacing:.1em;color:var(--dim);line-height:1}
+  .mobile-nav .m-lbl{font-size:9px;font-weight:700;letter-spacing:.1em;line-height:1}
+  .mobile-nav a.is-active{box-shadow:inset 0 -2px 0 var(--accent)}
+  .mobile-nav a.is-active .m-num,.mobile-nav a.is-active .m-lbl{color:var(--accent)}
+  .writing-grid{grid-template-columns:1fr}
+  .list-bar{font-size:9px}
+  .status-bar{padding:8px 16px;font-size:9px}
+  .status-cursor,.status-viewport{display:none}
+  .list-foot{padding:14px 16px}
+  .list-foot .cta-text{display:none}
+}
+@media (hover:none){.writing-card .thumb img{filter:none}}
+</style>
+</head>
+<body>
+
+<header>
+  <span class="logo">YSD-KTN / v3.0.0</span>
+  <nav aria-label="Main navigation">
+    <a href="../index.html"><span class="num">00</span> INDEX</a>
+    <a href="../index.html#about"><span class="num">01</span> ABOUT</a>
+    <a href="#" class="is-current"><span class="num">02</span> WRITING</a>
+    <a href="../index.html#contact"><span class="num">03</span> CONTACT</a>
+  </nav>
+  <span class="toggle" aria-hidden="true">+</span>
+</header>
+
+<nav class="mobile-nav" aria-label="Navigation">
+  <a href="../index.html"><span class="m-num">00</span><span class="m-lbl">INDEX</span></a>
+  <a href="../index.html#about"><span class="m-num">01</span><span class="m-lbl">ABOUT</span></a>
+  <a href="#" class="is-active"><span class="m-num">02</span><span class="m-lbl">WRITING</span></a>
+  <a href="../index.html#contact"><span class="m-num">03</span><span class="m-lbl">CONTACT</span></a>
+</nav>
+
+<main>
+
+  <div class="page-head">
+    <div class="crumb">
+      <a href="../index.html">INDEX</a>
+      <span class="sep">/</span>
+      <span class="here">WRITING</span>
+    </div>
+    <h1 class="page-title">WRITING<span class="dot">.</span></h1>
+    <p class="page-lede">
+      デザインの仕事、キャリアの転換、AI との付き合い方。<br />
+      考えたことを、考えた順番のまま残している場所。
+    </p>
+  </div>
+
+  <div class="list-bar">
+    <div class="count">ARCHIVE · <b>05</b> ENTRIES · SORTED BY DATE ↓</div>
+    <div class="filters">
+      <a href="#" class="is-active">[ ALL ]</a>
+      <a href="#">DESIGN</a>
+      <a href="#">CAREER</a>
+      <a href="#">AI</a>
+    </div>
+  </div>
+
+  <div class="writing-grid">
+
+    <a href="writing-detail.html" class="writing-card">
+      <div class="meta-row">
+        <div class="meta-left"><span class="idx">[ 01 ]</span><span>2026.06</span></div>
+        <span class="tag">AI</span>
+      </div>
+      <div class="thumb"><div class="thumb-ph">01-CLAUDE.WEBP</div></div>
+      <div class="article-title">コードが書けないデザイナーのバイブコーディング実践記</div>
+      <div class="article-excerpt"><div class="excerpt-text">「AIエージェント」「プロンプトエンジニアリング」「バイブコーディング」…SNSなどで目にする機会も多くなってきたこれらの言葉ですが、正直作りたいものもない中で、</div></div>
+      <div class="ext"><span class="self">READ HERE</span><span>→ READ <span class="arrow">↗</span></span></div>
+    </a>
+
+    <a href="writing-detail.html" class="writing-card">
+      <div class="meta-row">
+        <div class="meta-left"><span class="idx">[ 02 ]</span><span>2025.04</span></div>
+        <span class="tag">CAREER</span>
+      </div>
+      <div class="thumb"><div class="thumb-ph">02-GAME-INDUSTRY.WEBP</div></div>
+      <div class="article-title">ゲーム業界に転職しました</div>
+      <div class="article-excerpt"><div class="excerpt-text">こんにちは、デザイナーのヨシダです。私は24年新卒としてIT系企業に入社し、BtoBのSaaSプロダクトのデザインを担当していました。昨年10月に新卒で入社した企業を退職後、</div></div>
+      <div class="ext"><span class="self">READ HERE</span><span>→ READ <span class="arrow">↗</span></span></div>
+    </a>
+
+    <a href="writing-detail.html" class="writing-card">
+      <div class="meta-row">
+        <div class="meta-left"><span class="idx">[ 03 ]</span><span>2025.01</span></div>
+        <span class="tag">DESIGN</span>
+      </div>
+      <div class="thumb"><div class="thumb-ph">03-SAKUJI.WEBP</div></div>
+      <div class="article-title">1日1作字｜引き出し不足に悩むデザイナーの表現力を広げる練習方法</div>
+      <div class="article-excerpt"><div class="excerpt-text">デザインをしていると、時々「自分の引き出しの少なさ」に悩む瞬間があります。新しいアイデアが必要な場面でも、頭に浮かぶのは過去の延長線上のものばかり…。</div></div>
+      <div class="ext"><span class="self">READ HERE</span><span>→ READ <span class="arrow">↗</span></span></div>
+    </a>
+
+    <a href="#" class="writing-card">
+      <div class="meta-row">
+        <div class="meta-left"><span class="idx">[ 04 ]</span><span>2024.09</span></div>
+        <span class="tag">DESIGN</span>
+      </div>
+      <div class="thumb"><div class="thumb-ph">04-PLACEHOLDER</div></div>
+      <div class="article-title">デザインシステムを一人で立ち上げた話</div>
+      <div class="article-excerpt"><div class="excerpt-text">note に残してある過去記事。外部リンクとして一覧に混在させるパターンの表示例です。カードフッタ左のラベルで内部／外部を見分けられます。</div></div>
+      <div class="ext"><span>NOTE</span><span>→ READ <span class="arrow">↗</span></span></div>
+    </a>
+
+    <a href="#" class="writing-card">
+      <div class="meta-row">
+        <div class="meta-left"><span class="idx">[ 05 ]</span><span>2024.05</span></div>
+        <span class="tag">CAREER</span>
+      </div>
+      <div class="thumb"><div class="thumb-ph">05-PLACEHOLDER</div></div>
+      <div class="article-title">新卒1年目、BtoB SaaS のデザイナーとして考えていたこと</div>
+      <div class="article-excerpt"><div class="excerpt-text">こちらも外部（note）記事の例。移行が済んだものから順に内部リンクへ差し替えていける構成にしてあります。</div></div>
+      <div class="ext"><span>NOTE</span><span>→ READ <span class="arrow">↗</span></span></div>
+    </a>
+
+  </div>
+
+  <a href="https://note.com/ysd_ktn" class="list-foot" target="_blank" rel="noopener">
+    <span>ALSO PUBLISHING ON NOTE</span>
+    <span><span class="cta-text">→ NOTE PROFILE </span><span class="arrow">↗</span></span>
+  </a>
+
+</main>
+
+<footer class="status-bar" aria-hidden="true">
+  <span><span class="blink">●</span> ONLINE · BUILD 0803.2026</span>
+  <span id="status-coords" class="status-cursor">CURSOR · 0000,0000</span>
+  <span id="status-utc">UTC --:--:--</span>
+  <span class="status-viewport">VIEWPORT · <span id="status-vw">0</span>×<span id="status-vh">0</span></span>
+</footer>
+
+<script>
+const coordsEl=document.getElementById('status-coords');
+document.addEventListener('mousemove',e=>{coordsEl.textContent='CURSOR · '+String(e.clientX).padStart(4,'0')+','+String(e.clientY).padStart(4,'0')},{passive:true});
+function tick(){document.getElementById('status-utc').textContent='UTC '+new Date().toISOString().substring(11,19);document.getElementById('status-vw').textContent=window.innerWidth;document.getElementById('status-vh').textContent=window.innerHeight}
+tick();setInterval(tick,1000);window.addEventListener('resize',tick,{passive:true});
+</script>
+</body>
+</html>

@@ -1,0 +1,390 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>読了インジケーター 比較 — WRITING MOCKUP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet" />
+<style>
+/* ============================================================
+ * MOCKUP — 読了インジケーター 5案 比較
+ *
+ * 右下の MOCK CONTROL で表示を切り替える。
+ * (コントロール自体は検証用の仮設 UI。 実装時には存在しない)
+ *
+ * 各案の狙い:
+ *   A HAIRLINE  — 現行案。 上端 2px フルブリード。 比較の基準として残す
+ *   B SEGMENTED — 章の数だけ分割したバー。 「4章中の2章目」が読める
+ *   C EDGE RAIL — 画面右端の縦レール。 横線と競合しない
+ *   D TOC RAIL  — 目次の縦罫線そのものが満ちる (PC) / 章表示 (SP)
+ *   E HUD ONLY  — バーを持たず、 ステータスバーに残り時間だけ出す
+ * ============================================================ */
+:root{
+  --bg:#0a0a0c; --bg-alt:#14141a; --fg:#e8e6e0; --dim:#7e7e7e;
+  --line:#2a2a2e; --accent:#00f0bd; --warn:#ff4747;
+  --fg-read:#f0efea;
+  --font-display:'Barlow',sans-serif;
+  --font-mono:'JetBrains Mono',monospace;
+  --font-jp:'Noto Sans JP',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-display),var(--font-jp),sans-serif;font-size:14px;line-height:1.5;overflow-x:hidden}
+a{color:var(--fg);text-decoration:none}
+a:hover{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:100;background:repeating-linear-gradient(0deg,transparent 0,transparent 3px,rgba(255,255,255,.006) 3px,rgba(255,255,255,.006) 4px)}
+
+/* ===== header pill ===== */
+header{position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:50;height:44px;width:200px;border:1px solid var(--accent);border-radius:9999px;background:var(--bg);overflow:hidden;display:flex;align-items:center;font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;white-space:nowrap;transition:width .55s cubic-bezier(.7,0,.3,1)}
+header .logo{font-weight:700;color:var(--accent);padding:0 18px;height:100%;display:flex;align-items:center;flex-shrink:0}
+header .toggle{color:var(--accent);flex-shrink:0;padding:0 18px 0 6px;font-size:14px;line-height:1}
+
+main{padding:80px 32px 100px;max-width:1400px;margin:0 auto}
+.crumb{font-family:var(--font-mono);font-size:10px;letter-spacing:.12em;color:var(--dim);display:flex;gap:8px;align-items:center;margin-bottom:32px}
+.crumb .sep{color:var(--line)}
+.crumb .here{color:var(--accent);font-weight:700}
+
+.art-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,680px) minmax(0,1fr);column-gap:32px;align-items:start}
+.art-top{grid-column:2;grid-row:1;min-width:0}
+.art-main{grid-column:2;grid-row:2;min-width:0}
+.art-head{margin-bottom:44px}
+.art-title{font-family:var(--font-jp);font-weight:900;font-size:clamp(26px,4.4vw,42px);line-height:1.32;color:var(--fg-read);margin-bottom:24px}
+.art-meta{display:flex;gap:20px;flex-wrap:wrap;font-family:var(--font-mono);font-size:10px;letter-spacing:.1em;color:var(--dim);border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:14px 0}
+.art-meta .k{color:var(--accent);font-weight:700;margin-right:6px}
+.art-hero{aspect-ratio:16/9;border:1px solid var(--line);background:var(--bg-alt);margin-bottom:56px;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:11px;letter-spacing:.15em;color:var(--line)}
+
+.prose{font-family:var(--font-jp);font-size:15px;line-height:1.95;color:var(--fg-read)}
+.prose > * + *{margin-top:1.5em}
+.prose h2{font-family:var(--font-jp);font-weight:900;font-size:21px;line-height:1.5;color:var(--fg-read);margin-top:3.2em;padding-top:1.2em;border-top:1px solid var(--line);position:relative}
+.prose h2::before{content:attr(data-n);position:absolute;top:-.6em;left:0;font-family:var(--font-mono);font-size:10px;font-weight:700;letter-spacing:.14em;color:var(--accent);background:var(--bg);padding-right:12px}
+.prose strong{color:var(--accent);font-weight:700}
+
+.art-side{grid-column:3;grid-row:2;position:sticky;top:88px;align-self:start;width:100%;max-width:180px;font-family:var(--font-mono)}
+.side-h{font-size:9px;letter-spacing:.18em;color:var(--dim);padding:0 0 10px 18px;border-bottom:1px solid var(--line);margin-bottom:14px}
+.toc a{display:block;font-size:11px;line-height:1.6;color:var(--dim);padding:7px 0 7px 18px;border-left:1px solid var(--line);transition:.15s;position:relative}
+.toc a.is-active{color:var(--accent)}
+
+.status-bar{position:fixed;bottom:0;left:0;right:0;background:var(--bg);border-top:1px solid var(--line);padding:8px 32px;display:flex;justify-content:space-between;align-items:center;font-family:var(--font-mono);font-size:10px;color:var(--dim);letter-spacing:.1em;z-index:50}
+.status-bar .blink{color:var(--accent);animation:blink 1.4s steps(2) infinite}
+@keyframes blink{50%{opacity:0}}
+
+/* ============================================================
+ *  A — HAIRLINE (現行案 / 比較基準)
+ *  上端 2px フルブリード。 SP ではナビ直下 44px に降りる。
+ * ============================================================ */
+#ind-a{display:none;position:fixed;top:0;left:0;height:2px;width:0;background:var(--accent);z-index:101;box-shadow:0 0 8px rgba(0,240,189,.6);transition:width .08s linear}
+body.opt-a #ind-a{display:block}
+
+/* ============================================================
+ *  B — SEGMENTED (章分割バー)
+ *  h2 の数だけセグメントを作り、 通過した章から順に点灯する。
+ *  1px の隙間で区切る = サイトの grid 罫線と同じ語彙。
+ *  「全体の何%」ではなく「4章中どこか」が読めるのが利点。
+ *  SP では上端 (ナビの accent 下線と衝突) を避けて画面下端に置く。
+ * ============================================================ */
+#ind-b{display:none;position:fixed;top:0;left:0;right:0;height:2px;z-index:101;gap:2px;padding:0}
+body.opt-b #ind-b{display:flex}
+#ind-b .seg{flex:1;background:var(--line);position:relative;overflow:hidden}
+#ind-b .seg i{position:absolute;inset:0 auto 0 0;width:0;background:var(--accent);transition:width .12s linear}
+#ind-b .seg.done i{box-shadow:0 0 6px rgba(0,240,189,.5)}
+
+/* ============================================================
+ *  C — EDGE RAIL (画面右端の縦レール)
+ *  横線を一切使わないので、 ナビの下線とも罫線とも競合しない。
+ *  スクロール量を「縦」で表すのは物理的に自然で、
+ *  スクロールバーの位置感覚とも一致する。
+ *  PC / SP でまったく同じ挙動になるのが最大の利点。
+ * ============================================================ */
+#ind-c{display:none;position:fixed;top:0;right:0;bottom:0;width:2px;background:var(--line);z-index:101}
+body.opt-c #ind-c{display:block}
+#ind-c i{position:absolute;inset:0 0 auto 0;height:0;background:var(--accent);box-shadow:0 0 8px rgba(0,240,189,.5);transition:height .08s linear}
+/* レール上に現在位置のノブ (1px の横棒) を出して「今ここ」を明示 */
+#ind-c b{position:absolute;right:0;width:10px;height:1px;background:var(--accent);transition:top .08s linear}
+
+/* ============================================================
+ *  D — TOC RAIL (目次の縦罫線が満ちる)
+ *  すでに存在する目次の border-left を、 そのまま進捗レールに
+ *  兼用する。 新しい UI 要素をひとつも増やさずに進捗を表せる。
+ *  「今どの章か」と「どこまで読んだか」が同じ線の上で一致する。
+ *  弱点: 目次が消える 1180px 以下では使えないので、
+ *  SP は折りたたみ目次のラベルに "02 / 04" を出す代替に切替。
+ * ============================================================ */
+body.opt-d .toc{position:relative}
+body.opt-d .toc::before{content:'';position:absolute;left:0;top:0;width:1px;background:var(--accent);box-shadow:0 0 6px rgba(0,240,189,.5);transition:height .12s linear;z-index:1}
+body.opt-d .toc a{border-left-color:var(--line)}
+/* SP 用フォールバック表示 */
+#ind-d-sp{display:none;font-family:var(--font-mono);font-size:10px;letter-spacing:.1em;color:var(--dim)}
+#ind-d-sp b{color:var(--accent);font-weight:700}
+
+/* ============================================================
+ *  E — HUD ONLY (バーを持たない)
+ *  進捗バーという図形をやめ、 ステータスバーに文字だけで出す。
+ *  「62%」より「あと 4 分」の方が読者にとって行動に繋がる情報。
+ *  このサイトの HUD (ONLINE / UTC / VIEWPORT) と完全に同じ語彙。
+ *  弱点: 一瞥性が低い。 意識して見ないと気付かれない。
+ * ============================================================ */
+.hud-read{display:none;align-items:center;gap:10px}
+body.opt-e .hud-read{display:flex}
+.hud-read .k{color:var(--accent);font-weight:700}
+
+/* ===== MOCK CONTROL (検証用・実装には存在しない) ===== */
+.ctrl{position:fixed;right:16px;bottom:44px;z-index:200;background:var(--bg);border:1px solid var(--warn);font-family:var(--font-mono);width:236px}
+.ctrl .h{font-size:9px;letter-spacing:.14em;color:var(--warn);padding:9px 12px;border-bottom:1px solid var(--warn)}
+.ctrl button{display:block;width:100%;text-align:left;background:none;border:0;border-bottom:1px dashed var(--line);color:var(--dim);font-family:var(--font-mono);font-size:10px;letter-spacing:.06em;padding:9px 12px;cursor:pointer;line-height:1.5}
+.ctrl button:last-child{border-bottom:0}
+.ctrl button:hover{color:var(--fg);background:var(--bg-alt)}
+.ctrl button.on{color:var(--accent);background:rgba(0,240,189,.07)}
+.ctrl button .t{font-weight:700}
+.ctrl button .d{display:block;color:var(--line);font-size:9px;margin-top:3px}
+.ctrl button.on .d{color:var(--dim)}
+
+/* ===== responsive ===== */
+.mobile-nav{display:none}
+.toc-mobile{display:none}
+@media (max-width:1180px){
+  .art-layout{grid-template-columns:minmax(0,680px);justify-content:center;column-gap:0}
+  .art-top,.art-main{grid-column:1}
+  .art-side{display:none}
+  .toc-mobile{display:flex;justify-content:space-between;align-items:center;border:1px solid var(--line);padding:14px 18px;margin-bottom:40px;font-family:var(--font-mono);font-size:10px;letter-spacing:.14em;color:var(--dim)}
+  body.opt-d #ind-d-sp{display:block}
+}
+@media (max-width:720px){
+  main{padding:68px 16px 90px}
+  header{display:none}
+  .mobile-nav{display:flex;position:fixed;top:0;left:0;right:0;height:44px;z-index:50;background:var(--bg);border-bottom:1px solid var(--line);font-family:var(--font-mono)}
+  .mobile-nav a{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;border-right:1px solid var(--line);color:inherit}
+  .mobile-nav a:last-child{border-right:0}
+  .mobile-nav .m-num{font-size:8px;color:var(--dim);line-height:1}
+  .mobile-nav .m-lbl{font-size:9px;font-weight:700;line-height:1}
+  .mobile-nav a.is-active{box-shadow:inset 0 -2px 0 var(--accent)}
+  .mobile-nav a.is-active .m-num,.mobile-nav a.is-active .m-lbl{color:var(--accent)}
+  /* A: ナビ直下に降ろす → accent の横線が 2 本並ぶ問題が起きる位置 */
+  body.opt-a #ind-a{top:44px}
+  /* B: 上端はナビに占有されているので下端 (ステータスバーの上) へ逃がす */
+  body.opt-b #ind-b{top:auto;bottom:26px}
+  .status-bar{padding:8px 16px;font-size:9px}
+  .status-viewport,#status-utc{display:none}
+  .ctrl{right:8px;left:8px;width:auto;bottom:34px}
+  .prose{font-size:15.5px}
+}
+</style>
+</head>
+<body class="opt-b">
+
+<!-- ══ 各案のインジケーター (CSS で出し分け) ══ -->
+<div id="ind-a"></div>
+<div id="ind-b"></div>
+<div id="ind-c"><i></i><b></b></div>
+
+<header>
+  <span class="logo">YSD-KTN / v3.0.0</span>
+  <span class="toggle">+</span>
+</header>
+
+<nav class="mobile-nav">
+  <a href="#"><span class="m-num">00</span><span class="m-lbl">INDEX</span></a>
+  <a href="#"><span class="m-num">01</span><span class="m-lbl">ABOUT</span></a>
+  <a href="#" class="is-active"><span class="m-num">02</span><span class="m-lbl">WRITING</span></a>
+  <a href="#"><span class="m-num">03</span><span class="m-lbl">CONTACT</span></a>
+</nav>
+
+<main>
+  <div class="art-layout">
+
+    <div class="art-top">
+      <div class="crumb">
+        <span>INDEX</span><span class="sep">/</span><span>WRITING</span><span class="sep">/</span><span class="here">[ 01 ]</span>
+      </div>
+      <div class="art-head">
+        <h1 class="art-title">コードが書けないデザイナーの<br />バイブコーディング実践記</h1>
+        <div class="art-meta">
+          <span><span class="k">PUBLISHED</span>2026.06.14</span>
+          <span><span class="k">TAG</span>AI · DESIGN</span>
+        </div>
+      </div>
+      <div class="art-hero">01-CLAUDE.WEBP — 1600×900</div>
+    </div>
+
+    <div class="art-main">
+
+      <div class="toc-mobile">
+        <span>INDEX OF THIS ARTICLE</span>
+        <span id="ind-d-sp">CH <b>01</b> / 04</span>
+      </div>
+
+      <article class="prose">
+        <p>「AIエージェント」「プロンプトエンジニアリング」「バイブコーディング」。SNSで目にする機会も多くなってきたこれらの言葉ですが、正直、作りたいものもない中でそれらを試す機会もなかなかなく、気にはなりつつも放置してきました。</p>
+        <p>そんな中、<strong>「Claudeがなんかマジですごいらしい」</strong>と人から勧められたのをきっかけに、重い腰を上げて触ってみることにしました。この記事は、コードがまったく書けないデザイナーが、3週間かけて自分のポートフォリオサイトを一から作り直した記録です。</p>
+
+        <h2 id="s1" data-n="[ 01 ]">きっかけは「なんかすごいらしい」</h2>
+        <p>私はデザイナーです。Figma は毎日触るし、CSS もなんとなく読めます。でも「読める」と「書ける」の間には深い谷があって、その谷を埋めるために時間を使う気にはずっとなれませんでした。エンジニアに頼めば済む話だし、頼めない環境では諦めればいい。そう思っていました。</p>
+        <p>コードが書けないことをコンプレックスに思う必要はない。でも「書けないから選べない」状態は、デザイナーとしての選択肢を確実に狭めている。この感覚が変わったのは、実際に手を動かし始めてからでした。</p>
+        <p>最初に決めたのは、既存のサイトを部分的に直すのではなく、全部作り直すということでした。中途半端に触ると、結局「分かるところだけ触って終わり」になるのが目に見えていたからです。</p>
+
+        <h2 id="s2" data-n="[ 02 ]">環境構築でいきなり詰まった</h2>
+        <p>最初の壁は、想像通り環境構築でした。ターミナルという黒い画面に何を打てばいいのか分からない。npm と node の違いも分からない。ここで多くの人が脱落するんだろうな、と思いながら、分からないことをそのまま質問することにしました。</p>
+        <p>結果的にこれが一番効きました。「エラーが出ました」ではなく、画面に出た文字をそのまま貼る。すると次にやることが1つだけ返ってくる。それを実行する。この繰り返しで、3日目にはローカルサーバーが立ち上がっていました。</p>
+        <p>この <strong>localhost:4321</strong> が自分のブラウザに表示された瞬間のことは、たぶん結構長く覚えていると思います。何かが動いた、という手応えは、理解しているかどうかとは別のところにありました。</p>
+        <p>ここまでで3日。当初の見積もりでは半日で終わるはずだったので、いきなり6倍かかっている計算になります。</p>
+
+        <h2 id="s3" data-n="[ 03 ]">デザイナーの言語でAIに話しかける</h2>
+        <p>ここからが本題です。私はコードの語彙を持っていませんが、<strong>デザインの語彙は持っています</strong>。そして分かったのは、デザインの語彙のままで十分に伝わるということでした。</p>
+        <p>「カードの余白が詰まりすぎているので、上下を1.5倍にしたい」「ホバーしたときに、画像のグレースケールが解けて色が点く感じにしたい」「この行、日本語だと1行が長すぎて読みにくい。40字くらいで折り返して」。どれも実装の指示ではなく、意図の説明です。</p>
+        <p>意図さえ正確に言語化できれば、実装は向こうがやってくれる。つまりこの作業で問われていたのは、コードの知識ではなく<strong>自分が何を作りたいのかを言葉にする能力</strong>でした。それはデザイナーが普段からやっていることです。</p>
+        <p>逆に言うと、言語化が曖昧なままだと、返ってくるものも曖昧になります。「いい感じにして」で出てきたものは、だいたい誰の趣味でもないものでした。</p>
+
+        <h2 id="s4" data-n="[ 04 ]">できたもの、できなかったもの</h2>
+        <p>3週間で、Astro 製のポートフォリオサイトが完成しました。カスタムカーソル、スクロール連動のナビ、コンテンツを JSON で管理する仕組みまで含めて、全部自分の手元にあります。</p>
+        <p>一方で、できなかったこともあります。設計の妥当性を自分で判断できない。「これで合ってますか」と聞くしかない場面が何度もありました。ここは今後の課題として残っています。</p>
+        <p>それでも、<strong>「作れないから諦める」が「作ってみてから考える」に変わった</strong>のは、私にとって決定的な変化でした。作れないものを企画しないという無意識のブレーキが、少しだけ緩んだ感覚があります。</p>
+        <p>次に作るものは、もう少し無茶な設計にしてみようと思っています。</p>
+      </article>
+
+      <div style="height:120px"></div>
+    </div>
+
+    <aside class="art-side">
+      <div class="side-h">INDEX OF THIS ARTICLE</div>
+      <nav class="toc" id="toc">
+        <a href="#s1" class="is-active">01 — きっかけは「なんかすごいらしい」</a>
+        <a href="#s2">02 — 環境構築でいきなり詰まった</a>
+        <a href="#s3">03 — デザイナーの言語でAIに話しかける</a>
+        <a href="#s4">04 — できたもの、できなかったもの</a>
+      </nav>
+    </aside>
+
+  </div>
+</main>
+
+<footer class="status-bar">
+  <span><span class="blink">●</span> ONLINE · BUILD 0803.2026</span>
+  <span id="status-utc">UTC --:--:--</span>
+  <span class="hud-read">
+    <span><span class="k">CH</span><b id="hud-ch">01 / 04</b></span>
+    <span><span class="k">REMAINING</span><b id="hud-rem">14:00</b></span>
+  </span>
+  <span class="status-viewport">VIEWPORT · <span id="status-vw">0</span>×<span id="status-vh">0</span></span>
+</footer>
+
+<!-- ══ 検証用コントロール (実装には存在しない) ══ -->
+<div class="ctrl">
+  <div class="h">▲ MOCK CONTROL — 表示切替</div>
+  <button data-opt="a"><span class="t">A · HAIRLINE</span><span class="d">現行案。上端 2px フルブリード</span></button>
+  <button data-opt="b" class="on"><span class="t">B · SEGMENTED</span><span class="d">章の数だけ分割したバー</span></button>
+  <button data-opt="c"><span class="t">C · EDGE RAIL</span><span class="d">画面右端の縦レール</span></button>
+  <button data-opt="d"><span class="t">D · TOC RAIL</span><span class="d">目次の縦罫線が満ちる</span></button>
+  <button data-opt="e"><span class="t">E · HUD ONLY</span><span class="d">バーなし。残り時間を文字で</span></button>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════════
+//  共通の進捗計算
+//  「読書線」= viewport の上から 35% の位置。 この線が今どの章の
+//  どのあたりを通っているかを基準にする。 viewport 上端や下端を
+//  基準にするより体感とのズレが小さい。
+// ══════════════════════════════════════════════════════════
+const article  = document.querySelector('.prose');
+const headings = [...article.querySelectorAll('h2')];
+const TOTAL_MIN = 14;               // 8,420字 ÷ 600字/分 ≒ 14分
+
+// 各章の絶対 top を求める。 1章目の開始は記事本文の先頭。
+function sectionBounds(){
+  const artTop = article.getBoundingClientRect().top + window.scrollY;
+  const artBot = artTop + article.offsetHeight;
+  const tops = headings.map(h => h.getBoundingClientRect().top + window.scrollY);
+  const starts = [artTop, ...tops.slice(1)];   // 0章目は本文冒頭〜h2[1]
+  const ends   = [...starts.slice(1), artBot];
+  return {artTop, artBot, starts, ends};
+}
+
+// ── B: セグメントを章数ぶん生成 ──
+const indB = document.getElementById('ind-b');
+headings.forEach(() => {
+  const seg = document.createElement('span');
+  seg.className = 'seg';
+  seg.appendChild(document.createElement('i'));
+  indB.appendChild(seg);
+});
+const segs = [...indB.children];
+
+const indAEl   = document.getElementById('ind-a');
+const indCFill = document.querySelector('#ind-c i');
+const indCKnob = document.querySelector('#ind-c b');
+const tocEl    = document.getElementById('toc');
+const tocLinks = [...tocEl.querySelectorAll('a')];
+const hudCh    = document.getElementById('hud-ch');
+const hudRem   = document.getElementById('hud-rem');
+const spCh     = document.querySelector('#ind-d-sp b');
+
+function update(){
+  const {artTop, artBot, starts, ends} = sectionBounds();
+  const pos = window.scrollY + window.innerHeight * 0.35;
+
+  // 全体比率 (A / C 用)
+  const ratio = Math.min(1, Math.max(0, (pos - artTop) / (artBot - artTop)));
+
+  // A — ヘアライン
+  indAEl.style.width = (ratio * 100) + '%';
+
+  // C — 右端レール
+  indCFill.style.height = (ratio * 100) + '%';
+  indCKnob.style.top    = (ratio * 100) + '%';
+
+  // B — 章分割。 各セグメントは「その章の中をどれだけ進んだか」で満ちる
+  let current = 0;
+  starts.forEach((s, i) => {
+    const f = Math.min(1, Math.max(0, (pos - s) / (ends[i] - s)));
+    segs[i].firstChild.style.width = (f * 100) + '%';
+    segs[i].classList.toggle('done', f >= 1);
+    if (f > 0) current = i;
+  });
+
+  // D — 目次の縦罫線。 現在の章まで満ちた高さを ::before に流す
+  //     (CSS 変数経由だと ::before に届かないので直接 style で書く)
+  const linkH = tocLinks[0] ? tocLinks[0].offsetHeight : 0;
+  const fillH = linkH * current + linkH * Math.min(1, Math.max(0,
+    (pos - starts[current]) / (ends[current] - starts[current])));
+  tocEl.style.setProperty('--fill', fillH + 'px');
+
+  // 目次ハイライト (全案共通)
+  tocLinks.forEach((a, i) => a.classList.toggle('is-active', i === current));
+
+  // E — HUD
+  const chLabel = String(current + 1).padStart(2, '0') + ' / ' + String(segs.length).padStart(2, '0');
+  hudCh.textContent = chLabel;
+  if (spCh) spCh.textContent = String(current + 1).padStart(2, '0');
+  const remSec = Math.round((1 - ratio) * TOTAL_MIN * 60);
+  hudRem.textContent = String(Math.floor(remSec / 60)).padStart(2, '0') + ':' + String(remSec % 60).padStart(2, '0');
+}
+
+// ::before の height は CSS 変数で受ける
+const styleTag = document.createElement('style');
+styleTag.textContent = 'body.opt-d .toc::before{height:var(--fill,0px)}';
+document.head.appendChild(styleTag);
+
+window.addEventListener('scroll', update, {passive:true});
+window.addEventListener('resize', update, {passive:true});
+update();
+
+// ── MOCK CONTROL ──
+document.querySelectorAll('.ctrl button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.body.className = 'opt-' + btn.dataset.opt;
+    document.querySelectorAll('.ctrl button').forEach(b => b.classList.toggle('on', b === btn));
+    update();
+  });
+});
+
+// ── status bar ──
+function tick(){
+  document.getElementById('status-utc').textContent = 'UTC ' + new Date().toISOString().substring(11,19);
+  document.getElementById('status-vw').textContent = window.innerWidth;
+  document.getElementById('status-vh').textContent = window.innerHeight;
+}
+tick(); setInterval(tick, 1000); window.addEventListener('resize', tick, {passive:true});
+</script>
+</body>
+</html>
