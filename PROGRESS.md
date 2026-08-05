@@ -5,7 +5,10 @@ ysd-ktn.github.io ポートフォリオサイト リニューアル — 進捗�
 このファイルは「いま何ができてて、次に何をやるか」を Phase 単位で管理する。
 詳細な仕様は `DESIGN_SPEC.md`、最終モックは `_mockups/option-1-cyber-v2-writing-grid.html` を参照。
 
-最終更新: 2026.05.10 (Phase 8-3 完了。Google Analytics GA4 導入・保留事項の最終判断確定 / [01.2 TIMELINE] トグル詳細追加)
+最終更新: 2026.08.05 (Phase 9 完了。WRITING ページ自作・note 記事の Markdown 移行・更新ガイド整備)
+
+日々の更新手順 (記事を書く / 文言を変える / 公開する) は `UPDATING.md` にまとめてある。
+このファイルは「何をどういう理由で作ったか」の記録。
 
 ---
 
@@ -112,6 +115,12 @@ ysd-ktn.github.io ポートフォリオサイト リニューアル — 進捗�
 ---
 
 ## Phase 5 — Content Collections でデータ外出し + 実テキスト投入 ✅
+
+> ⚠️ **この Phase の `writing` に関する記述は当時のもの。**
+> `src/content/writing.json` (シングルトン + `featured` フラグ) は
+> **Phase 9 で `src/content/writing/*.md` の Markdown コレクションに作り替えた**。
+> 現在の仕様は Phase 9 と `DESIGN_SPEC.md` の「記事 (Writing)」を参照。
+> 以下は経緯の記録として残す。
 
 **DoD**:
 1. コンポーネント側のハードコード値を JSON に分離し、型安全に読み込めること。
@@ -480,7 +489,112 @@ Add persistent mobile nav bar with scroll-spy
 
 ---
 
+## Phase 9 — WRITING ページ自作 + note 記事の移行 ✅ (2026.08.05 完了)
+
+**背景**: 記事を note に置いたままだと、読者を外部へ送り出すことになり、
+サイト内に読み物が残らない。記事を自サイトの資産にする。
+
+**DoD**: `/writing/` (一覧) と `/writing/<slug>/` (個別) が動き、
+既存 note 記事のうち3本が自サイトで読めること。
+
+### コレクション構造の作り替え ✅
+
+- ✅ `writing` を JSON シングルトンから `src/content/writing/*.md` の glob コレクションへ
+  - 移行済み記事と note のみの記事を **1つのコレクション**で扱う
+  - 外部記事は本文なしの `.md` に `externalUrl` を持たせるスタブ
+  - → 並び替え・タグ絞り込み・件数カウントを1箇所のロジックで書ける
+  - → 移行時は `externalUrl` を消して本文を足すだけで内部記事になる
+- ✅ `featured` フラグを廃止。トップの3件は日付降順から自動取得
+  - 旧仕様は記事追加のたびに古い記事のフラグを下ろす手作業が必要だった
+- ✅ タグを `DESIGN` / `CAREER` / `AI` の3つに固定 (`z.enum`)
+  - 自由に増やせると分類がぶれて一覧のフィルタが機能しなくなる
+- ✅ `src/lib/writing.ts` に並び替え・目次抽出・日付整形を集約
+- ✅ `src/lib/content.ts` の `requireEntry` で `getEntry(...)!.data` を置換
+  - エントリ欠落時に「何が無いか」を名指しするエラーにする
+
+### ページ実装 ✅
+
+- ✅ `src/pages/writing/index.astro` — 一覧。タグ絞り込みは `?tag=` のクライアント処理
+- ✅ `src/pages/writing/[slug].astro` — 個別ページ
+- ✅ `src/components/ArticleCard.astro` — 一覧と LATEST で共用
+- ✅ 読了インジケーター: 「縦の線が上から accent で満ちる」1つの比喩を、
+  PC では目次の罫線 (`.toc::before`)、1180px 以下では画面右端のレールに宿らせる
+  - 上端の横バーは不採用。SP ナビのアクティブ下線と同じ y に accent の横線が
+    2本並んで意味が読めなくなるため
+- ✅ 目次は H2 のみ。`render()` が返す headings の slug をそのまま使う
+- ✅ 広告枠を本文中盤と記事末尾に用意 (`--ad-display` 未定義 = 既定で非表示)
+
+### ナビの定義変更 ✅
+
+- ✅ 「トップページの目次」から「**サイトの目次**」へ
+  - WRITING はどのページからでも `/writing/` へ (常に同じ挙動)
+  - トップの3件は `LATEST` セクション (id は `#latest`、表示ラベルは WRITING)
+  - スクロール連動の対象は `index` / `about` / `contact` の3つに
+- ✅ ブレークポイント 1180px を記事ページのみに追加
+  - 根拠: 本文680 + gap32×2 + 目次180×2 + ページ余白32×2 = 1168px
+  - サイト唯一の例外 (他は全て 720px)
+
+### Markdown 変換プラグイン ✅
+
+- ✅ `remark-line-breaks.ts` — 単独の改行をそのまま改行に (Notion / note の書き味に合わせる)
+- ✅ `rehype-clean-heading-ids.ts` — 絵文字入り見出しの id を整える
+- ✅ `rehype-link-cards.ts` — 段落に単独で置かれたリンクをカード表示に
+  - 公式の埋め込みウィジェットは重く世界観も壊すため自前で描く
+
+### 記事の移行 ✅
+
+- ✅ `script/notion-to-md.py` — Notion エクスポート → 記事 Markdown
+- ✅ `script/new-article.py` — 新規記事の雛形作成 / 画像最適化
+- ✅ 3本を Markdown 化、2本は `externalUrl` のスタブとして一覧に掲載
+- ✅ 画像 36枚を WebP 化 (29MB → 2.9MB) + OGP 用 JPG を生成
+- ✅ `Layout.astro` に記事ごとの OGP (画像 / `og:type=article` / 公開日) を追加
+  - OGP 画像は WebP ではなく JPG。一部 SNS のクローラが WebP を読めない
+
+### 旧サイトの整理 ✅
+
+- ✅ Flask 版の156ファイルを master から削除 (`legacy` ブランチに保存済み)
+- ✅ `UPDATING.md` を新規作成 — 非エンジニア向けの更新手順書
+
+### Phase 9 中に踏んだ罠 (将来の参考)
+
+- **`overflow-x: hidden` は `position: sticky` を殺す**
+  - `html, body` に指定すると overflow-y が auto に計算され、
+    html 自体がスクロールコンテナになる。内側の sticky は
+    「スクロールしないコンテナ」に貼り付き一切固定されなくなる
+  - → `overflow-x: clip` を使う。clip はスクロールコンテナを作らない
+- **グリッドの区切り線を「gap + 背景色」で描くと絞り込みで破綻**
+  - 表示枚数が列数を下回ると、空セルが `--line` 色の塊として残る
+  - → カード側の `outline` で描く。レイアウトに影響せず gap を埋める
+- **ユーザーの `rehypePlugins` は Astro の `rehypeHeadingIds` より先に走る**
+  - 後から id を書き換えることはできない
+  - → 先回りして id を振る。Astro は既存 id を尊重する
+- **絵文字の異体字セレクタ (U+FE0F) が slug に残る**
+  - `✍️` は「✍ + 見えない1文字」。見える方だけ落ちて `#<VS>-練習方法` になる
+  - 絵文字によって残るものと残らないものがあり見た目では気づけない
+  - → 見えない文字の除去をハイフン掃除より先にやる
+- **`.astro` だけ消してもプラグインの修正が反映されない**
+  - → `node_modules/.vite` も消す
+- **`git push` が `RPC failed; HTTP 400` で失敗する**
+  - 送信データが Git の既定バッファ (1MB) を超えると発生。画像追加時に起きやすい
+  - → `git config --global http.postBuffer 524288000`
+- **`github-slugger` を未宣言のまま使っていた**
+  - Astro の依存として偶然入っていただけで、Astro 更新で壊れる状態だった
+  - → `package.json` に明示
+
+---
+
 ## 保留中の判断 (Pause Items)
+
+- **広告 (AdSense) 導入** ⏸
+  - 導入条件: 記事が10本を超えたタイミング
+  - 前提: `github.io` のままでは構造上通らない (親ドメインが自分のものでないため)。
+    独自ドメインが必須
+  - 収益の見込み: 日本のブログの RPM は 200〜500円/1000PV。
+    ポートフォリオの現実的な PV では月100〜500円、最低支払額8,000円まで1〜3年
+  - 枠は実装済み。`--ad-display` を定義すれば表示される
+- **note の外部記事2本のサムネイル** ⏸
+  - 現在は note の CDN を直接参照している (手元に画像が無いため)
+  - note 側で URL が変わると画像が消える。気になったら保存してローカルに差し替える
 
 - **WORKS セクション復活** ⏸
   - 復活条件: 個人開発が3件以上 or 公開可能な大型プロジェクト (展覧会等) が2件以上溜まったタイミング
@@ -500,8 +614,14 @@ Add persistent mobile nav bar with scroll-spy
 新しいセッションで作業を再開する時は以下の順で:
 
 1. このファイル `PROGRESS.md` を最初に読む
-2. 現在のフェーズ (✅ / ⏳ / ⬜) と直前の作業内容を把握
+2. 現在のフェーズ (✅ / ⏳ / ⬜) と直前の作業内容を把握。
+   各 Phase の「踏んだ罠」は必ず目を通す (同じ所で止まらないため)
 3. 詳細な仕様判断は `DESIGN_SPEC.md` を参照
-4. レイアウトの最終形は `_mockups/option-1-cyber-v2-writing-grid.html` を参照
-5. 進めるフェーズの DoD に向けて作業
-6. 完了したらこのファイルを更新 (該当 Phase のステータス、最終更新日)
+4. レイアウトの参照先:
+   - トップページ: `_mockups/option-1-cyber-v2-writing-grid.html`
+   - 記事一覧 / 記事ページ: `_mockups/writing-index.html` / `_mockups/writing-detail.html`
+   - 検討過程: `_mockups/writing-progress-options.html` (読了インジケーター5案)、
+     `_mockups/writing-toc-depth.html` (目次の深さ・章数)
+5. 記事の追加や文言の変更だけなら `UPDATING.md` を見ればよい (このファイルは不要)
+6. 進めるフェーズの DoD に向けて作業
+7. 完了したらこのファイルを更新 (該当 Phase のステータス、最終更新日、踏んだ罠)

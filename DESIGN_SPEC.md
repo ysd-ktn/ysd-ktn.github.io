@@ -129,13 +129,26 @@ ysd-ktn.github.io ポートフォリオサイト全面リニューアル — 設
 ## 情報設計 (IA)
 
 ```
-/ (シングルページ)
+/ (トップページ)
   ├─ 00 / INDEX     Hero (名前 + 役職 + 座標)
   ├─ 01 / ABOUT     01.1 PROFILE + 01.2 TIMELINE (展覧会含む)
-  ├─ 02 / WRITING   note記事の時系列リスト
+  ├─ 02 / LATEST    最新3件のティザー (表示ラベルは "WRITING")
   ├─ 03 / CONTACT   email + SNS
   └─ FOOTER         画面下固定ステータスバー
+
+/writing/           記事一覧 (全件 + タグ絞り込み)
+/writing/<slug>/    記事個別ページ
 ```
+
+**ナビの意味づけ** (Phase 9 で変更):
+当初は「トップページの目次」で4項目すべてがページ内セクションだった。
+`/writing/` を作った時点でサイトは単一ページでなくなったため、
+ナビの定義を「**サイトの目次**」に変更した。
+
+- `WRITING` はどのページからでも `/writing/` へ (常に同じ挙動)
+- トップの3件は `LATEST` に改名して名前の衝突を解消
+  (セクション id は `#latest`、画面の表示ラベルは `WRITING`)
+- スクロール連動 (scroll-spy) の対象は `index` / `about` / `contact` の3つ
 
 ### WORKS について
 
@@ -205,29 +218,41 @@ ysd-ktn.github.io ポートフォリオサイト全面リニューアル — 設
 - グリッド枠は1px罫線、カード間も1pxセパレータ
 - 各カード = メタ行 + 16:9サムネ + タイトル + 概要 + 外部リンクフッタ
 
-**表示件数**: 最大3件（手動セレクトで選んだ "FEATURED" 記事）
-- セクション見出しに `FEATURED · 3 OF N` 形式で全体数を提示
-- 自動的に最新3件にする運用も可能だが、編集眼を出すため手動セレクトを採用
-- データ側は `featured: true` フラグまたは `priority` フィールドで管理
+**表示件数**: 最新3件（日付降順から自動取得）
+- セクション見出しは `WRITING / LATEST 3 OF N / SELECTED`
+- 当初は `featured: true` を手動で3件立てる運用だったが、記事を追加するたびに
+  古い記事のフラグを下ろす手作業が必要で、忘れるとビルドが落ちるだけの仕組みだった。
+  Phase 9 で自動化して廃止
+- 「編集眼を出す」意図は、記事数が十分に増えてから改めて検討する
 
-**MORE リンク**: グリッド下に `VIEW ALL ARTICLES · +N MORE → NOTE PROFILE ↗` のCTAボックス
+**MORE リンク**: グリッド下に `VIEW ALL ARTICLES · +N MORE  WRITING →` のCTAボックス
 - ホバーでアクセント色に
-- 外部リンクで note プロフィールへ
-- N の値は手動更新 (年に2-3回程度の更新運用想定)
+- 遷移先は note ではなく自サイトの `/writing/`
 
-**いいね数表示**: 各カードのメタ行右に `♡ N` の実数で表示、アクセント色強調
-- メンテ負担: note の API は非公開、手動更新運用（リリース時 + 半年に1回など）
-- データ側に `showLikes: false` フラグ持たせて、低い数値の記事は個別に非表示にできる構造を残す
-- 表示する数字は丸めない（"100+" 等の桁表示はしない）
+**矢印の使い分け** (Phase 9 で統一):
+- 文字の**右側**にのみ置く。`→ READ ↗` のように両端に置かない
+- `→` = サイト内への移動 / `↗` = 外部サイトへの移動
+- 例外は CONTACT の `→ COPY` `→ EXTERNAL`。あれは「移動」ではなく
+  「動作」の合図なので矢印が左を向く
+- N の値はコレクションの件数から自動算出
+
+**いいね数表示**: ❌ 廃止 (Phase 9)
+- 当初は各カードに `♡ N` を出す設計だったが、note の API は非公開のため
+  手動で写すことになり、必ず古い数字が残る
+- 「更新されない数字」は信用を落とすだけなので持たないことにした
+
+**内部記事と外部記事の見分け**: カードフッタ左のラベルで示す
+- `● READ HERE` — 自サイトで読める (accent の ● 付き)
+- `NOTE` — note に飛ぶ
 
 **カード構造**
 ```
-[ 01 ]  2025.10                    ♡ 312
+[ 01 ]  2026.06                    [ AI ]
 [ ⊕ THUMB · 16:9 (filter: grayscale 0.85) ]
 タイトル (Barlow 17px, weight 700)
-概要 (12px, dim, 6行程度)
+概要 (12px, dim, 2行で切り詰め)
 ─────────────────────
-NOTE                  → READ ↗
+● READ HERE               READ →
 ```
 
 **ホバー**
@@ -276,32 +301,61 @@ NOTE                  → READ ↗
 
 ### 記事 (Writing)
 
-`src/content/writing.json` で配列管理 (note記事へのリンク集):
+記事は `src/content/writing/*.md` の Markdown で管理する (Phase 9 で JSON から移行)。
 
-```json
-{
-  "noteProfileUrl": "https://note.com/ysd_ktn",
-  "totalCount": 15,
-  "articles": [
-    {
-      "date": "2025.10",
-      "title": "デザインシステムを5年運用して学んだこと",
-      "excerpt": "運用フェーズで見えた、ガバナンスと拡張性のバランス...",
-      "url": "https://note.com/ysd_ktn/n/xxxxxxx",
-      "platform": "NOTE",
-      "thumbnail": "../../assets/writing/2025-10-design-system.png",
-      "likes": 312,
-      "featured": true,
-      "showLikes": true
-    }
-  ]
-}
+**移行済み記事と note のみの記事を、1つのコレクションで扱う。**
+外部記事は本文なしのスタブに `externalUrl` を持たせる。
+
+```yaml
+# 自サイトで公開する記事
+---
+title: "記事のタイトル"
+date: 2026-06-21
+tags: ["AI", "DESIGN"]        # DESIGN / CAREER / AI の3つから1〜3個
+thumbnail: "/images/writing/<slug>/thumb.webp"
+ogpImage: "/images/writing/<slug>/ogp.jpg"
+noteUrl: "https://note.com/..."   # note にも載せている場合
+excerpt: "一覧カードに出る紹介文"
+draft: false
+---
+
+## 章の見出し (目次に載る。絵文字可)
+本文…
 ```
 
-- `featured: true` の記事だけがトップに表示される（最大3件）
-- `featured: true` が4件以上ある場合は配列順で上から3件を採用、または `priority` フィールドで明示
-- `showLikes: false` にすると個別カードのいいね数を非表示にできる
-- `totalCount` は MORE リンクの `+N MORE` 表示に使用、手動更新
+```yaml
+# note にしか無い記事 (本文なし)
+---
+title: "記事のタイトル"
+date: 2024-06-28
+tags: ["DESIGN"]
+thumbnail: "https://assets.st-note.com/..."   # 外部記事のみ URL 可
+externalUrl: "https://note.com/..."           # これがあると個別ページを作らない
+excerpt: "一覧カードに出る紹介文"
+draft: false
+---
+```
+
+**設計判断**:
+
+- **1コレクションに統合した理由** — 並び替え・タグ絞り込み・件数カウントを
+  1箇所のロジックで書ける。移行時は `externalUrl` を消して本文を足すだけで
+  内部記事に切り替わる
+- **タグを3つに固定した理由** — 自由に増やせると分類がぶれ、一覧のフィルタが
+  機能しなくなる。`z.enum` で typo もビルド時に落とす
+- **`ogpImage` を分けた理由** — 表示用は WebP で軽くしたいが、OGP は WebP を
+  読めないクローラがまだいる。共有カード用だけ 1200×630 の JPG を別に持つ
+- **`draft`** — `true` の間は本番ビルドから除外。dev では見える
+- **いいね数は持たない** — note の値を手動で写すことになり、必ず古くなる
+
+**目次と読了インジケーター**:
+
+- 目次に載せるのは **H2 のみ**。H3 まで入れると章の粒度が細かくなり、
+  記事ごとに目次の密度がバラついて進捗レールの動きが安定しない
+- 目次の slug は `render()` が返す headings のものをそのまま使う。
+  自前で slug を作ると本文の id とズレてアンカーが死ぬ
+- 読了インジケーターは「縦の線が上から accent で満ちる」1つの比喩を、
+  PC では目次の罫線、1180px 以下では画面右端のレールに宿らせる
 
 ### 経歴 (Timeline)
 
