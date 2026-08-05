@@ -21,6 +21,10 @@ pnpm-debug.log*
 .vscode/
 .idea/
 
-# Legacy (Phase 2 で legacy ブランチに退避済み — 念のため build 対象から除外)
+# Notion からの一時展開先 (notion-to-md.py が使う)
+.notion-tmp/
+
+# 旧サイト (Flask) の作業ゴミ。 本体は master から削除済みで legacy ブランチに残る。
+# 過去のコミットを checkout したときに再び現れるので除外は残す。
 __pycache__/
 .sass-cache/
