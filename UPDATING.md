@@ -333,6 +333,16 @@ git push
 
 コミットメッセージは英語で、1行で簡潔に。`Add 〜` `Fix 〜` `Update 〜` の形。
 
+**push したら必ずこの2つを確認する。**
+
+```sh
+git status          # "up to date with 'origin/master'" になっていればOK
+git ls-remote origin master   # 手元の最新コミットと同じ番号が出ればOK
+```
+
+`ahead` と出ていたらまだ届いていない。ターミナルを遡ってエラーを探すこと
+（成功したように見えて途中で切れていることがある）。
+
 反映されるまで 1〜2分かかる。GitHub のリポジトリの「Actions」タブで進行状況が見られる。
 緑のチェックが付けば完了。赤い × が出たら [8. 困ったとき](#8-困ったとき) へ。
 
@@ -359,12 +369,38 @@ npm run preview
 
 ### 直したのに画面が変わらない
 
-Astro は変換済みの記事を保存して使い回すので、変換の設定を変えたときは
-古いものが残ることがある。開発サーバーを止めて、
+Astro は変換済みの記事や読み込んだ設定を保存して使い回す。
+記事の文章を直しただけなら普通に反映されるが、**変換の仕組み側**
+（`src/lib/` のプラグインや `astro.config.mjs`）を触ったときは
+古いものが残り続けることがある。開発サーバーを止めて、
 
 ```sh
-rm -rf .astro
+rm -rf .astro node_modules/.vite
 npm run dev
+```
+
+**`node_modules/.vite` も消すのが大事。** `.astro` だけ消しても
+プラグインの修正が効かず、「直したのに変わらない」で延々ハマる。
+
+### push が「RPC failed; HTTP 400」で止まる
+
+```
+error: RPC failed; HTTP 400 curl 22 The requested URL returned error: 400
+fatal: the remote end hung up unexpectedly
+```
+
+一度に送るデータが Git の送信バッファ（初期値 1MB）を超えると出る。
+画像をたくさん追加した回に起きやすい。一度だけ設定すれば以後は出ない。
+
+```sh
+git config --global http.postBuffer 524288000
+git push origin master
+```
+
+それでも駄目なら通信方式を固定する。
+
+```sh
+git config --global http.version HTTP/1.1
 ```
 
 ### タグでエラーが出る
